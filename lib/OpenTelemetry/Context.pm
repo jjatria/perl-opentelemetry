@@ -27,10 +27,6 @@ sub key ( $, $name ) {
 }
 
 class OpenTelemetry::Context {
-    use OpenTelemetry;
-
-    my @stack; # TODO: handle forking, async, etc
-
     has $data :param = {};
 
     sub BUILDARGS ( $class, @args ) { ( data => { @args } ) }
