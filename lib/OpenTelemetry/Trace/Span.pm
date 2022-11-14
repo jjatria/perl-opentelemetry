@@ -18,7 +18,7 @@ class OpenTelemetry::Trace::Span does OpenTelemetry::Trace::Span::Role {
 }
 
 use constant INVALID => OpenTelemetry::Trace::Span->new(
-    context => OpenTelemetry::Trace::SpanContext::INVALID(),
+    context => OpenTelemetry::Trace::SpanContext::INVALID,
 );
 
 __END__

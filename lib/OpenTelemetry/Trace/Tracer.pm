@@ -10,7 +10,7 @@ class OpenTelemetry::Trace::Tracer {
     use OpenTelemetry::Trace::Span;
 
     method create_span ( %args ) {
-        OpenTelemetry::Trace::Span::INVALID();
+        OpenTelemetry::Trace::Span::INVALID;
     }
 }
 
