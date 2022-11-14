@@ -1,13 +1,13 @@
 use Object::Pad;
 # ABSTRACT: The OpenTelemetry Span abstract interface
 
-package OpenTelemetry::Trace::Span::Context;
+package OpenTelemetry::Trace::SpanContext;
 
 our $VERSION = '0.001';
 
 use OpenTelemetry::Trace::Common;
 
-class OpenTelemetry::Trace::Span::Context {
+class OpenTelemetry::Trace::SpanContext {
     has $trace_flags :param :reader = undef;
     has $trace_state :param :reader = undef;
     has $trace_id    :param :reader = undef;
@@ -27,7 +27,7 @@ class OpenTelemetry::Trace::Span::Context {
     }
 }
 
-use constant INVALID => OpenTelemetry::Trace::Span::Context->new(
+use constant INVALID => OpenTelemetry::Trace::SpanContext->new(
     trace_id => OpenTelemetry::Trace::Common::INVALID_TRACE_ID,
     span_id  => OpenTelemetry::Trace::Common::INVALID_SPAN_ID,
 );

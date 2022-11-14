@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Trace::Span;
 
-use OpenTelemetry::Trace::Span::Context;
+use OpenTelemetry::Trace::SpanContext;
 
 our $VERSION = '0.001';
 
@@ -11,14 +11,14 @@ class OpenTelemetry::Trace::Span does OpenTelemetry::Trace::Span::Role {
     has $context :param :reader = undef;
 
     ADJUST {
-        $context //= OpenTelemetry::Trace::Span::Context->new;
+        $context //= OpenTelemetry::Trace::SpanContext->new;
     }
 
     method recording { 0 }
 }
 
 use constant INVALID => OpenTelemetry::Trace::Span->new(
-    context => OpenTelemetry::Trace::Span::Context::INVALID(),
+    context => OpenTelemetry::Trace::SpanContext::INVALID(),
 );
 
 __END__
@@ -56,7 +56,7 @@ that class for details.
 
     $span_context = $span->context
 
-Returns the L<OpenTelemetry::Trace::Span::Context> object associated with this
+Returns the L<OpenTelemetry::Trace::SpanContext> object associated with this
 span. This value can continue to be used even after the span is finished, and
 is guaranteed to be the same throughout the entire lifetime of the span.
 
