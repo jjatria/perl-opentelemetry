@@ -7,7 +7,7 @@ use OpenTelemetry::Trace::SpanContext;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Trace::Span does OpenTelemetry::Trace::Span::Role {
+class OpenTelemetry::Trace::Span :does(OpenTelemetry::Trace::Span::Role) {
     has $context :param :reader = undef;
 
     ADJUST {
