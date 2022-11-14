@@ -7,6 +7,7 @@ use experimental 'signatures';
 
 our $VERSION = '0.001';
 
+use OpenTelemetry::Context::Propagation::TextMap::Noop;
 use OpenTelemetry::Trace::TracerProvider::Proxy;
 use Log::Any '$logger';
 
@@ -17,7 +18,10 @@ sub tracer_provider ( $, $tracer = undef ) {
     return $tracer_provider //= OpenTelemetry::Trace::TracerProvider::Proxy->new;
 }
 
-sub propagation { ... }
+my $propagation;
+sub propagation {
+    return $propagation //= OpenTelemetry::Context::Propagation::TextMap::Noop->new;
+}
 
 sub logger { $logger }
 

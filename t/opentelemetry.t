@@ -33,4 +33,10 @@ subtest TracerProvider => sub {
         'Can set and retrieve global tracer provider';
 };
 
+subtest Propagation => sub {
+    is my $prop = CLASS->propagation, object {
+        prop isa => 'OpenTelemetry::Context::Propagation::TextMap::Noop';
+    };
+};
+
 done_testing;
