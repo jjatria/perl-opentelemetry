@@ -30,6 +30,6 @@ sub error_handler ( $, $handler = undef ) {
     };
 }
 
-sub handle_error ( $pkg, %args ) { $pkg->error_handler->(%args) }
+sub handle_error ( $pkg, %args ) { $pkg->error_handler->(%args); return }
 
 1;
