@@ -74,5 +74,5 @@ class OpenTelemetry::Baggage::Propagation::TextMap {
         $builder->build($context);
     }
 
-    method fields () { $KEY }
+    method keys () { $KEY }
 }

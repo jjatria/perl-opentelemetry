@@ -42,8 +42,8 @@ class OpenTelemetry::Context::Propagation::Composite {
         return $ctx;
     }
 
-    method fields () {
-        uniq map $_->fields, @injectors, @extractors
+    method keys () {
+        uniq map $_->keys, @injectors, @extractors
     }
 }
 

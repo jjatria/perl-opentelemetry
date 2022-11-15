@@ -22,5 +22,5 @@ class OpenTelemetry::Context::Propagation::TextMap::Noop {
         return $context;
     }
 
-    method fields () { }
+    method keys () { }
 }
