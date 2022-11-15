@@ -1,17 +1,22 @@
 use Object::Pad;
 # ABSTRACT: A placholder TextMap context propagator for OpenTelemetry
 
-package OpenTelemetry::Context::Propagation::TextMap::Noop;
+use experimental 'signatures';
+
+package OpenTelemetry::Context::Propagation::TextMap;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Context::Propagation::TextMap::Noop {
-    use OpenTelemetry::Context::Propagation::TextMap;
+use constant {
+    SETTER => sub ( $carrier, $key, $value ) { $carrier->{$key} = $value },
+    GETTER => sub ( $carrier, $key         ) { $carrier->{$key}          },
+};
 
+class OpenTelemetry::Context::Propagation::TextMap {
     method inject (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $setter  = OpenTelemetry::Context::Propagation::TextMap::SETTER
+        $setter  = SETTER
     ) {
         return $self;
     }
@@ -19,7 +24,7 @@ class OpenTelemetry::Context::Propagation::TextMap::Noop {
     method extract (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $getter  = OpenTelemetry::Context::Propagation::TextMap::GETTER
+        $getter  = GETTER
     ) {
         return $context;
     }

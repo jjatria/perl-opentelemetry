@@ -7,6 +7,7 @@ our $VERSION = '0.001';
 
 class OpenTelemetry::Baggage::Propagation::TextMap {
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
+    use OpenTelemetry::Context::Propagation::TextMap;
 
     my $KEY              = 'baggage';
     my $MAX_ENTRIES      = 180;
@@ -45,7 +46,7 @@ class OpenTelemetry::Baggage::Propagation::TextMap {
     method inject (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $setter = sub ( $carrier, $key, $value ) { $carrier->{$key} = $value }
+        $setter  = OpenTelemetry::Context::Propagation::TextMap::SETTER
     ) {
         my %baggage = OpenTelemetry::Baggage->all($context);
         return $self unless %baggage;
@@ -59,7 +60,7 @@ class OpenTelemetry::Baggage::Propagation::TextMap {
     method extract (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $getter = sub ( $carrier, $key ) { $carrier->{$key} }
+        $getter  = OpenTelemetry::Context::Propagation::TextMap::GETTER
     ) {
         my $header = $carrier->$getter($KEY) or return $context;
 

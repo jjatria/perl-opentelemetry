@@ -7,6 +7,7 @@ our $VERSION = '0.001';
 
 class OpenTelemetry::Context::Propagation::Composite {
     use List::Util 'uniq';
+    use OpenTelemetry::Context::Propagation::TextMap;
 
     has @injectors;
     has @extractors;
@@ -26,7 +27,7 @@ class OpenTelemetry::Context::Propagation::Composite {
     method inject (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $setter = sub ( $carrier, $key, $value ) { $carrier->{$key} = $value }
+        $setter  = OpenTelemetry::Context::Propagation::TextMap::SETTER
     ) {
         $_->inject( $carrier, $context, $setter ) for @injectors;
         return $self;
@@ -35,7 +36,7 @@ class OpenTelemetry::Context::Propagation::Composite {
     method extract (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $getter = sub ( $carrier, $key ) { $carrier->{$key} }
+        $getter  = OpenTelemetry::Context::Propagation::TextMap::GETTER
     ) {
         my $ctx = $context;
         $ctx = $_->extract( $carrier, $ctx, $getter ) for @extractors;
