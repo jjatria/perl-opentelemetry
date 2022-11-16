@@ -5,7 +5,7 @@ package OpenTelemetry::Trace::Tracer::Proxy;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Trace::Tracer::Proxy isa OpenTelemetry::Trace::Tracer {
+class OpenTelemetry::Trace::Tracer::Proxy :isa(OpenTelemetry::Trace::Tracer) {
     use mro;
 
     has $delegate :reader;

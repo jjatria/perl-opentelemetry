@@ -5,7 +5,7 @@ package OpenTelemetry::Trace::TracerProvider::Proxy;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Trace::TracerProvider::Proxy isa OpenTelemetry::Trace::TracerProvider {
+class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::TracerProvider) {
     use mro;
     use OpenTelemetry::Trace::Tracer::Proxy;
     use Carp 'croak';
