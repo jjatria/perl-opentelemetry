@@ -20,7 +20,7 @@ sub load ( $class, $load_deps = 0 ) {
     require HTTP::Tiny;
     require URI;
 
-    install_modifier HTTP::Tiny => around => request => sub {
+    install_modifier 'HTTP::Tiny' => around => request => sub {
         my ( $code, $self, $method, $url, $options ) = @_;
         my $uri = URI->new("$url");
         my $path = $uri->path || '/';
