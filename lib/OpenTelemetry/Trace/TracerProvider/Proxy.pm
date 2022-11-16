@@ -25,16 +25,16 @@ class OpenTelemetry::Trace::TracerProvider::Proxy isa OpenTelemetry::Trace::Trac
 
         for my $name ( keys %registry ) {
             my ( $proxy, %args ) = delete $registry{$name};
-            $proxy->delegate( $delegate->tracer( $name, %args ) );
+            $proxy->delegate( $delegate->tracer( %args ) );
         }
     }
 
     method tracer ( %args ) {
-        my $name = delete $args{name}
-            or croak 'Missing tracer name in call to ' . ( ref $self ) . '::tracer';
+        # TODO: Is this correct?
+        my $name = $args{name} //= '';
 
         # TODO: lock?
-        $delegate->tracer( $name, %args ) if $delegate;
+        $delegate->tracer( %args ) if $delegate;
 
         $registry{$name} //= [ OpenTelemetry::Trace::Tracer::Proxy->new, %args ];
         $registry{$name}[0];
