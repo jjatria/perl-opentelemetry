@@ -12,14 +12,15 @@ use OpenTelemetry::Trace::TracerProvider::Proxy;
 use Log::Any '$logger';
 
 my $tracer_provider;
-sub tracer_provider ( $, $tracer = undef ) {
+sub tracer_provider ( $, $new = undef ) {
     # TODO: lock?
-    $tracer_provider = $tracer if $tracer;
+    $tracer_provider = $new if $new;
     return $tracer_provider //= OpenTelemetry::Trace::TracerProvider::Proxy->new;
 }
 
 my $propagation;
-sub propagation {
+sub propagation ( $, $new = undef ) {
+    $propagation = $new if $new;
     return $propagation //= OpenTelemetry::Context::Propagation::TextMap::Noop->new;
 }
 
