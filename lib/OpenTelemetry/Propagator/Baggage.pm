@@ -1,11 +1,11 @@
 use Object::Pad;
 # ABSTRACT: Propagate baggage using the W3C Baggage format
 
-package OpenTelemetry::Baggage::Propagation::TextMap;
+package OpenTelemetry::Propagator::Baggage;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Baggage::Propagation::TextMap {
+class OpenTelemetry::Propagator::Baggage {
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
     use OpenTelemetry::Context::Propagation::TextMap;
 
@@ -14,7 +14,7 @@ class OpenTelemetry::Baggage::Propagation::TextMap {
     my $MAX_ENTRY_LENGTH = 4096;
     my $MAX_TOTAL_LENGTH = 8192;
 
-    sub encode (%baggage) {
+    method $encode (%baggage) {
         my $encoded = '';
         my $total = 0;
 
@@ -51,7 +51,7 @@ class OpenTelemetry::Baggage::Propagation::TextMap {
         my %baggage = OpenTelemetry::Baggage->all($context);
         return $self unless %baggage;
 
-        my $encoded = encode(%baggage);
+        my $encoded = $self->$encode(%baggage);
         $setter->( $carrier, $KEY, $encoded ) if $encoded;
 
         return $self;

@@ -4,8 +4,8 @@ use Test2::V0;
 
 use Scalar::Util 'refaddr';
 use OpenTelemetry::Baggage;
-use OpenTelemetry::Baggage::Propagation::TextMap;
 use OpenTelemetry::Context::Propagation::Composite;
+use OpenTelemetry::Propagator::Baggage;
 
 my $root = OpenTelemetry::Context->current;
 my $ctxt = OpenTelemetry::Baggage->set( foo => 123, 'META', $root );
@@ -17,7 +17,7 @@ is $ctxt, object {
 
 my $carrier = {};
 my $prop = OpenTelemetry::Context::Propagation::Composite->new(
-    OpenTelemetry::Baggage::Propagation::TextMap->new,
+    OpenTelemetry::Propagator::Baggage->new,
 );
 
 is refaddr $prop->inject( $carrier, $ctxt ), refaddr $prop,
