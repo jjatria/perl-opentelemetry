@@ -1,5 +1,5 @@
 use Object::Pad;
-# ABSTRACT: A context class for OpenTelemetry
+# ABSTRACT: A single operation within a trace
 
 package OpenTelemetry::Trace::Span;
 
