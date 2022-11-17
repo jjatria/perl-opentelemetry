@@ -5,7 +5,8 @@ package OpenTelemetry::Trace::TracerProvider;
 
 our $VERSION = '0.001';
 
-use Log::Any '$log';
+use Log::Any;
+my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::TracerProvider {
     use OpenTelemetry::Trace::Tracer;
@@ -13,7 +14,7 @@ class OpenTelemetry::Trace::TracerProvider {
     has $tracer;
 
     method tracer ( %args ) {
-        $log->warnf('Invalid tracer name on call to %s::tracer: got %s',
+        $logger->warnf('Invalid tracer name on call to %s::tracer: got %s',
             __PACKAGE__,
             $args{name} // 'undef',
         ) unless $args{name};

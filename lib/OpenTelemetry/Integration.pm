@@ -10,7 +10,8 @@ use Module::Pluggable;
 use Module::Load ();
 use List::Util 'uniqstr';
 
-use Log::Any '$log';
+use Log::Any;
+my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 sub import ( $class, @args ) {
     return unless @args;
@@ -33,14 +34,14 @@ sub import ( $class, @args ) {
 
     for my $module ( uniqstr @modules ) {
         try {
-            $log->tracef('Loading %s', $module);
+            $logger->tracef('Loading %s', $module);
             Module::Load::load($module);
             $module->load($load_deps);
         } catch ($e) {
             # Just a warning, if we're loading everything then
             # we shouldn't cause chaos just because something
             # doesn't happen to be available.
-            $log->warnf('Unable to loading OpenTelemetry integration %s: %s', $module, $e);
+            $logger->warnf('Unable to loading OpenTelemetry integration %s: %s', $module, $e);
         }
     }
 }

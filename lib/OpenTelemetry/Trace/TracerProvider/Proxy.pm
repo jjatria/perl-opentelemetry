@@ -5,6 +5,9 @@ package OpenTelemetry::Trace::TracerProvider::Proxy;
 
 our $VERSION = '0.001';
 
+use Log::Any;
+my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
+
 class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::TracerProvider) {
     use mro;
     use OpenTelemetry::Trace::Tracer::Proxy;
@@ -14,8 +17,7 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
 
     method delegate ($new) {
         if ( $delegate ) {
-            # TODO: Logger?
-            warn 'Attempt to reset delegate in TracerProvider proxy ignored.';
+            $logger->warn('Attempt to reset delegate in TracerProvider proxy ignored');
             return;
         }
 
