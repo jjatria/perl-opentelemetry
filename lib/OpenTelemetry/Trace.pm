@@ -21,6 +21,10 @@ sub context_with_span ( $, $span, $context = OpenTelemetry::Context->current ) {
     $context->set( $current_span_key => $span );
 }
 
+sub non_recording_span ( $, $context ) {
+    OpenTelemetry::Trace::Span->new( context => $context );
+}
+
 sub generate_trace_id { goto \&OpenTelemetry::Trace::Common::generate_trace_id }
 sub generate_span_id  { goto \&OpenTelemetry::Trace::Common::generate_span_id  }
 sub INVALID_TRACE_ID  { goto \&OpenTelemetry::Trace::Common::INVALID_TRACE_ID  }
