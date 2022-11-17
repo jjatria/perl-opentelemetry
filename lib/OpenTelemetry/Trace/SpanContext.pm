@@ -28,6 +28,9 @@ class OpenTelemetry::Trace::SpanContext {
            $trace_id && $trace_id ne OpenTelemetry::Trace::Common::INVALID_TRACE_ID
         && $span_id  && $span_id  ne OpenTelemetry::Trace::Common::INVALID_SPAN_ID;
     }
+
+    method hex_trace_id () { unpack 'H*', $trace_id }
+    method hex_span_id  () { unpack 'H*', $span_id  }
 }
 
 use constant INVALID => OpenTelemetry::Trace::SpanContext->new(
