@@ -35,7 +35,7 @@ A tracer is responsible for creating L<OpenTelemetry::Trace::Span> objects.
 =head2 create_span
 
     $span = $tracer->create_span(
-        name       => $name,      # required
+        name       => $name,      // 'empty',
         parent     => $context    // undef,
         kind       => $span_kind  // $internal,
         attributes => $attributes // {},
@@ -45,7 +45,9 @@ A tracer is responsible for creating L<OpenTelemetry::Trace::Span> objects.
 
 Creates a L<OpenTelemetry::Trace::Span> instance associated with this trace.
 
-Takes a list of key / value pairs including a mandatory span name. All other
+Takes a list of key / value pairs. Of these, the only one that callers are
+I<always> expected to provide is the span name: not doing so may result in
+a warning being logged and a placeholder name will be used instead. All other
 keys are optional and can be used to further specify the span.
 
 Note that even though the majority of these can be set after a span's

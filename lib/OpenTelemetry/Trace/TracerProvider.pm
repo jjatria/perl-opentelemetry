@@ -14,11 +14,6 @@ class OpenTelemetry::Trace::TracerProvider {
     has $tracer;
 
     method tracer ( %args ) {
-        $logger->warnf('Invalid tracer name on call to %s::tracer: got %s',
-            __PACKAGE__,
-            $args{name} // 'undef',
-        ) unless $args{name};
-
         $tracer //= OpenTelemetry::Trace::Tracer->new;
     }
 }
