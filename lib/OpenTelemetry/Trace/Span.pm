@@ -7,7 +7,7 @@ use OpenTelemetry::Trace::SpanContext;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Trace::Span :does(OpenTelemetry::Trace::Span::Role) {
+class OpenTelemetry::Trace::Span {
     has $context :param :reader = undef;
 
     ADJUST {
@@ -15,6 +15,18 @@ class OpenTelemetry::Trace::Span :does(OpenTelemetry::Trace::Span::Role) {
     }
 
     method recording { 0 }
+
+    method set_attribute ( %args ) { $self }
+
+    method set_name ( $name ) { $self }
+
+    method set_status ( $status, $description = '' ) { $self }
+
+    method add_link ( %args ) { $self }
+
+    method add_event ( %args ) { $self }
+
+    method end ( $timestamp = time ) { $self }
 }
 
 use constant INVALID => OpenTelemetry::Trace::Span->new(
