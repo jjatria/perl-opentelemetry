@@ -46,6 +46,7 @@ still being drafted, so some details might change):
 
 ``` perl
 use OpenTelemetry;
+use v5.36;
 
 # Obtain the current default tracer provider
 my $provider = OpenTelemetry->tracer_provider;
