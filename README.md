@@ -41,7 +41,8 @@ cpanm install .
 ```
 
 Then, use the OpenTelemetry interfaces to produces traces and other telemetry
-data. Following is a basic example:
+data. Following is a basic example (although bare in mind this interface is
+still being drafted, so some details might change):
 
 ``` perl
 use OpenTelemetry;
@@ -53,18 +54,11 @@ my $provider = OpenTelemetry->tracer_provider;
 my $tracer = $provider->tracer( name => 'my_app', version => '1.0' );
 
 # Record spans
-my $outer = OpenTelemetry::Trace->span_from_context;
+$tracer->in_span( outer => sub ( $span, $context ) {
+    # In outer span
 
-# Do things in outer span
-
-my $inner = $tracer.create_span(
-    name   => 'inner',
-    parent => OpenTelemetry::Trace->context_with_span($child),
-);
-
-# Do things in inner span
-
-$inner->end;
-
-$outer->end;
+    $tracer->in_span( inner => sub ( $span, $context ) {
+        # In inner span
+    });
+});
 ```

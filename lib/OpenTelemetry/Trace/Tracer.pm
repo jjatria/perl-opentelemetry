@@ -4,13 +4,47 @@ use Object::Pad;
 package OpenTelemetry::Trace::Tracer;
 
 our $VERSION = '0.001';
-use Object::Pad;
+
+use Log::Any;
+my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Tracer {
+    use Syntax::Keyword::Defer;
+    use Ref::Util 'is_coderef';
+
+    use OpenTelemetry::Context;
     use OpenTelemetry::Trace::Span;
+    use OpenTelemetry::Trace;
 
     method create_span ( %args ) {
         OpenTelemetry::Trace::Span::INVALID;
+    }
+
+    # Experimental
+    method in_span {
+        my $block = pop;
+        my $name  = shift;
+        my %args  = @_;
+        $args{name} = $name;
+
+        unless ( is_coderef $block ) {
+            $logger->warn('Missing required code block in call to Tracer->in_span');
+            return $self;
+        }
+
+        my $span = $self->create_span( @_, parent => OpenTelemetry::Context->current );
+
+        defer { $span->end };
+
+        my $context = OpenTelemetry::Trace->context_with_span($span);
+
+        my $token = OpenTelemetry::Context->attach($context);
+
+        defer { OpenTelemetry::Context->detach($token) };
+
+        $block->( $span, $context );
+
+        $self;
     }
 }
 
