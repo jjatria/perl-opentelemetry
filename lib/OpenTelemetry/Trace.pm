@@ -13,11 +13,13 @@ use OpenTelemetry::Trace::Common;
 
 my $current_span_key = OpenTelemetry::Context->key('current-span');
 
-sub span_from_context ( $, $context = OpenTelemetry::Context->current ) {
+sub span_from_context ( $, $context = undef ) {
+    $context //= OpenTelemetry::Context->current;
     $context->get( $current_span_key ) // OpenTelemetry::Trace::Span::INVALID;
 }
 
-sub context_with_span ( $, $span, $context = OpenTelemetry::Context->current ) {
+sub context_with_span ( $, $span, $context = undef ) {
+    $context //= OpenTelemetry::Context->current;
     $context->set( $current_span_key => $span );
 }
 

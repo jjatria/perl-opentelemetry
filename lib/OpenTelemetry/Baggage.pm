@@ -41,7 +41,8 @@ class OpenTelemetry::Baggage::Builder {
         return;
     }
 
-    method build ( $context = OpenTelemetry::Context->current ) {
+    method build ( $context = undef ) {
+        $context //= OpenTelemetry::Context->current;
         $context->set( $BAGGAGE_KEY => { %data } );
     }
 }
@@ -54,7 +55,9 @@ my sub from_context ( $context = undef ) {
     ( $context // OpenTelemetry::Context->current )->get($BAGGAGE_KEY) // {}
 }
 
-sub set ( $, $name, $value, $meta = undef, $context = OpenTelemetry::Context->current ) {
+sub set ( $, $name, $value, $meta = undef, $context = undef ) {
+    $context //= OpenTelemetry::Context->current;
+
     my %new = %{ from_context $context };
     $new{$name} = OpenTelemetry::Baggage::Entry->new( value => $value, meta => $meta );
     $context->set( $BAGGAGE_KEY => \%new );
