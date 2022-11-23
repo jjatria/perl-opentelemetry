@@ -1,9 +1,9 @@
 # This package is not indexed, since it's only a separate
-# package to break an import cycle between
+# package to break an import cycle
 package
     OpenTelemetry::Trace::Common;
 
-# ABSTRACT: The OpenTelemetry Span abstract interface
+# ABSTRACT: Utility package with shared functions for OpenTelemetry tracing
 
 our $VERSION = '0.001';
 
