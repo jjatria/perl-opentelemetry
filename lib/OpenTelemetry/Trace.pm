@@ -7,6 +7,12 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
+use constant {
+    EXPORT_SUCCESS => 0,
+    EXPORT_FAILURE => 1,
+    EXPORT_TIMEOUT => 2,
+};
+
 use OpenTelemetry::Context;
 use OpenTelemetry::Trace::Span;
 use OpenTelemetry::Trace::Common;
