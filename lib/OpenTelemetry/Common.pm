@@ -10,7 +10,8 @@ use warnings;
 use experimental 'signatures';
 
 use Time::HiRes qw( clock_gettime CLOCK_MONOTONIC );
-use List::Util 'first';
+use List::Util qw( any first );
+use Ref::Util qw( is_arrayref is_hashref );
 
 use namespace::clean;
 
@@ -20,7 +21,11 @@ our @EXPORT_OK = qw(
     timeout_timestamp
     maybe_timeout
     config
+    validate_attribute_value
 );
+
+use Log::Any;
+my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 sub timeout_timestamp :prototype() {
     clock_gettime CLOCK_MONOTONIC;
@@ -45,6 +50,20 @@ sub config ( @keys ) {
     return $value unless defined $value;
 
     $value =~ /^true$/i ? 1 : $value =~ /^false$/i ? 0 : $value;
+}
+
+sub validate_attribute_value ( $value ) {
+    if ( is_hashref $value ) {
+        $logger->warnf('Span attribute values cannot be hash references');
+        return;
+    }
+
+    if ( is_arrayref $value && any { ref } @$value ) {
+        $logger->warnf('Span attribute values that are lists cannot hold references');
+        return;
+    }
+
+    $value;
 }
 
 1;
