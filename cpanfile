@@ -1,4 +1,5 @@
-requires 'List::Util', '1.45'; # For uniq
+requires 'Future', '0.26';         # Future->done
+requires 'List::Util', '1.45';     # For uniq
 requires 'Object::Pad', '0.57';
 requires 'Ref::Util';
 requires 'Syntax::Keyword::Defer';
