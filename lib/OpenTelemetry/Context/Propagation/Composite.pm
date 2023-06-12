@@ -19,7 +19,7 @@ class OpenTelemetry::Context::Propagation::Composite {
         )
     }
 
-    ADJUST ($params) {
+    ADJUSTPARAMS ($params) {
         @injectors  = @{ delete $params->{injectors}  // [] };
         @extractors = @{ delete $params->{extractors} // [] };
     }
