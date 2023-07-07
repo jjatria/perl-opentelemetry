@@ -66,9 +66,9 @@ class OpenTelemetry::Propagator::Baggage {
 
         my $builder = OpenTelemetry::Baggage->builder;
 
-        for ( split ',', $header =~ s/\s//g ) {
-            my ( $kv, $meta ) = split ';', 2;
-            my ( $key, $value ) = map url_decode_utf8 $_, split '=', $kv, 2;
+        for ( split ',', $header =~ s/\s//gr ) {
+            my ( $kv, $meta ) = split ';', $_, 2;
+            my ( $key, $value ) = map url_decode_utf8($_), split '=', $kv, 2;
             $builder->set( $key, $value, $meta );
         }
 

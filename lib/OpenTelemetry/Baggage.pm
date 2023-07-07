@@ -79,7 +79,7 @@ sub delete ( $, $name, $context = undef ) {
     $context->set( $BAGGAGE_KEY => \%new );
 }
 
-sub builder () {
+sub builder ( $ ) {
     OpenTelemetry::Baggage::Builder->new;
 }
 
