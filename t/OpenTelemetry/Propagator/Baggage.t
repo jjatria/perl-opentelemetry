@@ -13,8 +13,9 @@ my $propagator = CLASS->new;
 
 is my $KEY = $propagator->keys, 'baggage', 'Can read propagator keys';
 
-# Extracting baggage from a carrier that has had no baggage injected into it
-# returns the current context
+# Extracting baggage from a carrier that has had
+# no baggage injected into it returns the current context
+# or whatever context has been provided
 subtest 'Extract without baggage' => sub {
     is my $a = $propagator->extract($carrier),
         object { prop isa => 'OpenTelemetry::Context' },
@@ -29,6 +30,9 @@ subtest 'Extract without baggage' => sub {
     is $b->get($key), 123, 'Can read from defaulted context';
 };
 
+# Injecting baggage into a carrier if no baggage exists in the
+# provided context (or in the current context, if no context was
+# provided) leaves the carrier untouched
 subtest 'Inject without baggage' => sub {
     is refaddr $propagator->inject($carrier), refaddr $propagator,
         'Inject returns self with no context';
@@ -40,6 +44,9 @@ subtest 'Inject without baggage' => sub {
     is $carrier, {}, 'Nothing injected';
 };
 
+# If there is baggage in the context, this is injected into the
+# carrier. If no context is provided, then the baggage is read from
+# the current context
 subtest 'Inject with baggage' => sub {
     my $context = OpenTelemetry::Baggage->set( foo => 123, 'META' );
 
@@ -49,6 +56,9 @@ subtest 'Inject with baggage' => sub {
     is $carrier, { $KEY => 'foo=123;META' }, 'Baggage injected into carrier';
 };
 
+# If the carrier has had baggage injected into it, then extract will
+# return a context that contains it. We can read the baggage from the
+# context, which returns an object representing the read entry
 subtest 'Extract with baggage' => sub {
     is my $ctx = $propagator->extract($carrier),
         object { prop isa => 'OpenTelemetry::Context' },
