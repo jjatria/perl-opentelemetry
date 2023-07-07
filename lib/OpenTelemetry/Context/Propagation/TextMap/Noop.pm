@@ -6,6 +6,7 @@ package OpenTelemetry::Context::Propagation::TextMap::Noop;
 our $VERSION = '0.001';
 
 class OpenTelemetry::Context::Propagation::TextMap::Noop {
+    use OpenTelemetry::Context;
     use OpenTelemetry::Context::Propagation::TextMap;
 
     method inject (

@@ -13,6 +13,8 @@ use constant {
 };
 
 class OpenTelemetry::Context::Propagation::TextMap {
+    use OpenTelemetry::Context;
+
     method inject (
         $carrier,
         $context = OpenTelemetry::Context->current,

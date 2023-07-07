@@ -66,4 +66,15 @@ sub validate_attribute_value ( $value ) {
     $value;
 }
 
+{
+    my $error_handler;
+    sub error_handler ( $, $handler = undef ) {
+        $error_handler = $handler if $handler;
+        return $error_handler //= sub (%args) {
+            my $error = join ' - ', grep defined, @args{qw( exception message )};
+            $logger->error("OpenTelemetry error: $error");
+        };
+    }
+}
+
 1;

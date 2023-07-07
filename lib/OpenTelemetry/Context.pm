@@ -42,6 +42,8 @@ class OpenTelemetry::Context {
 
 # Implicit context management
 {
+    use OpenTelemetry::Common;
+
     my @stack;
     my $root = OpenTelemetry::Context->new;
 
@@ -51,15 +53,17 @@ class OpenTelemetry::Context {
     }
 
     sub detach ( $, $token ) {
-        my $matched = $token == @stack;
+        if ( $token eq @stack ) {
+            pop @stack;
+            return 1;
+        }
 
         # TODO: Exception handling?
-        OpenTelemetry->handle_error(
+        OpenTelemetry::Common->error_handler->(
             exception => 'calls to detach should match corresponding calls to attach',
-        ) unless $matched;
+        );
 
-        pop @stack;
-        return $matched;
+        return 0;
     }
 
     sub current ( $ ) {
