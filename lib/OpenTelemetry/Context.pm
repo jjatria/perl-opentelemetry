@@ -110,7 +110,7 @@ OpenTelemetry::Context - A context class for OpenTelemetry
 =head1 DESCRIPTION
 
 This package provides an implementation of the OpenTelemetry
-L<Context|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/README.md#context>
+L<Context|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/README.md>
 class.
 
 It contains methods to both construct new instances, and to store and retrieve
@@ -211,6 +211,14 @@ Returns a true value if the operation was successful, or false otherwise.
 
 The token will be used to try to map corresponding calls to attach and detach.
 If a mismatch is detected, an error will be logged.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry specification on Context|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/README.md>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 
