@@ -1,6 +1,7 @@
-use v5.26;
 use Object::Pad;
 # ABSTRACT: A context class for OpenTelemetry
+
+use feature 'isa';
 
 package
     OpenTelemetry::Context::Key;
@@ -41,16 +42,30 @@ class OpenTelemetry::Context {
 # Implicit context management
 {
     use OpenTelemetry::Common;
+    use Scalar::Util 'dualvar';
 
     my @stack;
     my $root = OpenTelemetry::Context->new;
+    my $null = '~NULL~';
 
-    sub attach ( $, $context ) {
-        push @stack, $context;
-        return scalar @stack;
+    sub attach ( $caller, $other = undef ) {
+        my $context = $caller isa 'OpenTelemetry::Context' ? $caller : $other;
+
+        if ( $context isa 'OpenTelemetry::Context' ) {
+            push @stack, $context;
+            return scalar @stack;
+        }
+
+        OpenTelemetry::Common->error_handler->(
+            exception => 'cannot attach without a context object',
+        );
+
+        return $null;
     }
 
     sub detach ( $, $token ) {
+        return 0 if $token eq $null;
+
         if ( $token eq @stack ) {
             pop @stack;
             return 1;

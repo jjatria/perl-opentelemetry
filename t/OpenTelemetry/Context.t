@@ -13,8 +13,8 @@ my ($ctx, $key, $new);
 $ctx = CLASS->new;
 $key = $ctx->key('foo');
 
-is $ctx, object { prop isa => 'OpenTelemetry::Context' };
-is $key, object { prop isa => 'OpenTelemetry::Context::Key' };
+is $ctx, object { prop isa => 'OpenTelemetry::Context' }, 'Constructed a context';
+is $key, object { prop isa => 'OpenTelemetry::Context::Key' }, 'Constructed a key';
 
 isnt $key->string, $ctx->key('foo')->string,
     'Generating two keys with the same name returns different keys';
@@ -37,8 +37,12 @@ subtest 'Implicit context management' => sub {
     is CLASS->current->get($key), 123, 'Attached context masks top-level';
 
     {
-        is my $token = CLASS->attach( CLASS->current->set( $key => 234 ) ), T, 'Attached another context';
+        is my $token = CLASS->current->set( $key => 234 )->attach, T, 'Attached another context';
         is CLASS->current->get($key), 234, 'Attached context masks previous context';
+
+        is my $null = CLASS->attach( \1 ), T, 'Attaching a non-context does not modify stack';
+        is CLASS->detach($null), F , 'Detaching a null token has no effect';
+        is CLASS->detach($null), F , 'Detaching a null token really has no effect';
 
         is CLASS->detach('123 bogus token'), F, 'Validate last-attached context';
 
@@ -52,9 +56,10 @@ subtest 'Implicit context management' => sub {
     is CLASS->current->get($key), U, 'Detaching unmasked top-level context';
 
     is \@messages, [
+        match(qr/cannot attach without a context object/),
         match(qr/calls to detach should match corresponding calls to attach/),
         match(qr/calls to detach should match corresponding calls to attach/),
-    ], 'Logged incorrect calls to detach';
+    ], 'Logged incorrect calls to detach and attach';
 };
 
 done_testing;
