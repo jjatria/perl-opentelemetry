@@ -42,7 +42,6 @@ class OpenTelemetry::Context {
 # Implicit context management
 {
     use OpenTelemetry::Common;
-    use Scalar::Util 'dualvar';
 
     my @stack;
     my $root = OpenTelemetry::Context->new;
