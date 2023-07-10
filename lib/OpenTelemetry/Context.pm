@@ -10,12 +10,10 @@ our $VERSION = '0.001';
 class OpenTelemetry::Context::Key {
     use UUID::URandom 'create_uuid';
 
-    has $name :param;
-    has $salt;
+    has $name   :param;
+    has $string :reader;
 
-    ADJUST { $salt = create_uuid };
-
-    method string { $name . '-' . unpack( 'H*', $salt ) }
+    ADJUST { $string = $name . '-' . unpack( 'H*', create_uuid ) };
 }
 
 package OpenTelemetry::Context;
