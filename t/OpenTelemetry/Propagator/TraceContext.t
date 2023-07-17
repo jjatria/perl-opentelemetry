@@ -87,6 +87,7 @@ subtest 'Extract with TraceContext' => sub {
         call hex_trace_id => '000102030405060708090a0b0c0d0e0f';
         call hex_span_id  => '0001020304050607';
         call trace_state  => object { call to_string => 'foo=123,bar=234' };
+        call remote       => T;
     }, 'Can extract injected TraceContext';
 
     $carrier->{traceparent} = 'some garbage';
