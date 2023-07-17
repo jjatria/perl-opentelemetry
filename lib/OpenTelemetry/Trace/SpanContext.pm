@@ -6,8 +6,8 @@ package OpenTelemetry::Trace::SpanContext;
 our $VERSION = '0.001';
 
 use OpenTelemetry::Trace::Common;
-    use OpenTelemetry::Propagator::TraceContext::TraceFlags;
-    use OpenTelemetry::Propagator::TraceContext::TraceState;
+use OpenTelemetry::Propagator::TraceContext::TraceFlags;
+use OpenTelemetry::Propagator::TraceContext::TraceState;
 
 class OpenTelemetry::Trace::SpanContext {
 
