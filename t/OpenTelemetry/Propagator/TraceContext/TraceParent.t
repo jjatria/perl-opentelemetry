@@ -2,6 +2,8 @@
 
 use Test2::V0 -target => 'OpenTelemetry::Propagator::TraceContext::TraceParent';
 
+use OpenTelemetry::Trace::SpanContext;
+
 subtest Parsing => sub {
     my $tp = CLASS->from_string('00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01');
 
@@ -21,6 +23,13 @@ subtest Parsing => sub {
     is CLASS->from_string('01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-'), object {
         call version => 1;
     }, 'Supports newer versions if backwards compatible';
+
+    is CLASS->from_span_context(
+        OpenTelemetry::Trace::SpanContext->new(
+            span_id  => pack( 'H*', 'f0f1f2f3f4f5f6f7' ),
+            trace_id => pack( 'H*', '000102030405060708090a0b0c0d0e0f' ),
+        )
+    )->to_string, '00-000102030405060708090a0b0c0d0e0f-f0f1f2f3f4f5f6f7-00', 'Parse from SpanContext';
 
     like dies { CLASS->from_string('00-deadbeef') },
         qr/^Could not parse TraceParent from string: '00-deadbeef'/,
