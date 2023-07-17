@@ -31,7 +31,7 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
     method delegate ($new) {
         if ( $delegate ) {
             $logger->warn('Attempt to reset delegate in TracerProvider proxy ignored');
-            return;
+            return $self;
         }
 
         $lock->enter(
@@ -39,7 +39,7 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
                 $delegate = $new;
 
                 for my $name ( keys %registry ) {
-                    my ( $proxy, %args ) = delete $registry{$name};
+                    my ( $proxy, %args ) = @{ delete $registry{$name} };
                     $proxy->delegate( $delegate->tracer( %args ) );
                 }
 
@@ -47,7 +47,7 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
             }
         )->get;
 
-        return;
+        return $self;
     }
 
     method tracer ( %args ) {
@@ -56,7 +56,7 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
 
         $registry_lock->enter(
             async sub {
-                $delegate->tracer( %args ) if $delegate;
+                return $delegate->tracer( %args ) if $delegate;
 
                 $registry{$name} //= [ OpenTelemetry::Trace::Tracer::Proxy->new, %args ];
 
