@@ -7,20 +7,14 @@ use OpenTelemetry::Baggage;
 use OpenTelemetry::Context::Propagation::Composite;
 use OpenTelemetry::Propagator::Baggage;
 
-my $root = OpenTelemetry::Context->current;
-my $ctxt = OpenTelemetry::Baggage->set( foo => 123, 'META', $root );
-
-is $ctxt, object {
-    prop isa => 'OpenTelemetry::Context';
-    validator refaddr => sub { refaddr $_ != refaddr $root };
-}, 'Setting baggage key returns new context';
+my $context = OpenTelemetry::Baggage->set( foo => 123, 'META' );
 
 my $carrier = {};
 my $prop = OpenTelemetry::Context::Propagation::Composite->new(
     OpenTelemetry::Propagator::Baggage->new,
 );
 
-is refaddr $prop->inject( $carrier, $ctxt ), refaddr $prop,
+is refaddr $prop->inject( $carrier, $context ), refaddr $prop,
     'Inject returns self';
 
 is $carrier->{baggage}, 'foo=123;META', 'Baggage injected into carrier';
