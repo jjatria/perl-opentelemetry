@@ -32,7 +32,7 @@ class OpenTelemetry::Trace::Tracer {
             return $self;
         }
 
-        my $span = $self->create_span( @_, parent => OpenTelemetry::Context->current );
+        my $span = $self->create_span( %args, parent => OpenTelemetry::Context->current );
 
         defer { $span->end };
 
