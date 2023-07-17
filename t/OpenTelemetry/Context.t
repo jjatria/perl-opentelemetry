@@ -3,10 +3,12 @@
 use Test2::V0 -target => 'OpenTelemetry::Context';
 
 use OpenTelemetry;
+use Log::Any::Adapter;
 
-my @messages;
-my $handler = OpenTelemetry->error_handler;
-OpenTelemetry->error_handler( sub { push @messages, $handler->(@_) } );
+Log::Any::Adapter->set(
+    { lexically => \my $scope },
+    Capture => to => \my @messages,
+);
 
 my ($ctx, $key, $new);
 
@@ -56,9 +58,9 @@ subtest 'Implicit context management' => sub {
     is CLASS->current->get($key), U, 'Detaching unmasked top-level context';
 
     is \@messages, [
-        match(qr/cannot attach without a context object/),
-        match(qr/calls to detach should match corresponding calls to attach/),
-        match(qr/calls to detach should match corresponding calls to attach/),
+        [ error => OpenTelemetry => match qr/cannot attach without a context object/ ],
+        [ error => OpenTelemetry => match qr/calls to detach should match corresponding calls to attach/ ],
+        [ error => OpenTelemetry => match qr/calls to detach should match corresponding calls to attach/ ],
     ], 'Logged incorrect calls to detach and attach';
 };
 
