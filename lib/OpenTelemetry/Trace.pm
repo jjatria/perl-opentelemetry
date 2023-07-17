@@ -46,7 +46,7 @@ __END__
 
 =head1 NAME
 
-OpenTelemetry::Trace - A context class for OpenTelemetry
+OpenTelemetry::Trace - Generic methods for the OpenTelemetry Tracing API
 
 =head1 SYNOPSIS
 

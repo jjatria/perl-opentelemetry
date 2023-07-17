@@ -1,5 +1,5 @@
 use Object::Pad;
-# ABSTRACT: A no-op implementation of a Tracer
+# ABSTRACT: A span factory for OpenTelemetry
 
 package OpenTelemetry::Trace::Tracer;
 
@@ -54,7 +54,7 @@ __END__
 
 =head1 NAME
 
-OpenTelemetry::Trace::Tracer - A class that creates spans
+OpenTelemetry::Trace::Tracer - A span factory for OpenTelemetry
 
 =head1 SYNOPSIS
 
