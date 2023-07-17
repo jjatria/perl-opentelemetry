@@ -80,8 +80,12 @@ class OpenTelemetry::Propagator::TraceContext::TraceState {
 
     # Sets a new pair, overwriting any existing one with the same key
     method set ( $key, $value ) {
-        unless ( $key =~ $VALID_KEY && $value =~ $VALID_VALUE ) {
-            $logger->debugf('Invalid TraceState member: %s => %s', $key, $value );
+        if ( $key !~ $VALID_KEY ) {
+            $logger->debugf("Invalid TraceState member key: '%s' => '%s'", $key, $value );
+            return $self;
+        }
+        elsif ( $value !~ $VALID_VALUE ) {
+            $logger->debugf("Invalid TraceState member value: '%s' => '%s'", $key, $value );
             return $self;
         }
 

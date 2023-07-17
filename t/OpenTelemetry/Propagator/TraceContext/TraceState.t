@@ -2,6 +2,8 @@
 
 use Test2::V0 -target => 'OpenTelemetry::Propagator::TraceContext::TraceState';
 
+use Log::Any::Adapter;
+
 subtest Parsing => sub {
     my $test = CLASS->from_string('rojo=00f067aa0ba902b7,congo=t61rcWkgMzE');
 
@@ -57,7 +59,34 @@ subtest Modification => sub {
 
     is $test->get('congo'), 't61rcWkgMzE', 'Can read values';
     is $test->get('xxx'), U, 'Reading missing values returns undefined';
-};
 
+    subtest 'Invalid key / value' => sub {
+        Log::Any::Adapter->set(
+            { lexically => \my $scope },
+            Capture => to => \my @messages,
+        );
+
+        my $test = CLASS->from_string('foo=123');
+
+        is $test->set( '' => 123 )->to_string, 'foo=123', 'Ignore empty key';
+        is $test->set( 'òó' => 1 )->to_string, 'foo=123', 'Ignore invalid key';
+
+        is $test->set( 'x' => "" )->to_string, 'foo=123',   'Ignore empty value';
+        is $test->set( 'x' => "," )->to_string, 'foo=123',  'Comma not a valid value';
+        is $test->set( 'x' => "\t" )->to_string, 'foo=123', 'Tab not a valid value';
+        is $test->set( 'x' => "\n" )->to_string, 'foo=123', 'Newline not a valid value';
+        is $test->set( 'x' => "\r" )->to_string, 'foo=123', 'Carriage return not a valid value';
+
+        is \@messages, [
+            [ debug => OpenTelemetry => "Invalid TraceState member key: '' => '123'" ],
+            [ debug => OpenTelemetry => "Invalid TraceState member key: 'òó' => '1'" ],
+            [ debug => OpenTelemetry => "Invalid TraceState member value: 'x' => ''" ],
+            [ debug => OpenTelemetry => "Invalid TraceState member value: 'x' => ','" ],
+            [ debug => OpenTelemetry => "Invalid TraceState member value: 'x' => '\t'" ],
+            [ debug => OpenTelemetry => "Invalid TraceState member value: 'x' => '\n'" ],
+            [ debug => OpenTelemetry => "Invalid TraceState member value: 'x' => '\r'" ],
+        ], 'Log invalid key / value pairs';
+    };
+};
 
 done_testing;
