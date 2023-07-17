@@ -24,7 +24,7 @@ class OpenTelemetry::Propagator::TraceContext {
         $setter  = OpenTelemetry::Context::Propagation::TextMap::SETTER
     ) {
         my $span_context = OpenTelemetry::Trace->span_from_context($context)->context;
-        return unless $span_context->valid;
+        return $self unless $span_context->valid;
 
         my $trace_parent = OpenTelemetry::Propagator::TraceContext::TraceParent
             ->from_span_context($span_context);
