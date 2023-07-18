@@ -15,7 +15,9 @@ is $tracer->create_span( name => 'span' ), object {
     call context => object { call valid => F };
 }, 'Creates an invalid span';
 
-todo 'Experimental API' => sub {
+subtest 'Convenience in_span method' => sub {
+    my $todo = todo 'Experimental API';
+
     use Log::Any::Adapter;
     use OpenTelemetry::Trace;
 
