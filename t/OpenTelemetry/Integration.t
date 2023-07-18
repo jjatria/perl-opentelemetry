@@ -8,16 +8,15 @@ use Class::Inspector;
 skip_all 'Module HTTP::Tiny is not installed'
     unless Class::Inspector->installed('HTTP::Tiny');
 
-use Log::Any::Adapter;
-Log::Any::Adapter->set( { lexically => \my $scope }, Capture => to => \my @logs );
+use OpenTelemetry::Test::Logs;
 
 require OpenTelemetry::Integration;
 
 subtest 'Load all plugins' => sub {
-    @logs = ();
+    OpenTelemetry::Test::Logs->clear;
     OpenTelemetry::Integration->import(':all');
 
-    is \@logs, [
+    is + OpenTelemetry::Test::Logs->messages, [
         [
             trace => 'OpenTelemetry',
            'Loading OpenTelemetry::Integration::HTTP::Tiny',
@@ -29,10 +28,11 @@ subtest 'Load all plugins' => sub {
 };
 
 subtest 'Load a good plugin by name' => sub {
-    @logs = ();
+    OpenTelemetry::Test::Logs->clear;
+
     OpenTelemetry::Integration->import('HTTP::Tiny');
 
-    is \@logs, [
+    is + OpenTelemetry::Test::Logs->messages, [
         [
             trace => 'OpenTelemetry',
             'Loading OpenTelemetry::Integration::HTTP::Tiny',
@@ -44,10 +44,10 @@ subtest 'Load a good plugin by name' => sub {
 };
 
 subtest 'Load a missing plugin' => sub {
-    @logs = ();
+    OpenTelemetry::Test::Logs->clear;
     OpenTelemetry::Integration->import('Fake::Does::Not::Exist');
 
-    is \@logs, [
+    is + OpenTelemetry::Test::Logs->messages, [
         [
             trace => 'OpenTelemetry',
             'Loading OpenTelemetry::Integration::Fake::Does::Not::Exist',

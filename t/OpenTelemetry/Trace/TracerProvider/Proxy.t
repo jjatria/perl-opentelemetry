@@ -5,7 +5,7 @@ use Test2::V0 -target => 'OpenTelemetry::Trace::TracerProvider::Proxy';
 use experimental 'signatures';
 
 use Scalar::Util 'refaddr';
-use Log::Any::Adapter;
+use OpenTelemetry::Test::Logs;
 
 is my $provider = CLASS->new, object {
     prop isa => $CLASS;
@@ -64,16 +64,13 @@ subtest Delegate => sub {
         'OpenTelemetry::Trace::Tracer::Proxy',
         'New tracers are not proxies';
 
-    Log::Any::Adapter->set(
-        { lexically => \my $scope },
-        Capture => to => \my @messages,
-    );
+    OpenTelemetry::Test::Logs->clear;
 
     is refaddr $provider->delegate( mock {} => add => [ tracer => sub { die } ] ),
         refaddr $provider,
         'call to delegate is chainable even if ignored';
 
-    is \@messages, [
+    is + OpenTelemetry::Test::Logs->messages, [
         [ warning => OpenTelemetry => match qr/^Attempt to reset delegate .* ignored/ ],
     ], 'Repeated call to delegate logged';
 };

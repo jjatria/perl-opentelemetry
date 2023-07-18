@@ -2,7 +2,7 @@
 
 use Test2::V0 -target => 'OpenTelemetry::Propagator::TraceContext::TraceState';
 
-use Log::Any::Adapter;
+use OpenTelemetry::Test::Logs;
 
 subtest Parsing => sub {
     my $test = CLASS->from_string('rojo=00f067aa0ba902b7,congo=t61rcWkgMzE');
@@ -61,10 +61,7 @@ subtest Modification => sub {
     is $test->get('xxx'), U, 'Reading missing values returns undefined';
 
     subtest 'Invalid key / value' => sub {
-        Log::Any::Adapter->set(
-            { lexically => \my $scope },
-            Capture => to => \my @messages,
-        );
+        OpenTelemetry::Test::Logs->clear;
 
         my $test = CLASS->from_string('foo=123');
 
@@ -77,7 +74,7 @@ subtest Modification => sub {
         is $test->set( 'x' => "\n" )->to_string, 'foo=123', 'Newline not a valid value';
         is $test->set( 'x' => "\r" )->to_string, 'foo=123', 'Carriage return not a valid value';
 
-        is \@messages, [
+        is + OpenTelemetry::Test::Logs->messages, [
             [ debug => OpenTelemetry => "Invalid TraceState member key: '' => '123'" ],
             [ debug => OpenTelemetry => "Invalid TraceState member key: 'òó' => '1'" ],
             [ debug => OpenTelemetry => "Invalid TraceState member value: 'x' => ''" ],

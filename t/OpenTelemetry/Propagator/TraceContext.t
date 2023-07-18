@@ -7,7 +7,7 @@ use OpenTelemetry::Propagator::TraceContext::TraceParent;
 use OpenTelemetry::Propagator::TraceContext::TraceState;
 
 use Scalar::Util 'refaddr';
-use Log::Any::Adapter;
+use OpenTelemetry::Test::Logs;
 
 my $carrier = {};
 
@@ -16,7 +16,6 @@ is my $propagator = CLASS->new, object {
 }, 'Can create a propagator with correct keys';
 
 subtest 'Extract without baggage' => sub {
-
     is my $a = $propagator->extract($carrier),
         object { prop isa => 'OpenTelemetry::Context' },
         'Returns current context if none provided';
@@ -73,10 +72,7 @@ subtest 'Inject with TraceContext' => sub {
 };
 
 subtest 'Extract with TraceContext' => sub {
-    Log::Any::Adapter->set(
-        { lexically => \my $scope },
-        Capture => to => \my @messages,
-    );
+    OpenTelemetry::Test::Logs->clear;
 
     is my $context = $propagator->extract($carrier),
         object { prop isa => 'OpenTelemetry::Context' },
@@ -96,7 +92,7 @@ subtest 'Extract with TraceContext' => sub {
         object { prop isa => 'OpenTelemetry::Context' },
         'Extract returns context when things go wrong';
 
-    is \@messages, [
+    is + OpenTelemetry::Test::Logs->messages, [
         [ warning => OpenTelemetry => match qr/^Unsupported TraceParent version \(so\)/ ],
     ], 'Possible errors are logged';
 };

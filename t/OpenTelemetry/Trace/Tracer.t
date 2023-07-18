@@ -5,6 +5,7 @@ use Test2::V0 -target => 'OpenTelemetry::Trace::Tracer';
 use experimental 'signatures';
 
 use Scalar::Util 'refaddr';
+use OpenTelemetry::Test::Logs;
 
 is my $tracer = CLASS->new, object {
     prop isa => 'OpenTelemetry::Trace::Tracer';
@@ -18,13 +19,9 @@ is $tracer->create_span( name => 'span' ), object {
 subtest 'Convenience in_span method' => sub {
     my $todo = todo 'Experimental API';
 
-    use Log::Any::Adapter;
     use OpenTelemetry::Trace;
 
-    Log::Any::Adapter->set(
-        { lexically => \my $scope },
-        Capture => to => \my @messages,
-    );
+    OpenTelemetry::Test::Logs->clear;
 
     my $mock = mock $tracer => override => [
         create_span => sub ( $, %args ) { mock \%args => track => 1 }
@@ -48,7 +45,7 @@ subtest 'Convenience in_span method' => sub {
     is refaddr $tracer->in_span, refaddr $tracer,
         'in_span is chainable even when no block is provided';
 
-    is \@messages, [
+    is + OpenTelemetry::Test::Logs->messages, [
         [ warning => OpenTelemetry => match qr/^Missing required code block / ],
     ], 'Faulty call to in_span is logged';
 };
