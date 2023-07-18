@@ -24,15 +24,6 @@ our $VERSION = '0.001';
 class OpenTelemetry::Baggage::Builder {
     has %data;
 
-    method all () { %data }
-
-    method get ( $name ) { $data{$name} }
-
-    method delete ( $name ) {
-        delete $data{$name};
-        return;
-    };
-
     method set ( $name, $value, $meta ) {
         $data{$name} = OpenTelemetry::Baggage::Entry->new(
             value => $value,
