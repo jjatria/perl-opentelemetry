@@ -15,11 +15,11 @@ class OpenTelemetry::Propagator::TraceContext::TraceState {
     my $VALID_KEY = qr/
         ^
         (?:
-                [ a-z ]     [ a-z 0-9 _ * \/ - ]{,255} # simple-key
-            | (?:                                      # multi-tenant-key
-                [ a-z 0-9 ] [ a-z 0-9 _ * \/ - ]{,240} #   tenant-id
+                [ a-z ]     [ a-z 0-9 _ * \/ - ]{0,255} # simple-key
+            | (?:                                       # multi-tenant-key
+                [ a-z 0-9 ] [ a-z 0-9 _ * \/ - ]{0,240} #   tenant-id
                 @
-                [ a-z ]     [ a-z 0-9 _ * \/ - ]{,13}  #   system-id
+                [ a-z ]     [ a-z 0-9 _ * \/ - ]{0,13}  #   system-id
               )
         )
         $
@@ -27,7 +27,7 @@ class OpenTelemetry::Propagator::TraceContext::TraceState {
 
     my $VALID_VALUE = qr/
         ^
-            [ \x{20} \x{21}-\x{2B} \x{2D}-\x{3C} \x{3E}-\x{7E} ]{,255}
+            [ \x{20} \x{21}-\x{2B} \x{2D}-\x{3C} \x{3E}-\x{7E} ]{0,255}
             [        \x{21}-\x{2B} \x{2D}-\x{3C} \x{3E}-\x{7E} ]
         $
     /xx;

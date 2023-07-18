@@ -27,7 +27,7 @@
       "configure" : {
          "requires" : {
             "ExtUtils::MakeMaker" : "0",
-            "perl" : "5.033006"
+            "perl" : "v5.32.0"
          }
       },
       "develop" : {
@@ -43,12 +43,13 @@
          "requires" : {
             "Future" : "0.26",
             "List::Util" : "1.45",
+            "Log::Any" : "0",
             "Object::Pad" : "0.57",
             "Ref::Util" : "0",
             "Syntax::Keyword::Defer" : "0",
             "UUID::URandom" : "0",
             "X::Tiny" : "0",
-            "perl" : "5.033006"
+            "perl" : "v5.32.0"
          }
       },
       "test" : {
@@ -56,11 +57,12 @@
             "CPAN::Meta" : "2.120900"
          },
          "requires" : {
+            "Class::Inspector" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
             "Test2::V0" : "0",
             "Test::More" : "0",
-            "perl" : "5.033006"
+            "perl" : "v5.32.0"
          }
       }
    },
@@ -159,10 +161,6 @@
       },
       "OpenTelemetry::X" : {
          "file" : "lib/OpenTelemetry/X.pm",
-         "version" : "0.001"
-      },
-      "OpenTelemetry::X::Base" : {
-         "file" : "lib/OpenTelemetry/X/Base.pm",
          "version" : "0.001"
       },
       "OpenTelemetry::X::Invalid" : {
