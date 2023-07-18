@@ -9,4 +9,5 @@ requires 'X::Tiny';
 
 on test => sub {
     requires 'Test2::V0';
+    requires 'Class::Inspector'; # For OpenTelemetry::Integration test
 };

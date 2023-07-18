@@ -6,7 +6,7 @@ our $VERSION = '0.001';
 use experimental qw( try signatures );
 
 use Syntax::Keyword::Try;
-use Module::Pluggable;
+use Module::Pluggable search_path => ['OpenTelemetry::Integration'];
 use Module::Load ();
 use List::Util 'uniqstr';
 
@@ -41,7 +41,7 @@ sub import ( $class, @args ) {
             # Just a warning, if we're loading everything then
             # we shouldn't cause chaos just because something
             # doesn't happen to be available.
-            $logger->warnf('Unable to loading OpenTelemetry integration %s: %s', $module, $e);
+            $logger->warnf('Unable to load %s: %s', $module, $e);
         }
     }
 }
