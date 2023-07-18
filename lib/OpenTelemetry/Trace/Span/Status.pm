@@ -11,7 +11,7 @@ class OpenTelemetry::Trace::Span::Status {
     has $description :param :reader = '';
 
     ADJUST {
-        $code = 'UNSET' unless ( $code // '' ) =~ /^ (:? 'OK | 'ERROR' ) $/x;
+        $code = 'UNSET' unless ( $code // '' ) =~ /^ (:? OK | ERROR ) $/x;
     }
 
     method ok    { $code eq 'OK'    }
