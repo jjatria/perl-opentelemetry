@@ -7,6 +7,8 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
+use Exporter 'import';
+
 use constant {
     EXPORT_SUCCESS => 0,
     EXPORT_FAILURE => 1,
@@ -37,6 +39,20 @@ sub generate_trace_id { goto \&OpenTelemetry::Trace::Common::generate_trace_id }
 sub generate_span_id  { goto \&OpenTelemetry::Trace::Common::generate_span_id  }
 sub INVALID_TRACE_ID  { goto \&OpenTelemetry::Trace::Common::INVALID_TRACE_ID  }
 sub INVALID_SPAN_ID   { goto \&OpenTelemetry::Trace::Common::INVALID_SPAN_ID   }
+
+# Exports
+
+our %EXPORT_TAGS = (
+    constants => [qw(
+        EXPORT_FAILURE
+        EXPORT_SUCCESS
+        EXPORT_TIMEOUT
+        INVALID_SPAN_ID
+        INVALID_TRACE_ID
+    )],
+);
+
+our @EXPORT_OK = map @$_, values %EXPORT_TAGS;
 
 1;
 
@@ -131,6 +147,9 @@ Generate a new random trace ID. This ID is guaranteed to be valid.
 Generate a new random span ID. This ID is guaranteed to be valid.
 
 =head1 CONSTANTS
+
+These can be exported on request, or as a set with the C<:constants> export
+tag.
 
 =head2 EXPORT_SUCCESS
 
