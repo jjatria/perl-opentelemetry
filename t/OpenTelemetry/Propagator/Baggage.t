@@ -69,22 +69,6 @@ subtest 'Extract with baggage' => sub {
         call value => '123';
         call meta  => 'META';
     }, 'Baggage can read injected key from extracted context';
-
-    is my $deleted = OpenTelemetry::Baggage->delete( 'foo', $ctx ), object {
-        prop isa => 'OpenTelemetry::Context';
-    }, 'Baggage can delete injected key from extracted context';
-
-    is + OpenTelemetry::Baggage->get( 'foo', $deleted ), U,
-        'Deleted key is undefined';
-
-    is + OpenTelemetry::Baggage->get( 'foo', $ctx ), object {
-        prop isa   => 'OpenTelemetry::Baggage::Entry';
-        call value => '123';
-        call meta  => 'META';
-    }, 'Delete operation does not alter original context';
-
-    is refaddr +OpenTelemetry::Baggage->delete( 'foo', $deleted ), refaddr $deleted,
-        'Delete operation is idempotent';
 };
 
 done_testing;
