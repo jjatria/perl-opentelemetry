@@ -47,6 +47,17 @@ class OpenTelemetry::Context {
 
         OpenTelemetry::Context->new( %$data, $key->string, $value )
     }
+
+    method delete ( $key ) {
+        die OpenTelemetry::X->create(
+            Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
+        ) unless $key isa OpenTelemetry::Context::Key;
+
+        my %copy = %$data;
+        delete $copy{$key->string};
+
+        OpenTelemetry::Context->new(%copy);
+    }
 }
 
 # Implicit context management
@@ -110,9 +121,11 @@ OpenTelemetry::Context - A context class for OpenTelemetry
     my $key = OpenTelemetry::Context->key('something');
     my $ctx = OpenTelemetry::Context->current;
 
-    # You can store values in a context
+    # You can store and delete values in a context
     my $new = $ctx->set( $key => 'VALUE' );
     say $new->get($key); # Prints VALUE
+    $new = $new->delete($key);
+    say $new->get($key); # Warns because value is undefined
 
     # But the original context is immutable
     say defined $ctx->get($key) ? 1 : 0; # Prints 0
@@ -166,6 +179,14 @@ method will return an undefined value.
 Takes a key object (see the L<key|/key> class method) and a value and returns
 a new context object with all the values of the calling context, as well as
 the provided value stored under the provided key.
+
+=head2 delete
+
+    $new_context = $context->delete($key)
+
+Takes a key object (see the L<key|/key> class method) and returns a new
+context object with all the values of the calling context, except the value
+stored under the provided key.
 
 =head1 CLASS METHODS
 
