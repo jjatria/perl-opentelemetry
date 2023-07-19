@@ -58,7 +58,18 @@ OpenTelemetry::Trace::Tracer - A span factory for OpenTelemetry
 
 =head1 SYNOPSIS
 
-    ...
+    use OpenTelemetry;
+
+    my $provider = OpenTelemetry->tracer_provider;
+    my $tracer   = $provider->tracer;
+
+    # Create a span for manual use
+    my $span = $tracer->create_span(%args);
+
+    # Or execute code within a span (experimental)
+    $tracer->in_span( my_span => sub ( $span, $context ) {
+        ...
+    });
 
 =head1 DESCRIPTION
 
@@ -105,6 +116,29 @@ L<add_link|OpenTelemetry::Trace::Span/add_link> method.
 It is the responsibility of the user to make sure that every span that has
 been created is ended (via a call to its L<end|OpenTelemetry::Trace::Span/end>
 method).
+
+=head2 in_span
+
+    # Experimental
+    $tracer = $tracer->in_span(
+        $span_name => sub ( $span, $context ) { ... },
+        %span_arguments,
+    );
+
+This method is currently experimental.
+
+Takes a string and a subroutine reference, and executes the code in that
+reference within a span with that name. The subroutine reference will receive
+the created span and the current context (containing the span) as arguments.
+The span is guaranteed to be ended after execution of the subroutine ends by
+any means.
+
+Any additional parameters passed to this method will be passed as-is to the
+call to L<create_span|/create_span> made when creating the span. Note that the
+name provided before the subroutine reference is mandatory and will take
+precedence over any name set in these additional parameters.
+
+This method is chainable.
 
 =head1 COPYRIGHT AND LICENSE
 
