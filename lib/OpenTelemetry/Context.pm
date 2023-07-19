@@ -26,15 +26,25 @@ sub key ( $, $name ) {
 }
 
 class OpenTelemetry::Context {
+    use OpenTelemetry::X;
+
     has $data :param = {};
 
-    sub BUILDARGS ( $class, @args ) { ( data => { @args } ) }
+    sub BUILDARGS ( $class, %args ) { ( data => { %args } ) }
 
     method get ( $key ) {
+        die OpenTelemetry::X->create(
+            Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
+        ) unless $key isa OpenTelemetry::Context::Key;
+
         $data->{ $key->string };
     }
 
     method set ( $key, $value ) {
+        die OpenTelemetry::X->create(
+            Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
+        ) unless $key isa OpenTelemetry::Context::Key;
+
         OpenTelemetry::Context->new( %$data, $key->string, $value )
     }
 }

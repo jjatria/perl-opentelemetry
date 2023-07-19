@@ -25,6 +25,14 @@ is $new = $ctx->set( $key => 123 ),
 is $new->get($key), 123, 'Can read set value';
 is $ctx->get($key), U, 'Original context is unaffected';
 
+like dies { $ctx->get('foo') },
+    qr/^Keys in a context object must be instances of OpenTelemetry::Context::Key/,
+    'Validate key on get';
+
+like dies { $ctx->set( foo => 123 ) },
+    qr/^Keys in a context object must be instances of OpenTelemetry::Context::Key/,
+    'Validate key on set';
+
 subtest 'Implicit context management' => sub {
     my $key = CLASS->key('x');
 
