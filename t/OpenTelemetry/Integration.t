@@ -12,6 +12,18 @@ use OpenTelemetry::Test::Logs;
 
 require OpenTelemetry::Integration;
 
+subtest 'No arguments to import' => sub {
+    OpenTelemetry::Test::Logs->clear;
+    OpenTelemetry::Integration->import;
+    is + OpenTelemetry::Test::Logs->messages, [], 'No messages logged';
+};
+
+subtest 'Falsy arguments to import' => sub {
+    OpenTelemetry::Test::Logs->clear;
+    OpenTelemetry::Integration->import( '', undef );
+    is + OpenTelemetry::Test::Logs->messages, [], 'No messages logged';
+};
+
 subtest 'Load all plugins' => sub {
     OpenTelemetry::Test::Logs->clear;
     OpenTelemetry::Integration->import(':all');

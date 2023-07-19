@@ -21,7 +21,7 @@ sub import ( $class, @args ) {
     my $load_deps = 1;
 
     my @modules;
-    for my $target (@args) {
+    for my $target ( grep $_, @args ) {
         # Try to load *all* available integrations
         if ( $target eq ':all' ) {
             push @modules, $class->plugins;
