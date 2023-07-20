@@ -15,7 +15,7 @@ is my $tracer = $provider->tracer,
     object { prop isa => 'OpenTelemetry::Trace::Tracer' },
     'Can provide a tracer';
 
-is refaddr $provider->tracer, refaddr $tracer,
+ref_is $provider->tracer, $tracer,
     'Provided tracer is cached internally';
 
 subtest Delegate => sub {
@@ -48,7 +48,7 @@ subtest Delegate => sub {
         },
     ];
 
-    is refaddr $provider->delegate($mock), refaddr $provider,
+    ref_is $provider->delegate($mock), $provider,
         'call to delegate is chainable';
 
     like $empty_tracer->delegate, { name => '' },
@@ -66,8 +66,8 @@ subtest Delegate => sub {
 
     OpenTelemetry::Test::Logs->clear;
 
-    is refaddr $provider->delegate( mock {} => add => [ tracer => sub { die } ] ),
-        refaddr $provider,
+    ref_is $provider->delegate( mock {} => add => [ tracer => sub { die } ] ),
+        $provider,
         'call to delegate is chainable even if ignored';
 
     is + OpenTelemetry::Test::Logs->messages, [

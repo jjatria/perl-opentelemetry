@@ -4,7 +4,6 @@ use Test2::V0 -target => 'OpenTelemetry::Trace::Tracer';
 
 use experimental 'signatures';
 
-use Scalar::Util 'refaddr';
 use OpenTelemetry::Test::Logs;
 
 is my $tracer = CLASS->new, object {
@@ -29,8 +28,8 @@ subtest 'Convenience in_span method' => sub {
 
     my $mocked;
     my $ret = $tracer->in_span( some_span => sub ( $span, $context ) {
-        is refaddr + OpenTelemetry::Trace->span_from_context($context),
-            refaddr $span,
+        ref_is + OpenTelemetry::Trace->span_from_context($context),
+            $span,
             'Received a context with the span';
 
         ($mocked) = mocked $span;
@@ -40,9 +39,9 @@ subtest 'Convenience in_span method' => sub {
         { sub_name => 'end', args => [ D ], sub_ref => E },
     ], 'Called span->end at end of block';
 
-    is refaddr $ret, refaddr $tracer, 'in_span is chainable';
+    ref_is $ret, $tracer, 'in_span is chainable';
 
-    is refaddr $tracer->in_span, refaddr $tracer,
+    ref_is $tracer->in_span, $tracer,
         'in_span is chainable even when no block is provided';
 
     is + OpenTelemetry::Test::Logs->messages, [

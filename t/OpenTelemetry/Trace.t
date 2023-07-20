@@ -2,7 +2,6 @@
 
 use Test2::V0 -target => 'OpenTelemetry::Trace';
 
-use Scalar::Util 'refaddr';
 use OpenTelemetry::Context;
 
 is CLASS->span_from_context, object {
@@ -35,7 +34,7 @@ is my $context = CLASS->context_with_span($span), object {
     call [ get => $key ], U;
 }, 'Can create a fresh context with span';
 
-is refaddr CLASS->span_from_context($context), refaddr $span,
+ref_is CLASS->span_from_context($context), $span,
     'Can round-trip into and out of a context';
 
 is CLASS->context_with_span( $span, $context->set( $key => 123 ) ), object {

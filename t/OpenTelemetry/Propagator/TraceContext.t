@@ -5,8 +5,6 @@ use Test2::V0 -target => 'OpenTelemetry::Propagator::TraceContext';
 use OpenTelemetry::Trace;
 use OpenTelemetry::Propagator::TraceContext::TraceParent;
 use OpenTelemetry::Propagator::TraceContext::TraceState;
-
-use Scalar::Util 'refaddr';
 use OpenTelemetry::Test::Logs;
 
 my $carrier = {};
@@ -30,12 +28,12 @@ subtest 'Extract without baggage' => sub {
 };
 
 subtest 'Inject without TraceContext' => sub {
-    is refaddr $propagator->inject($carrier), refaddr $propagator,
+    ref_is $propagator->inject($carrier), $propagator,
         'Inject returns self with no context';
     is $carrier, {}, 'Nothing injected';
 
-    is refaddr $propagator->inject( $carrier, OpenTelemetry::Context->current ),
-        refaddr $propagator,
+    ref_is $propagator->inject( $carrier, OpenTelemetry::Context->current ),
+        $propagator,
         'Inject returns self with context with no tracecontext';
     is $carrier, {}, 'Nothing injected';
 };
@@ -62,7 +60,7 @@ subtest 'Inject with TraceContext' => sub {
 
     my $context = OpenTelemetry::Trace->context_with_span($span);
 
-    is refaddr $propagator->inject( $carrier, $context ), refaddr $propagator,
+    ref_is $propagator->inject( $carrier, $context ), $propagator,
         'Inject returns self';
 
     is $carrier, {

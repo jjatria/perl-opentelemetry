@@ -2,13 +2,10 @@
 
 use Test2::V0 -target => 'OpenTelemetry::Propagator::Baggage';
 
-use Scalar::Util 'refaddr';
 use OpenTelemetry::Context;
 use OpenTelemetry::Baggage;
-use OpenTelemetry::Propagator::Baggage;
 
 my $carrier = {};
-
 my $propagator = CLASS->new;
 
 is my $KEY = $propagator->keys, 'baggage', 'Can read propagator keys';
@@ -34,12 +31,12 @@ subtest 'Extract without baggage' => sub {
 # provided context (or in the current context, if no context was
 # provided) leaves the carrier untouched
 subtest 'Inject without baggage' => sub {
-    is refaddr $propagator->inject($carrier), refaddr $propagator,
+    ref_is $propagator->inject($carrier), $propagator,
         'Inject returns self with no context';
     is $carrier, {}, 'Nothing injected';
 
-    is refaddr $propagator->inject( $carrier, OpenTelemetry::Context->current ),
-        refaddr $propagator,
+    ref_is $propagator->inject( $carrier, OpenTelemetry::Context->current ),
+        $propagator,
         'Inject returns self with context with no baggage';
     is $carrier, {}, 'Nothing injected';
 };
@@ -50,7 +47,7 @@ subtest 'Inject without baggage' => sub {
 subtest 'Inject with baggage' => sub {
     my $context = OpenTelemetry::Baggage->set( foo => 123, 'META' );
 
-    is refaddr $propagator->inject( $carrier, $context ), refaddr $propagator,
+    ref_is $propagator->inject( $carrier, $context ), $propagator,
         'Inject returns self';
 
     is $carrier, { $KEY => 'foo=123;META' }, 'Baggage injected into carrier';
