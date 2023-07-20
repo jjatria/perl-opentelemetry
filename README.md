@@ -1,6 +1,6 @@
 # OpenTelemetry for Perl
 
-This is part of an ongoing attempt at implementating the OpenTelemetry
+This is part of an ongoing attempt at implementing the OpenTelemetry
 standard in Perl. The distribution in this repository implements the
 abstract OpenTelemetry API, with an SDK implementation being worked on
 separately.
@@ -41,7 +41,7 @@ cpanm install .
 ```
 
 Then, use the OpenTelemetry interfaces to produces traces and other telemetry
-data. Following is a basic example (although bare in mind this interface is
+data. Following is a basic example (although bear in mind this interface is
 still being drafted, so some details might change):
 
 ``` perl
