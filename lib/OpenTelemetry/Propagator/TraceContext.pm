@@ -1,5 +1,5 @@
 use Object::Pad;
-# ABSTRACT: Propagate baggage using the W3C TraceContext format
+# ABSTRACT: Propagate context using the W3C TraceContext format
 
 package OpenTelemetry::Propagator::TraceContext;
 
@@ -8,7 +8,7 @@ our $VERSION = '0.001';
 use Log::Any;
 my $logger = Log::Any->get_logger( category =>'OpenTelemetry' );
 
-class OpenTelemetry::Propagator::TraceContext {
+class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
     use experimental qw( try isa );
 
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
@@ -72,3 +72,77 @@ class OpenTelemetry::Propagator::TraceContext {
 
     method keys () { ( $TRACE_PARENT_KEY, $TRACE_STATE_KEY ) }
 }
+
+__END__
+
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Propagator::TraceContext - Propagate context using the W3C TraceContext format
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Trace;
+    use OpenTelemetry::Propagator::TraceContext;
+
+    my $propagator = OpenTelemetry::Propagator::TraceContext;
+
+    # Inject TraceContext data from the context to a carrier
+    my $carrier = {};
+    $propagator->inject( $carrier, $context );
+
+    # Extract TraceContext data from a carrier to the context
+    my $new_context = $propagator->extract( $carrier, $context );
+
+    # The TraceContext data will be in the span in the context
+    my $span = OpenTelemetry::Trace->span_from_context($new_context);
+
+
+=head1 DESCRIPTION
+
+This package defines a propagator class that can interact with the context
+(which can be either an implicit or explicit instance of
+L<OpenTelemetry::Context>) and inject or extract data using the
+L<W3C TraceContext format|https://w3c.github.io/trace-context>.
+
+It implements the propagator interface defined in
+L<OpenTelemetry::Propagator>.
+
+=head1 METHODS
+
+=head2 inject
+
+    $propagator = $propagator->inject(
+        $carrier,
+        $context // OpenTelemetry::Context->current,
+        $setter  // OpenTelemetry::Context::Propagation::TextMap::SETTER,
+    )
+
+=head2 extract
+
+    $new_context = $propagator->extract(
+        $carrier,
+        $context // OpenTelemetry::Context->current,
+        $getter  // OpenTelemetry::Context::Propagation::TextMap::GETTER,
+    )
+
+=head2 keys
+
+    @keys = $propagator->keys
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Context>
+
+=item L<OpenTelemetry::Propagator>
+
+=item L<W3C TraceContext format|https://w3c.github.io/trace-context>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...

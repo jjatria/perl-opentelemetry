@@ -1,11 +1,11 @@
 use Object::Pad;
-# ABSTRACT: Propagate baggage using the W3C Baggage format
+# ABSTRACT: Propagate context using the W3C Baggage format
 
 package OpenTelemetry::Propagator::Baggage;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Propagator::Baggage {
+class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
     use OpenTelemetry::Context::Propagation::TextMap;
 
@@ -77,3 +77,56 @@ class OpenTelemetry::Propagator::Baggage {
 
     method keys () { $KEY }
 }
+
+__END__
+
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Propagator::Baggage - Propagate context using the W3C Baggage format
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Baggage;
+    use OpenTelemetry::Propagator::Baggage;
+
+    my $propagator = OpenTelemetry::Propagator::Baggage;
+
+    # Inject baggage data from the context to a carrier
+    my $carrier = {};
+    $propagator->inject( $carrier, $context );
+
+    # Extract baggage data from a carrier to the context
+    my $new_context = $propagator->extract( $carrier, $context );
+
+    # The baggage data will be in the context
+    my $baggage = OpenTelemetry::Baggage->all($new_context);
+
+=head1 DESCRIPTION
+
+This package defines a propagator class that can interact with the context
+(which can be either an implicit or explicit instance of
+L<OpenTelemetry::Context>) and inject or extract data using the
+L<W3C Baggage format|https://w3c.github.io/baggage>.
+
+It implements the propagator interface defined in
+L<OpenTelemetry::Propagator>.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Baggage>
+
+=item L<OpenTelemetry::Context>
+
+=item L<OpenTelemetry::Propagator>
+
+=item L<W3C Baggage format|https://w3c.github.io/baggage/>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
