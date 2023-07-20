@@ -6,22 +6,28 @@ package OpenTelemetry::Context::Propagation::Composite;
 our $VERSION = '0.001';
 
 class OpenTelemetry::Context::Propagation::Composite {
-    use List::Util 'uniq';
+    use List::Util qw( uniq first );
     use OpenTelemetry::Context::Propagation::TextMap;
+    use OpenTelemetry::X;
 
     has @injectors;
     has @extractors;
 
-    sub BUILDARGS ( $, @args ) {
-        return (
-            extractors => [ grep $_->can('extract'), @args ],
-            injectors  => [ grep $_->can('inject'),  @args ],
-        )
-    }
-
     ADJUSTPARAMS ($params) {
         @injectors  = @{ delete $params->{injectors}  // [] };
         @extractors = @{ delete $params->{extractors} // [] };
+
+        die OpenTelemetry::X->create(
+            Invalid => "Injector for Composite propagator does not support an 'inject' method: " . ( ref || $_ ),
+        ) if first { ! $_->can('inject') } @injectors;
+
+        die OpenTelemetry::X->create(
+            Invalid => "Extractor for Composite propagator does not support an 'extract' method: " . ( ref || $_ ),
+        ) if first { ! $_->can('extract') } @extractors;
+
+        die OpenTelemetry::X->create(
+            Invalid => 'A Composite propagator requires both injectors and extractors',
+        ) unless @injectors && @extractors;
     }
 
     method inject (

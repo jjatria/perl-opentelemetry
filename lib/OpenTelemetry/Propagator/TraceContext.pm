@@ -12,6 +12,8 @@ class OpenTelemetry::Propagator::TraceContext {
     use experimental qw( try isa );
 
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
+
+    use OpenTelemetry::Trace;
     use OpenTelemetry::Context::Propagation::TextMap;
     use OpenTelemetry::Trace::SpanContext;
 
@@ -59,7 +61,7 @@ class OpenTelemetry::Propagator::TraceContext {
 
             my $span = OpenTelemetry::Trace->non_recording_span( $span_context );
 
-            return OpenTelemetry::Trace->context_with_span( $span );
+            return OpenTelemetry::Trace->context_with_span( $span, $context );
         }
         catch ($e) {
             die $e unless $e isa OpenTelemetry::X;
