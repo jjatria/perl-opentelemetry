@@ -14,8 +14,8 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
 
     use OpenTelemetry::Trace;
-    use OpenTelemetry::Context::Propagation::TextMap;
     use OpenTelemetry::Trace::SpanContext;
+    use OpenTelemetry::Propagator::TextMap;
 
     my $TRACE_PARENT_KEY = 'traceparent';
     my $TRACE_STATE_KEY  = 'tracestate';
@@ -23,7 +23,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
     method inject (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $setter  = OpenTelemetry::Context::Propagation::TextMap::SETTER
+        $setter  = OpenTelemetry::Propagator::TextMap::SETTER
     ) {
         my $span_context = OpenTelemetry::Trace->span_from_context($context)->context;
         return $self unless $span_context->valid;
@@ -40,7 +40,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
     method extract (
         $carrier,
         $context = OpenTelemetry::Context->current,
-        $getter  = OpenTelemetry::Context::Propagation::TextMap::GETTER
+        $getter  = OpenTelemetry::Propagator::TextMap::GETTER
     ) {
         try {
             my $string = $getter->( $carrier, $TRACE_PARENT_KEY )
@@ -116,7 +116,7 @@ L<OpenTelemetry::Propagator>.
     $propagator = $propagator->inject(
         $carrier,
         $context // OpenTelemetry::Context->current,
-        $setter  // OpenTelemetry::Context::Propagation::TextMap::SETTER,
+        $setter  // OpenTelemetry::Propagator::TextMap::SETTER,
     )
 
 =head2 extract
@@ -124,7 +124,7 @@ L<OpenTelemetry::Propagator>.
     $new_context = $propagator->extract(
         $carrier,
         $context // OpenTelemetry::Context->current,
-        $getter  // OpenTelemetry::Context::Propagation::TextMap::GETTER,
+        $getter  // OpenTelemetry::Propagator::TextMap::GETTER,
     )
 
 =head2 keys

@@ -35,7 +35,7 @@ subtest TracerProvider => sub {
 
 subtest Propagation => sub {
     is my $prop = CLASS->propagation, object {
-        prop isa => 'OpenTelemetry::Context::Propagation::TextMap::Noop';
+        prop isa => 'OpenTelemetry::Propagator::None';
     };
 };
 

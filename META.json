@@ -79,18 +79,6 @@
          "file" : "lib/OpenTelemetry/Context.pm",
          "version" : "0.001"
       },
-      "OpenTelemetry::Context::Propagation::Composite" : {
-         "file" : "lib/OpenTelemetry/Context/Propagation/Composite.pm",
-         "version" : "0.001"
-      },
-      "OpenTelemetry::Context::Propagation::TextMap" : {
-         "file" : "lib/OpenTelemetry/Context/Propagation/TextMap.pm",
-         "version" : "0.001"
-      },
-      "OpenTelemetry::Context::Propagation::TextMap::Noop" : {
-         "file" : "lib/OpenTelemetry/Context/Propagation/TextMap/Noop.pm",
-         "version" : "0.001"
-      },
       "OpenTelemetry::Integration" : {
          "file" : "lib/OpenTelemetry/Integration.pm",
          "version" : "0.001"
@@ -99,12 +87,24 @@
          "file" : "lib/OpenTelemetry/Integration/HTTP/Tiny.pm",
          "version" : "0.001"
       },
+      "OpenTelemetry::Propagator" : {
+         "file" : "lib/OpenTelemetry/Propagator.pm",
+         "version" : "0.001"
+      },
       "OpenTelemetry::Propagator::Baggage" : {
          "file" : "lib/OpenTelemetry/Propagator/Baggage.pm",
          "version" : "0.001"
       },
+      "OpenTelemetry::Propagator::Composite" : {
+         "file" : "lib/OpenTelemetry/Propagator/Composite.pm",
+         "version" : "0.001"
+      },
       "OpenTelemetry::Propagator::None" : {
          "file" : "lib/OpenTelemetry/Propagator/None.pm",
+         "version" : "0.001"
+      },
+      "OpenTelemetry::Propagator::TextMap" : {
+         "file" : "lib/OpenTelemetry/Propagator/TextMap.pm",
          "version" : "0.001"
       },
       "OpenTelemetry::Propagator::TraceContext" : {

@@ -63,7 +63,7 @@ is expected to follow.
     $propagator = $propagator->inject(
         $carrier,
         $context // OpenTelemetry::Context->current,
-        $setter  // OpenTelemetry::Context::Propagation::TextMap::SETTER,
+        $setter  // OpenTelemetry::Propagator::TextMap::SETTER,
     )
 
 Injects data from the context into a carrier. Must take a mandatory reference
@@ -74,9 +74,8 @@ read. If no context is provided, the current context must be used.
 To support different kinds of carriers, a setter subroutine reference can be
 passed as the third argument. This setter subroutine will be called with the
 carrier and a key / value pair, and is expected to store the value under the
-key in the carrier. If no setter is provided, the default setter from
-L<OpenTelemetry::Context::Propagation::TextMap> will be used, which assumes
-the carrier can be used as a hash reference.
+key in the carrier. If no setter is provided, classes implementing this
+interface should provide a default setter that is suitable for their use case.
 
 This method must return the calling propagator.
 
@@ -85,7 +84,7 @@ This method must return the calling propagator.
     $new_context = $propagator->extract(
         $carrier,
         $context // OpenTelemetry::Context->current,
-        $getter  // OpenTelemetry::Context::Propagation::TextMap::GETTER,
+        $getter  // OpenTelemetry::Propagator::TextMap::GETTER,
     )
 
 Extracts data from a carrier into the context. Must take a mandatory
@@ -97,8 +96,8 @@ To support different kinds of carriers, a getter subroutine reference can be
 passed as the third argument. This getter will be called with the carrier and
 a string to be used as a key, and is expected to return the value stored under
 that key in the carrier. If no getter is provided, the default getter from
-L<OpenTelemetry::Context::Propagation::TextMap> will be used, which assumes
-the carrier can be used as a hash reference.
+L<OpenTelemetry::Propagator::TextMap> will be used, which assumes the carrier
+can be used as a hash reference.
 
 This method must return a new instance of L<OpenTelemetry::Context> with the
 values from the provided context, and holding the data extracted from the
@@ -118,7 +117,9 @@ deleted.
 
 =item L<OpenTelemetry::Context>
 
-=item L<OpenTelemetry::Context::Propagation::TextMap>
+=item L<OpenTelemetry::Propagator::TextMap>
+
+=item L<OpenTelemetry::Propagator::Composite>
 
 =item L<OpenTelemetry::Propagator::Baggage>
 

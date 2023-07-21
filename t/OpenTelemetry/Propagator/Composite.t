@@ -1,14 +1,15 @@
 #!/usr/bin/env perl
 
-use Test2::V0 -target => 'OpenTelemetry::Context::Propagation::Composite';
+use Test2::V0 -target => 'OpenTelemetry::Propagator::Composite';
 
 use OpenTelemetry::Baggage;
-use OpenTelemetry::Trace;
-use OpenTelemetry::Propagator::TraceContext::TraceParent;
-use OpenTelemetry::Propagator::TraceContext::TraceFlags;
-use OpenTelemetry::Trace::SpanContext;
 use OpenTelemetry::Propagator::Baggage;
+use OpenTelemetry::Propagator::TraceContext::TraceFlags;
+use OpenTelemetry::Propagator::TraceContext::TraceParent;
 use OpenTelemetry::Propagator::TraceContext;
+use OpenTelemetry::Trace;
+use OpenTelemetry::Trace::SpanContext;
+use OpenTelemetry::Test::Logs;
 
 my $context = do {
     my $parent = OpenTelemetry::Propagator::TraceContext::TraceParent->new(
@@ -37,14 +38,8 @@ my $context = do {
 
 my $carrier = {};
 my $prop = CLASS->new(
-    injectors  => [
-        OpenTelemetry::Propagator::Baggage->new,
-        OpenTelemetry::Propagator::TraceContext->new,
-    ],
-    extractors => [
-        OpenTelemetry::Propagator::Baggage->new,
-        OpenTelemetry::Propagator::TraceContext->new,
-    ],
+    OpenTelemetry::Propagator::Baggage->new,
+    OpenTelemetry::Propagator::TraceContext->new,
 );
 
 ref_is $prop->inject( $carrier, $context ), $prop, 'Inject returns self';
@@ -79,13 +74,15 @@ is CLASS->new, object {
     prop isa => $CLASS;
 }, 'Constructor can be called with no injectors / extractors for no-op instance';
 
-like dies { CLASS->new( injectors => [ mock ] ) },
-    qr/^Injector for Composite propagator does not support an 'inject' method: Test2::Tools::.*/,
-    'Validate injectors';
+OpenTelemetry::Test::Logs->clear;
 
-like dies { CLASS->new( extractors => [ mock ] ) },
-    qr/^Extractor for Composite propagator does not support an 'extract' method: Test2::Tools::.*/,
-    'Validate injectors';
+is CLASS->new( mock ), object {
+    prop isa => $CLASS;
+}, 'Constructor with unsuitable injectors / extractors still builds';
+
+is + OpenTelemetry::Test::Logs->messages, [
+    [ warning => OpenTelemetry => match qr/^No suitable propagators when constructing/ ],
+], 'Constructing with no suitable propagators warns';
 
 is [ sort $prop->keys ] , [qw( baggage traceparent tracestate )], 'Get compound keys';
 
