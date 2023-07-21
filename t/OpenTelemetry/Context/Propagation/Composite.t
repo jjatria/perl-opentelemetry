@@ -75,6 +75,18 @@ is $prop->extract($carrier), object {
     };
 }, 'Extract';
 
+is CLASS->new, object {
+    prop isa => $CLASS;
+}, 'Constructor can be called with no injectors / extractors for no-op instance';
+
+like dies { CLASS->new( injectors => [ mock ] ) },
+    qr/^Injector for Composite propagator does not support an 'inject' method: Test2::Tools::.*/,
+    'Validate injectors';
+
+like dies { CLASS->new( extractors => [ mock ] ) },
+    qr/^Extractor for Composite propagator does not support an 'extract' method: Test2::Tools::.*/,
+    'Validate injectors';
+
 is [ sort $prop->keys ] , [qw( baggage traceparent tracestate )], 'Get compound keys';
 
 done_testing;

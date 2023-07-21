@@ -17,17 +17,20 @@ class OpenTelemetry::Context::Propagation::Composite {
         @injectors  = @{ delete $params->{injectors}  // [] };
         @extractors = @{ delete $params->{extractors} // [] };
 
-        die OpenTelemetry::X->create(
-            Invalid => "Injector for Composite propagator does not support an 'inject' method: " . ( ref || $_ ),
-        ) if first { ! $_->can('inject') } @injectors;
+        if ( my $bad = first { ! $_->can('inject') } @injectors ) {
+            my $name = ref $bad || $bad;
+            die OpenTelemetry::X->create(
+                Invalid => "Injector for Composite propagator does not support an 'inject' method: $name",
+            );
 
-        die OpenTelemetry::X->create(
-            Invalid => "Extractor for Composite propagator does not support an 'extract' method: " . ( ref || $_ ),
-        ) if first { ! $_->can('extract') } @extractors;
+        }
 
-        die OpenTelemetry::X->create(
-            Invalid => 'A Composite propagator requires both injectors and extractors',
-        ) unless @injectors && @extractors;
+        if ( my $bad = first { ! $_->can('extract') } @extractors ) {
+            my $name = ref $bad || $bad;
+            die OpenTelemetry::X->create(
+                Invalid => "Extractor for Composite propagator does not support an 'extract' method: $name",
+            );
+        }
     }
 
     method inject (
