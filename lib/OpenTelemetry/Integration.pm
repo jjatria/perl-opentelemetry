@@ -88,16 +88,16 @@ been before) and integrations for them will be applied if available
 This means that you can expect L<HTTP::Tiny> to be traced if you have the
 L<OpenTelemetry::Integration::HTTP::Tiny> module installed and you do this:
 
-    use OpenTracing::Integration 'HTTP::Tiny';
+    use OpenTelemetry::Integration 'HTTP::Tiny';
 
 or this:
 
     use HTTP::Tiny;
-    use OpenTracing::Integration ':all';
+    use OpenTelemetry::Integration ':all';
 
 but it will B<not> be traced if you do this:
 
-    use OpenTracing::Integration ':all';
+    use OpenTelemetry::Integration ':all';
     use HTTP::Tiny;
 
 The rationale behind this apparently inconsistent behaviour is that, with a

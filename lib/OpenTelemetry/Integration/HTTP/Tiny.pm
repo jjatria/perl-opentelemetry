@@ -10,7 +10,7 @@ use experimental 'signatures';
 use Class::Method::Modifiers 'install_modifier';
 use OpenTelemetry;
 
-use parent 'OpenTracing::Integration';
+use parent 'OpenTelemetry::Integration';
 
 my $loaded;
 sub load ( $class, $load_deps = 0 ) {
@@ -77,7 +77,7 @@ __END__
 
 =head1 NAME
 
-OpenTracing::Integration::HTTP::Tiny - OpenTelemetry integration for HTTP::Tiny
+OpenTelemetry::Integration::HTTP::Tiny - OpenTelemetry integration for HTTP::Tiny
 
 =head1 SYNOPSIS
 
