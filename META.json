@@ -26,7 +26,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "0",
+            "Module::Build::Tiny" : "0.034",
             "perl" : "v5.32.0"
          }
       },
@@ -199,23 +199,13 @@
             "version" : "6.029"
          },
          {
-            "class" : "Dist::Zilla::Plugin::ReadmeAnyFromPod",
-            "config" : {
-               "Dist::Zilla::Role::FileWatcher" : {
-                  "version" : "0.006"
-               }
-            },
-            "name" : "MarkdownInBuild",
-            "version" : "0.163250"
-         },
-         {
             "class" : "Dist::Zilla::Plugin::Git::GatherDir",
             "config" : {
                "Dist::Zilla::Plugin::GatherDir" : {
                   "exclude_filename" : [
+                     "Build.PL",
                      "LICENSE",
                      "META.json",
-                     "README.md",
                      "cpanfile",
                      "dist.ini"
                   ],
@@ -282,14 +272,14 @@
             "version" : "2.058"
          },
          {
-            "class" : "Dist::Zilla::Plugin::MakeMaker",
+            "class" : "Dist::Zilla::Plugin::ModuleBuildTiny",
             "config" : {
                "Dist::Zilla::Role::TestRunner" : {
                   "default_jobs" : 1
                }
             },
-            "name" : "@Starter::Git/MakeMaker",
-            "version" : "6.029"
+            "name" : "@Starter::Git/ModuleBuildTiny",
+            "version" : "0.015"
          },
          {
             "class" : "Dist::Zilla::Plugin::Manifest",
@@ -331,7 +321,7 @@
                   "changelog" : "Changes"
                },
                "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.40.1",
+                  "git_version" : "2.41.0",
                   "repo_root" : "."
                }
             },
@@ -364,9 +354,9 @@
             "config" : {
                "Dist::Zilla::Plugin::CopyFilesFromRelease" : {
                   "filename" : [
+                     "Build.PL",
                      "LICENSE",
-                     "META.json",
-                     "README.md"
+                     "META.json"
                   ],
                   "match" : []
                }
@@ -401,17 +391,17 @@
                },
                "Dist::Zilla::Role::Git::DirtyFiles" : {
                   "allow_dirty" : [
+                     "Build.PL",
                      "Changes",
                      "LICENSE",
                      "META.json",
-                     "README.md",
                      "dist.ini"
                   ],
                   "allow_dirty_match" : [],
                   "changelog" : "Changes"
                },
                "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.40.1",
+                  "git_version" : "2.41.0",
                   "repo_root" : "."
                },
                "Dist::Zilla::Role::Git::StringFormatter" : {
@@ -433,7 +423,7 @@
                   "tag_message" : ""
                },
                "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.40.1",
+                  "git_version" : "2.41.0",
                   "repo_root" : "."
                },
                "Dist::Zilla::Role::Git::StringFormatter" : {
@@ -477,7 +467,7 @@
                   "changelog" : "Changes"
                },
                "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.40.1",
+                  "git_version" : "2.41.0",
                   "repo_root" : "."
                },
                "Dist::Zilla::Role::Git::StringFormatter" : {
@@ -573,7 +563,7 @@
             "class" : "Dist::Zilla::Plugin::Git::Contributors",
             "config" : {
                "Dist::Zilla::Plugin::Git::Contributors" : {
-                  "git_version" : "2.40.1",
+                  "git_version" : "2.41.0",
                   "include_authors" : 0,
                   "include_releaser" : 1,
                   "order_by" : "name",
