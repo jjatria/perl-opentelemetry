@@ -41,14 +41,21 @@
       },
       "runtime" : {
          "requires" : {
+            "Bytes::Random::Secure" : "0",
+            "Class::Method::Modifiers" : "0",
             "Future" : "0.26",
+            "Future::AsyncAwait" : "0",
             "List::Util" : "1.45",
             "Log::Any" : "0",
+            "Module::Pluggable" : "0",
             "Object::Pad" : "0.57",
             "Ref::Util" : "0",
             "Syntax::Keyword::Defer" : "0",
+            "URI" : "0",
+            "URL::Encode" : "0",
             "UUID::URandom" : "0",
             "X::Tiny" : "0",
+            "namespace::clean" : "0",
             "perl" : "v5.32.0"
          }
       },

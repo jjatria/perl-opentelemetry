@@ -5,7 +5,6 @@ our $VERSION = '0.001';
 
 use experimental qw( try signatures );
 
-use Syntax::Keyword::Try;
 use Module::Pluggable search_path => ['OpenTelemetry::Integration'];
 use Module::Load ();
 use List::Util 'uniqstr';
