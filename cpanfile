@@ -5,6 +5,7 @@ requires 'Future::AsyncAwait';
 requires 'List::Util', '1.45';     # For uniq
 requires 'Log::Any';
 requires 'Module::Pluggable';
+requires 'Mutex';
 requires 'Object::Pad', '0.57';
 requires 'Ref::Util';
 requires 'Syntax::Keyword::Defer';
