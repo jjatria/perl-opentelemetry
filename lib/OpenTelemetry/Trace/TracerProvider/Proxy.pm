@@ -9,23 +9,20 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::TracerProvider) {
-    use mro;
-
     use OpenTelemetry::Trace::Tracer::Proxy;
 
     use Future;
-    use Future::Mutex;
-    use Future::AsyncAwait;
+    use Mutex;
 
     has $delegate;
     has %registry;
 
-    has $lock;
+    has $delegate_lock;
     has $registry_lock;
 
     ADJUST {
-        $lock          = Future::Mutex->new;
-        $registry_lock = Future::Mutex->new;
+        $delegate_lock = Mutex->new;
+        $registry_lock = Mutex->new;
     }
 
     method delegate ($new) {
@@ -34,18 +31,14 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
             return $self;
         }
 
-        $lock->enter(
-            async sub {
-                $delegate = $new;
+        $delegate_lock->enter( sub {
+            $delegate = $new;
 
-                for my $name ( keys %registry ) {
-                    my ( $proxy, %args ) = @{ delete $registry{$name} };
-                    $proxy->delegate( $delegate->tracer( %args ) );
-                }
-
-                1;
+            for my $name ( keys %registry ) {
+                my ( $proxy, %args ) = @{ delete $registry{$name} };
+                $proxy->delegate( $delegate->tracer( %args ) );
             }
-        )->get;
+        });
 
         return $self;
     }
@@ -54,14 +47,12 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
         # TODO: Is this correct?
         my $name = $args{name} //= '';
 
-        $registry_lock->enter(
-            async sub {
-                return $delegate->tracer( %args ) if $delegate;
+        $registry_lock->enter( sub {
+            return $delegate->tracer( %args ) if $delegate;
 
-                $registry{$name} //= [ OpenTelemetry::Trace::Tracer::Proxy->new, %args ];
+            $registry{$name} //= [ OpenTelemetry::Trace::Tracer::Proxy->new, %args ];
 
-                $registry{$name}[0];
-            }
-        )->get;
+            $registry{$name}[0];
+        });
     }
 }
