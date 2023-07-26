@@ -17,4 +17,6 @@ class OpenTelemetry::Trace::Span::Status {
     method ok    { $code eq 'OK'    }
     method error { $code eq 'ERROR' }
     method unset { $code eq 'UNSET' }
+
+    method to_string { $code }
 }
