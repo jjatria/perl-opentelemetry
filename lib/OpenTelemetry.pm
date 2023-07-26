@@ -3,7 +3,7 @@ package OpenTelemetry;
 
 use strict;
 use warnings;
-use experimental 'signatures';
+use experimental qw( isa signatures );
 
 our $VERSION = '0.001';
 
@@ -15,9 +15,19 @@ use Log::Any '$logger';
 
 my $tracer_provider;
 sub tracer_provider ( $, $new = undef ) {
+    return $tracer_provider //= OpenTelemetry::Trace::TracerProvider::Proxy->new
+        unless $new;
+
     # TODO: lock?
-    $tracer_provider = $new if $new;
-    return $tracer_provider //= OpenTelemetry::Trace::TracerProvider::Proxy->new;
+    if ($tracer_provider isa OpenTelemetry::Trace::TracerProvider::Proxy) {
+        $logger->debugf('Upgrading default proxy tracer provider to %s', ref $new);
+        $tracer_provider->delegate($new);
+    }
+    else {
+        $tracer_provider = $new;
+    }
+
+    return $tracer_provider;
 }
 
 my $propagation;
