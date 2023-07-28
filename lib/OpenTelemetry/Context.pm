@@ -73,9 +73,9 @@ class OpenTelemetry::Context {
         #     OpenTelemetry::Context->attach( $ctx )
         # and
         #     $ctx->attach;
-        my $context = $caller isa 'OpenTelemetry::Context' ? $caller : $other;
+        my $context = $caller isa OpenTelemetry::Context ? $caller : $other;
 
-        if ( $context isa 'OpenTelemetry::Context' ) {
+        if ( $context isa OpenTelemetry::Context ) {
             push @stack, $context;
             return scalar @stack;
         }
