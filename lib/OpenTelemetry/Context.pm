@@ -69,6 +69,10 @@ class OpenTelemetry::Context {
     my $null = '~NULL~';
 
     sub attach ( $caller, $other = undef ) {
+        # Allow both
+        #     OpenTelemetry::Context->attach( $ctx )
+        # and
+        #     $ctx->attach;
         my $context = $caller isa 'OpenTelemetry::Context' ? $caller : $other;
 
         if ( $context isa 'OpenTelemetry::Context' ) {
