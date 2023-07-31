@@ -2,52 +2,74 @@
 
 use Test2::V0 -target => 'OpenTelemetry::Trace::Span::Status';
 
+use OpenTelemetry::Test::Logs;
+
 is CLASS->new, object {
     call description => '';
-    call ok          => F;
-    call error       => F;
-    call unset       => T;
-    call to_string   => 'UNSET';
-}, 'Defaults to unset';
+    call code        => 0;
+    call is_unset    => T;
+    call is_ok       => F;
+    call is_error    => F;
+}, 'Raw constructor defaults to unset';
 
-is CLASS->new( description => 'foo' ), object {
+is CLASS->unset, object {
+    call description => '';
+    call code        => 0;
+    call is_unset    => T;
+    call is_ok       => F;
+    call is_error    => F;
+}, 'Unset constructor sets to unset';
+
+is CLASS->ok, object {
+    call description => '';
+    call code        => 1;
+    call is_unset    => F;
+    call is_ok       => T;
+    call is_error    => F;
+}, 'Ok constructor sets to ok';
+
+is CLASS->error, object {
+    call description => '';
+    call code        => 2;
+    call is_unset    => F;
+    call is_ok       => F;
+    call is_error    => T;
+}, 'Error constructor sets to error';
+
+OpenTelemetry::Test::Logs->clear;
+
+is CLASS->unset( description => 'foo' ), object {
+    call description => '';
+    call code        => 0;
+}, 'Unset constructor sets to unset';
+
+is + OpenTelemetry::Test::Logs->messages, [
+    [ warning => OpenTelemetry => 'Ignoring description on a non-error span status' ],
+], 'Warns when setting a description on an unset status';
+
+OpenTelemetry::Test::Logs->clear;
+
+is CLASS->ok( description => 'foo' ), object {
+    call description => '';
+    call code        => 1;
+}, 'Unset constructor sets to unset';
+
+is + OpenTelemetry::Test::Logs->messages, [
+    [ warning => OpenTelemetry => 'Ignoring description on a non-error span status' ],
+], 'Warns when setting a description on an ok status';
+
+OpenTelemetry::Test::Logs->clear;
+
+is CLASS->error( description => 'foo' ), object {
     call description => 'foo';
-    call ok          => F;
-    call error       => F;
-    call unset       => T;
-    call to_string   => 'UNSET';
-}, 'Can set description on construction';
+    call code        => 2;
+    call to_hash     => {
+        description => 'foo',
+        code        => 2,
+    };
+}, 'Unset constructor sets to unset';
 
-is CLASS->new( code => 'OK', description => 'x' ), object {
-    call description => 'x';
-    call ok          => T;
-    call error       => F;
-    call unset       => F;
-    call to_string   => 'OK';
-}, 'Can set status to OK';
-
-is CLASS->new( code => 'ERROR' ), object {
-    call description => '';
-    call ok          => F;
-    call error       => T;
-    call unset       => F;
-    call to_string   => 'ERROR';
-}, 'Can set status to ERROR';
-
-is CLASS->new( code => 'error' ), object {
-    call description => '';
-    call ok          => F;
-    call error       => F;
-    call unset       => T;
-    call to_string   => 'UNSET';
-}, 'Invalid statuses are left as unset';
-
-is CLASS->new( code => undef ), object {
-    call description => '';
-    call ok          => F;
-    call error       => F;
-    call unset       => T;
-    call to_string   => 'UNSET';
-}, 'Undef treated as invalid status';
+is + OpenTelemetry::Test::Logs->messages, [],
+    'Does not warn when setting a description on an error status';
 
 done_testing;
