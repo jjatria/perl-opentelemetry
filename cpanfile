@@ -1,12 +1,12 @@
 requires 'Bytes::Random::Secure';
 requires 'Class::Method::Modifiers';
-requires 'Future', '0.26';         # Future->done
+requires 'Future', '0.26'; # For Future->done
 requires 'Future::AsyncAwait';
-requires 'List::Util', '1.45';     # For uniq
+requires 'List::Util', '1.45'; # For uniq
 requires 'Log::Any';
 requires 'Module::Pluggable';
 requires 'Mutex';
-requires 'Object::Pad', '0.57';
+requires 'Object::Pad', '0.74'; # For //= field initialisers
 requires 'Ref::Util';
 requires 'Syntax::Keyword::Defer';
 requires 'URI';

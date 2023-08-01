@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: The OpenTelemetry Span abstract interface
 
 package OpenTelemetry::Trace::SpanContext;
@@ -11,11 +11,11 @@ use OpenTelemetry::Propagator::TraceContext::TraceState;
 
 class OpenTelemetry::Trace::SpanContext {
 
-    has $trace_flags :param :reader = undef;
-    has $trace_state :param :reader = undef;
-    has $trace_id    :param :reader = undef;
-    has $span_id     :param :reader = undef;
-    has $remote      :param :reader = 0;
+    field $trace_flags :param :reader = undef;
+    field $trace_state :param :reader = undef;
+    field $trace_id    :param :reader = undef;
+    field $span_id     :param :reader = undef;
+    field $remote      :param :reader = 0;
 
     BUILD {
         $trace_flags //= OpenTelemetry::Propagator::TraceContext::TraceFlags->new;

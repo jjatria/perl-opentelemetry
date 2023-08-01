@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: The status of an OpenTelemetry span
 
 package
@@ -16,8 +16,8 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Span::Status {
-    has $code        :param :reader = UNSET;
-    has $description :param :reader = undef;
+    field $code        :param :reader = UNSET;
+    field $description :param :reader = undef;
 
     ADJUST {
         $code = UNSET if $code && $code < UNSET || $code > ERROR;

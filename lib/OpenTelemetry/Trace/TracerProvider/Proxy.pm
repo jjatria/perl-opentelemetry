@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: A placeholder TracerProvider that delegates to a real one
 
 package OpenTelemetry::Trace::TracerProvider::Proxy;
@@ -14,16 +14,11 @@ class OpenTelemetry::Trace::TracerProvider::Proxy :isa(OpenTelemetry::Trace::Tra
     use Future;
     use Mutex;
 
-    has $delegate;
-    has %registry;
+    field $delegate;
+    field %registry;
 
-    has $delegate_lock;
-    has $registry_lock;
-
-    ADJUST {
-        $delegate_lock = Mutex->new;
-        $registry_lock = Mutex->new;
-    }
+    field $delegate_lock = Mutex->new;
+    field $registry_lock = Mutex->new;
 
     method delegate ($new) {
         if ( $delegate ) {

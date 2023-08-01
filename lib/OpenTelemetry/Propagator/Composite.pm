@@ -13,8 +13,8 @@ class OpenTelemetry::Propagator::Composite :does(OpenTelemetry::Propagator) {
     use OpenTelemetry::Propagator::TextMap;
     use OpenTelemetry::X;
 
-    has @injectors;
-    has @extractors;
+    field @injectors;
+    field @extractors;
 
     sub BUILDARGS ( $, @args ) {
         my %return = (

@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: A context class for OpenTelemetry
 
 use feature 'isa';
@@ -11,8 +11,8 @@ our $VERSION = '0.001';
 class OpenTelemetry::Context::Key {
     use UUID::URandom 'create_uuid';
 
-    has $name   :param;
-    has $string :reader;
+    field $name   :param;
+    field $string :reader;
 
     ADJUST { $string = $name . '-' . unpack( 'H*', create_uuid ) };
 }
@@ -28,7 +28,7 @@ sub key ( $, $name ) {
 class OpenTelemetry::Context {
     use OpenTelemetry::X;
 
-    has $data :param = {};
+    field $data :param = {};
 
     sub BUILDARGS ( $class, %args ) { ( data => { %args } ) }
 

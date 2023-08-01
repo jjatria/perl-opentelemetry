@@ -32,7 +32,7 @@ class OpenTelemetry::Propagator::TraceContext::TraceState {
         $
     /xx;
 
-    has @members;
+    field @members;
 
     # Private methods
 

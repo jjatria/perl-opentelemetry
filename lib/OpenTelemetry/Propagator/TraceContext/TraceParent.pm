@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: Represents a TraceParent in a W3C TraceContext
 
 package OpenTelemetry::Propagator::TraceContext::TraceParent;
@@ -13,10 +13,10 @@ class OpenTelemetry::Propagator::TraceContext::TraceParent {
     my $INVALID_TRACE_ID = OpenTelemetry::Trace::Common::HEX_INVALID_TRACE_ID;
     my $INVALID_SPAN_ID  = OpenTelemetry::Trace::Common::HEX_INVALID_SPAN_ID;
 
-    has $trace_id :param :reader;
-    has $span_id  :param :reader;
-    has $flags    :param :reader;
-    has $version  :param :reader = 0;
+    field $trace_id :param :reader;
+    field $span_id  :param :reader;
+    field $flags    :param :reader;
+    field $version  :param :reader = 0;
 
     method to_string () {
         join '-',

@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: Records and propagates baggage in a distributed trace
 
 use experimental qw( signatures lexical_subs );
@@ -12,8 +12,8 @@ package
 our $VERSION = '0.001';
 
 class OpenTelemetry::Baggage::Entry {
-    has $value :param :reader;
-    has $meta  :param :reader = {};
+    field $value :param :reader;
+    field $meta  :param :reader = {};
 }
 
 package
@@ -22,7 +22,7 @@ package
 our $VERSION = '0.001';
 
 class OpenTelemetry::Baggage::Builder {
-    has %data;
+    field %data;
 
     method set ( $name, $value, $meta = undef ) {
         $data{$name} = OpenTelemetry::Baggage::Entry->new(

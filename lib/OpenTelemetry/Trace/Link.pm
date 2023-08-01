@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: A link to an OpenTelemetry span
 
 package OpenTelemetry::Trace::Link;
@@ -10,12 +10,10 @@ class OpenTelemetry::Trace::Link {
 
     use OpenTelemetry::X;
 
-    has $context     :param :reader;
-    has $attributes  :param :reader = undef;
+    field $context     :param :reader;
+    field $attributes  :param :reader //= {};
 
     ADJUST {
-        $attributes //= {};
-
         die OpenTelemetry::X->create(
             Invalid => "Required parameter 'context' must be a span context"
         ) unless $context isa OpenTelemetry::Trace::SpanContext;

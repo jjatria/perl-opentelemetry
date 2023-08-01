@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: A single operation within a trace
 
 package OpenTelemetry::Trace::Span;
@@ -9,7 +9,7 @@ use OpenTelemetry::Trace::Span::Status;
 our $VERSION = '0.001';
 
 class OpenTelemetry::Trace::Span {
-    has $context :param :reader = undef;
+    field $context :param :reader = undef;
 
     ADJUST {
         $context //= OpenTelemetry::Trace::SpanContext->new;

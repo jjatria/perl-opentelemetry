@@ -49,7 +49,7 @@
             "Log::Any" : "0",
             "Module::Pluggable" : "0",
             "Mutex" : "0",
-            "Object::Pad" : "0.57",
+            "Object::Pad" : "0.74",
             "Ref::Util" : "0",
             "Syntax::Keyword::Defer" : "0",
             "URI" : "0",

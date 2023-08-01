@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: Represents TraceFlags in a W3C TraceContext
 
 package OpenTelemetry::Propagator::TraceContext::TraceFlags;
@@ -9,7 +9,7 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Propagator::TraceContext::TraceFlags {
-    has $flags :param :reader = 0;
+    field $flags :param :reader = 0;
 
     sub BUILDARGS ( $class, $flags = 0 ) {
         if ( $flags !~ /^\d+$/a ) {

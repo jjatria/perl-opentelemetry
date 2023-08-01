@@ -8,7 +8,7 @@ our $VERSION = '0.001';
 class OpenTelemetry::Trace::TracerProvider {
     use OpenTelemetry::Trace::Tracer;
 
-    has $tracer;
+    field $tracer;
 
     method tracer ( %args ) {
         $tracer //= OpenTelemetry::Trace::Tracer->new;

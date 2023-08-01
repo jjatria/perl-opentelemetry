@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: An event in an OpenTelemetry span
 
 package OpenTelemetry::Trace::Event;
@@ -11,17 +11,14 @@ my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 class OpenTelemetry::Trace::Event {
     use Time::HiRes;
 
-    has $name        :param :reader = undef;
-    has $timestamp   :param :reader = undef;
-    has $attributes  :param :reader = undef;
+    field $name        :param :reader = undef;
+    field $timestamp   :param :reader //= Time::HiRes::time;
+    field $attributes  :param :reader //= {};
 
     ADJUST {
         $name //= do {
             $logger->warn("Missing name when creating a span event. Setting to 'empty'");
             'empty';
         };
-
-        $attributes //= {};
-        $timestamp  //= Time::HiRes::time;
     }
 }
