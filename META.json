@@ -43,6 +43,7 @@
          "requires" : {
             "Bytes::Random::Secure" : "0",
             "Class::Method::Modifiers" : "0",
+            "Exporter::Tiny" : "0.044",
             "Future" : "0.26",
             "Future::AsyncAwait" : "0",
             "List::Util" : "1.45",
@@ -81,6 +82,10 @@
       },
       "OpenTelemetry::Baggage" : {
          "file" : "lib/OpenTelemetry/Baggage.pm",
+         "version" : "0.001"
+      },
+      "OpenTelemetry::Constants" : {
+         "file" : "lib/OpenTelemetry/Constants.pm",
          "version" : "0.001"
       },
       "OpenTelemetry::Context" : {

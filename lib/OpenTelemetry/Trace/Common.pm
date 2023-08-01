@@ -11,16 +11,7 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
-use constant {
-    INVALID_TRACE_ID => "\0" x 16,
-    INVALID_SPAN_ID  => "\0" x  8,
-};
-
-use constant {
-    HEX_INVALID_TRACE_ID => unpack('H*', INVALID_TRACE_ID),
-    HEX_INVALID_SPAN_ID  => unpack('H*', INVALID_SPAN_ID),
-};
-
+use OpenTelemetry::Constants qw( INVALID_TRACE_ID INVALID_SPAN_ID );
 use Bytes::Random::Secure ();
 
 sub generate_trace_id ( $ ) {

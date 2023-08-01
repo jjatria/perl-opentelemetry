@@ -7,11 +7,11 @@ our $VERSION = '0.001';
 
 class OpenTelemetry::Propagator::TraceContext::TraceParent {
     use OpenTelemetry::X;
-    use OpenTelemetry::Trace::Common;
+    use OpenTelemetry::Constants;
     use OpenTelemetry::Propagator::TraceContext::TraceFlags;
 
-    my $INVALID_TRACE_ID = OpenTelemetry::Trace::Common::HEX_INVALID_TRACE_ID;
-    my $INVALID_SPAN_ID  = OpenTelemetry::Trace::Common::HEX_INVALID_SPAN_ID;
+    my $INVALID_TRACE_ID = OpenTelemetry::Constants::HEX_INVALID_TRACE_ID;
+    my $INVALID_SPAN_ID  = OpenTelemetry::Constants::HEX_INVALID_SPAN_ID;
 
     field $trace_id :param :reader;
     field $span_id  :param :reader;

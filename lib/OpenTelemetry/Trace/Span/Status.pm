@@ -6,16 +6,13 @@ package
 
 our $VERSION = '0.001';
 
-use constant {
-    UNSET => 0,
-    OK    => 1,
-    ERROR => 2,
-};
-
 use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Span::Status {
+    use OpenTelemetry::Constants
+        -span_status => { -as => sub { shift =~ s/^SPAN_STATUS_//r } };
+
     field $code        :param :reader = UNSET;
     field $description :param :reader = undef;
 

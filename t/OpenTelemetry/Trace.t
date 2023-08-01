@@ -3,6 +3,7 @@
 use Test2::V0 -target => 'OpenTelemetry::Trace';
 
 use OpenTelemetry::Context;
+use OpenTelemetry::Constants qw( INVALID_SPAN_ID INVALID_TRACE_ID );
 
 is CLASS->span_from_context, object {
     call context => object {
@@ -10,8 +11,8 @@ is CLASS->span_from_context, object {
         call valid => F;
 
         # This is the same as calling 'valid' above
-        call span_id  => CLASS->INVALID_SPAN_ID;
-        call trace_id => CLASS->INVALID_TRACE_ID;
+        call span_id  => INVALID_SPAN_ID;
+        call trace_id => INVALID_TRACE_ID;
     };
 }, 'Returns an invalid span when none found in context';
 
@@ -45,13 +46,13 @@ is CLASS->context_with_span( $span, $context->set( $key => 123 ) ), object {
 subtest 'Trace ID' => sub {
     is my $id = CLASS->generate_trace_id, T, 'Can generate a new one';
     is length $id, 16, 'Has the right length';
-    isnt $id, CLASS->INVALID_TRACE_ID, 'Is valid';
+    isnt $id, INVALID_TRACE_ID, 'Is valid';
 };
 
 subtest 'Span ID' => sub {
     is my $id = CLASS->generate_span_id, T, 'Can generate a new one';
     is length $id, 8, 'Has the right length';
-    isnt $id, CLASS->INVALID_SPAN_ID, 'Is valid';
+    isnt $id, INVALID_SPAN_ID, 'Is valid';
 };
 
 done_testing;

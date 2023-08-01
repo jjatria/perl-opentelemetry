@@ -4,7 +4,6 @@ use Object::Pad ':experimental(init_expr)';
 package OpenTelemetry::Trace::Span;
 
 use OpenTelemetry::Trace::SpanContext;
-use OpenTelemetry::Trace::Span::Status;
 
 our $VERSION = '0.001';
 
@@ -34,36 +33,9 @@ use constant {
     INVALID => OpenTelemetry::Trace::Span->new(
         context => OpenTelemetry::Trace::SpanContext::INVALID,
     ),
-
-    STATUS_UNSET => OpenTelemetry::Trace::Span::Status::UNSET,
-    STATUS_OK    => OpenTelemetry::Trace::Span::Status::OK,
-    STATUS_ERROR => OpenTelemetry::Trace::Span::Status::ERROR,
-
-    KIND_INTERNAL => 1,
-    KIND_SERVER   => 2,
-    KIND_CLIENT   => 3,
-    KIND_PRODUCER => 4,
-    KIND_CONSUMER => 5,
 };
 
-use Exporter 'import';
-
-our %EXPORT_TAGS = (
-    kind => [qw(
-        KIND_INTERNAL
-        KIND_SERVER
-        KIND_CLIENT
-        KIND_PRODUCER
-        KIND_CONSUMER
-    )],
-    status => [qw(
-        STATUS_UNSET
-        STATUS_OK
-        STATUS_ERROR
-    )],
-);
-
-our @EXPORT_OK = map @$_, values %EXPORT_TAGS;
+1;
 
 __END__
 
@@ -211,61 +183,6 @@ This method returns the calling span, which means it can be chained.
 Stores a span with an invalid L<OpenTelemetry::Trace::SpanContext>. This will
 be sometimes returned to mark the lack of a valid span, while still providing
 an instance on which methods can be called.
-
-=head2 Span status codes
-
-These can be exported individually, or with the C<:status> tag.
-
-=over
-
-=item STATUS_UNSET
-
-The status of a span when no status has been set. This is the default value.
-
-=item STATUS_OK
-
-The status of a span that has been marked as having completed successfully by
-an application.
-
-=item STATUS_ERROR
-
-The status of a span that has been marked as not having completed successfully
-by an application.
-
-=back
-
-=head2 Span kinds
-
-These constants are used to specify the type of the span. They can be exported
-individually, or with the C<:kind> tag.
-
-=over
-
-=item KIND_INTERNAL
-
-The span is internal to an application, and is not at one of its boundaries
-(eg. with other applications). If no kind is specified, this is the default
-value.
-
-=item KIND_SERVER
-
-The span covers the server-side handling of some remote network request.
-
-=item KIND_CLIENT
-
-The span describes a request to a remote service.
-
-=item KIND_PRODUCER
-
-The span describes a message sent to a broker. Unlike the client and server
-kinds above, the action represented by this span ends once the broker accepts
-the message, even if the logical processing of that message can take longer.
-
-=item KIND_CONSUMER
-
-The span describes a consumer receiving a message from a broker.
-
-=back
 
 =head1 COPYRIGHT AND LICENSE
 

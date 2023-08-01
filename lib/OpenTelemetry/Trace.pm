@@ -7,14 +7,6 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
-use Exporter 'import';
-
-use constant {
-    EXPORT_SUCCESS => 0,
-    EXPORT_FAILURE => 1,
-    EXPORT_TIMEOUT => 2,
-};
-
 use OpenTelemetry::Context;
 use OpenTelemetry::Trace::Span;
 use OpenTelemetry::Trace::Common;
@@ -37,22 +29,6 @@ sub non_recording_span ( $, $context = undef ) {
 
 sub generate_trace_id { goto \&OpenTelemetry::Trace::Common::generate_trace_id }
 sub generate_span_id  { goto \&OpenTelemetry::Trace::Common::generate_span_id  }
-sub INVALID_TRACE_ID  { goto \&OpenTelemetry::Trace::Common::INVALID_TRACE_ID  }
-sub INVALID_SPAN_ID   { goto \&OpenTelemetry::Trace::Common::INVALID_SPAN_ID   }
-
-# Exports
-
-our %EXPORT_TAGS = (
-    constants => [qw(
-        EXPORT_FAILURE
-        EXPORT_SUCCESS
-        EXPORT_TIMEOUT
-        INVALID_SPAN_ID
-        INVALID_TRACE_ID
-    )],
-);
-
-our @EXPORT_OK = map @$_, values %EXPORT_TAGS;
 
 1;
 
@@ -145,35 +121,6 @@ Generate a new random trace ID. This ID is guaranteed to be valid.
     $id = OpenTelemetry::Trace->generate_span_id;
 
 Generate a new random span ID. This ID is guaranteed to be valid.
-
-=head1 CONSTANTS
-
-These can be exported on request, or as a set with the C<:constants> export
-tag.
-
-=head2 EXPORT_SUCCESS
-
-Marks an export operation as a success.
-
-=head2 EXPORT_FAILURE
-
-Marks an export operation as a failure.
-
-=head2 EXPORT_TIMEOUT
-
-Marks an export operation that was interrupted because it took too long.
-
-=head2 INVALID_SPAN_ID
-
-    $null = OpenTelemetry::Trace::INVALID_SPAN_ID;
-
-Returns a constant ID that can be used to identify an invalid span.
-
-=head2 INVALID_TRACE_ID
-
-    $null = OpenTelemetry::Trace::INVALID_TRACE_ID;
-
-Returns a constant ID that can be used to identify an invalid trace.
 
 =head1 SEE ALSO
 
