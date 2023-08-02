@@ -63,10 +63,6 @@ OpenTelemetry::Test::Logs->clear;
 is CLASS->error( description => 'foo' ), object {
     call description => 'foo';
     call code        => 2;
-    call to_hash     => {
-        description => 'foo',
-        code        => 2,
-    };
 }, 'Unset constructor sets to unset';
 
 is + OpenTelemetry::Test::Logs->messages, [],

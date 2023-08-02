@@ -34,13 +34,6 @@ class OpenTelemetry::Trace::Span::Status {
     method is_ok    () { $code == OK    }
     method is_error () { $code == ERROR }
     method is_unset () { $code == UNSET }
-
-    method to_hash () {
-        {
-            code        => $code,
-            description => $description,
-        }
-    }
 }
 
 __END__
@@ -118,14 +111,6 @@ Returns a true value if this instance represents an Unset status.
     $bool = $status->is_error;
 
 Returns a true value if this instance represents an Error status.
-
-=head2 to_hash
-
-    $hashref = $status->to_hash;
-
-Returns a representation of the status object as a hash reference. This method
-is provided primarily for use by trace exporters and other classes that
-require a dump of the status data.
 
 =head1 COPYRIGHT AND LICENSE
 
