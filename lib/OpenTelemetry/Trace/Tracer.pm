@@ -9,10 +9,13 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Tracer {
+    use experimental 'try';
+
     use Feature::Compat::Defer;
     use Syntax::Keyword::Dynamically;
     use Ref::Util 'is_coderef';
 
+    use OpenTelemetry::Constants 'SPAN_STATUS_ERROR';
     use OpenTelemetry::Context;
     use OpenTelemetry::Trace::Span;
     use OpenTelemetry::Trace;
@@ -44,7 +47,14 @@ class OpenTelemetry::Trace::Tracer {
 
         dynamically OpenTelemetry::Context->current = $context;
 
-        $block->( $span, $context );
+        try {
+            $block->( $span, $context );
+        }
+        catch ($e) {
+            $span->record_exception($e);
+            $span->set_status( SPAN_STATUS_ERROR, "$e" );
+            die $e;
+        }
 
         $self;
     }

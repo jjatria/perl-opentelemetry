@@ -27,6 +27,8 @@ class OpenTelemetry::Trace::Span {
     method add_event ( %args ) { $self }
 
     method end ( $timestamp = time ) { $self }
+
+    method record_exception ( $exception, %attributes ) { $self }
 }
 
 use constant {
