@@ -9,6 +9,7 @@ use experimental 'signatures';
 
 use Class::Method::Modifiers 'install_modifier';
 use OpenTelemetry;
+use OpenTelemetry::Constants qw( SPAN_STATUS_ERROR SPAN_KIND_CLIENT );
 
 use parent 'OpenTelemetry::Integration';
 
@@ -30,7 +31,7 @@ sub load ( $class, $load_deps = 0 ) {
 
         my $span = $tracer->create_span(
             name       => $path,,
-            kind       => 'client',
+            kind       => SPAN_KIND_CLIENT,
             attributes => {
                 'http.method' => $method,
                 'http.url'    => "$url",
@@ -59,7 +60,7 @@ sub load ( $class, $load_deps = 0 ) {
 
         unless ( $res->{success} ) {
             my $description = $res->{status} == 599 ? ( $res->{content} // '' ) : '';
-            $span->set_status( error => $description );
+            $span->set_status( SPAN_STATUS_ERROR, $description );
         }
 
         my $length = $res->{headers}{'content-length'};
