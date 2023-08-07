@@ -33,18 +33,18 @@ sub load ( $class, $load_deps = 0 ) {
             name       => $path,,
             kind       => SPAN_KIND_CLIENT,
             attributes => {
-                'http.method' => $method,
-                'http.url'    => "$url",
+                'http.method'     => $method,
+                'http.url'        => "$url",
                 'http.user_agent' => $self->agent,
-                'http.flavor' => '1.1', # HTTP::Tiny always uses HTTP/1.1
+                'http.flavor'     => '1.1', # HTTP::Tiny always uses HTTP/1.1
 
                 # TODO: Should this be using ->host_port?
                 # As per https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/http.md#http-client
                 # When request target is absolute URI, net.peer.name MUST
                 # match URI port identifier, otherwise it MUST match Host
                 # header port identifier.
-                'net.peer.name' => $uri->host,
-                'net.peer.port' => $uri->port,
+                'net.peer.name'   => $uri->host,
+                'net.peer.port'   => $uri->port,
 
                 # TODO: http.request_content_length will require us
                 # to hook into write_request most likely
@@ -67,7 +67,8 @@ sub load ( $class, $load_deps = 0 ) {
         }
 
         my $length = $res->{headers}{'content-length'};
-        $span->set_attribute( 'http.response_content_length' => $length ) if defined $length;
+        $span->set_attribute( 'http.response_content_length' => $length )
+            if defined $length;
 
         return $res;
     }
