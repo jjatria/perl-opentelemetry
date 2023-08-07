@@ -50,7 +50,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
 
             my $trace_parent = OpenTelemetry::Propagator::TraceContext::TraceParent->from_string($string);
             my $trace_state  = OpenTelemetry::Propagator::TraceContext::TraceState->from_string(
-                $getter->( $carrier, $TRACE_STATE_KEY )
+                $getter->( $carrier, $TRACE_STATE_KEY ) // '',
             );
 
             my $span_context = OpenTelemetry::Trace::SpanContext->new(
