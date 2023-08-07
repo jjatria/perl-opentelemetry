@@ -16,6 +16,8 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
     use OpenTelemetry::Trace;
     use OpenTelemetry::Trace::SpanContext;
     use OpenTelemetry::Propagator::TextMap;
+    use OpenTelemetry::Propagator::TraceContext::TraceParent;
+    use OpenTelemetry::Propagator::TraceContext::TraceState;
 
     my $TRACE_PARENT_KEY = 'traceparent';
     my $TRACE_STATE_KEY  = 'tracestate';

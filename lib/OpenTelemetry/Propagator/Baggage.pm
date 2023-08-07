@@ -6,8 +6,10 @@ package OpenTelemetry::Propagator::Baggage;
 our $VERSION = '0.001';
 
 class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
-    use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
+    use OpenTelemetry::Baggage;
+    use OpenTelemetry::Context;
     use OpenTelemetry::Propagator::TextMap;
+    use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
 
     my $KEY              = 'baggage';
     my $MAX_ENTRIES      = 180;
