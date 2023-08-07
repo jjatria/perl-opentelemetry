@@ -59,7 +59,10 @@ sub load ( $class, $load_deps = 0 ) {
             if $res->{redirects};
 
         unless ( $res->{success} ) {
-            my $description = $res->{status} == 599 ? ( $res->{content} // '' ) : '';
+            my $description = $res->{status} == 599
+                ? ( $res->{content} // '' )
+                : $res->{status};
+
             $span->set_status( SPAN_STATUS_ERROR, $description );
         }
 
