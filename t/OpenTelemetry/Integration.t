@@ -16,27 +16,38 @@ subtest 'No arguments to import' => sub {
     OpenTelemetry::Test::Logs->clear;
     OpenTelemetry::Integration->import;
     is + OpenTelemetry::Test::Logs->messages, [], 'No messages logged';
+
+    OpenTelemetry::Integration->unimport;
 };
 
 subtest 'Falsy arguments to import' => sub {
     OpenTelemetry::Test::Logs->clear;
     OpenTelemetry::Integration->import( '', undef );
     is + OpenTelemetry::Test::Logs->messages, [], 'No messages logged';
+
+    OpenTelemetry::Integration->unimport;
 };
 
 subtest 'Load all plugins' => sub {
     OpenTelemetry::Test::Logs->clear;
     OpenTelemetry::Integration->import(':all');
 
-    is + OpenTelemetry::Test::Logs->messages, [
-        [
+    is + OpenTelemetry::Test::Logs->messages, bag {
+        item [
             trace => 'OpenTelemetry',
            'Loading OpenTelemetry::Integration::HTTP::Tiny',
-        ],
-    ];
+        ];
+        item [
+            trace => 'OpenTelemetry',
+           'OpenTelemetry::Integration::HTTP::Tiny did not install itself',
+        ];
+        end;
+    }, 'Did not install anything because dependencies were not loaded';
 
     is + Class::Inspector->loaded('HTTP::Tiny'), F,
-        'Did not load dependency automatically';
+        'Did not load HTTP::Tiny automatically';
+
+    OpenTelemetry::Integration->unimport;
 };
 
 subtest 'Load a good plugin by name' => sub {
@@ -53,6 +64,8 @@ subtest 'Load a good plugin by name' => sub {
 
     is + Class::Inspector->loaded('HTTP::Tiny'), T,
         'Loaded dependency automatically';
+
+    OpenTelemetry::Integration->unimport;
 };
 
 subtest 'Load a missing plugin' => sub {
@@ -69,6 +82,8 @@ subtest 'Load a missing plugin' => sub {
             match qr/^Unable to load OpenTelemetry::Integration::Fake::Does::Not::Exist: Can't locate/,
         ],
     ];
+
+    OpenTelemetry::Integration->unimport;
 };
 
 done_testing;

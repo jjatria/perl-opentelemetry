@@ -7,58 +7,120 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
+use Class::Inspector;
 use Class::Method::Modifiers 'install_modifier';
+use Feature::Compat::Defer;
+use List::Util 'any';
+use OpenTelemetry::Constants qw( SPAN_KIND_CLIENT SPAN_STATUS_ERROR SPAN_STATUS_OK );
 use OpenTelemetry;
-use OpenTelemetry::Constants qw( SPAN_STATUS_ERROR SPAN_KIND_CLIENT );
+use Ref::Util 'is_arrayref';
 
 use parent 'OpenTelemetry::Integration';
 
-my $loaded;
-sub load ( $class, $load_deps = 0 ) {
-    return if $loaded;
-    return unless $load_deps or 'HTTP::Tiny'->can('new');
+sub dependencies { 'HTTP::Tiny' }
 
-    require HTTP::Tiny;
+my sub get_headers ( $have, $want, $prefix ) {
+    return unless @$want;
+    map {
+        "$prefix." . ( lc =~ s/-/_/gr ),
+        is_arrayref $have->{$_} ? $have->{$_} : [ $have->{$_} ];
+    }
+    grep {
+        my $k = $_;
+        any { $k =~ $_ } @$want;
+    } keys %$have;
+}
+
+my ( $original, $loaded );
+
+sub uninstall ( $class ) {
+    return unless $original;
+    no strict 'refs';
+    no warnings 'redefine';
+    delete $Class::Method::Modifiers::MODIFIER_CACHE{'HTTP::Tiny'}{request};
+    *{'HTTP::Tiny::request'} = $original;
+    undef $loaded;
+    return;
+}
+
+sub install ( $class, %config ) {
+    return if $loaded;
+    return unless Class::Inspector->loaded('HTTP::Tiny');
+
     require URI;
 
+    my @wanted_request_headers = map qr/^\Q$_\E$/i,
+        @{ delete $config{request_headers}  // [] };
+
+    my @wanted_response_headers = map qr/^\Q$_\E$/i,
+        @{ delete $config{response_headers} // [] };
+
+    $original = \&HTTP::Tiny::request;
     install_modifier 'HTTP::Tiny' => around => request => sub {
         my ( $code, $self, $method, $url, $options ) = @_;
-        my $uri = URI->new("$url");
-        my $path = $uri->path || '/';
 
-        # TODO: A high-level DSL? Links?
+        my $uri = URI->new("$url");
+
+        $uri->userinfo('REDACTED:REDACTED') if $uri->userinfo;
+
         my $tracer = OpenTelemetry->tracer_provider->tracer( name => __PACKAGE__ );
 
         my $span = $tracer->create_span(
-            name       => $path,,
+            name       => $method,
             kind       => SPAN_KIND_CLIENT,
             attributes => {
-                'http.method'     => $method,
-                'http.url'        => "$url",
-                'http.user_agent' => $self->agent,
-                'http.flavor'     => '1.1', # HTTP::Tiny always uses HTTP/1.1
+                # As per https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md
+                'http.request.method'      => $method,
+                'network.protocol.name'    => 'http',
+                'network.protocol.version' => '1.1',
+                'network.transport'        => 'tcp',
+                'server.address'           => $uri->host,
+                'server.port'              => $uri->port,
+                'url.full'                 => "$uri", # redacted
+                'user_agent.original'      => $self->agent,
 
-                # TODO: Should this be using ->host_port?
-                # As per https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/http.md#http-client
-                # When request target is absolute URI, net.peer.name MUST
-                # match URI port identifier, otherwise it MUST match Host
-                # header port identifier.
-                'net.peer.name'   => $uri->host,
-                'net.peer.port'   => $uri->port,
+                # This does not include auto-generated headers
+                # Capturing those would require to hook into the
+                # handle's write_request method
+                get_headers(
+                    $self->{default_headers}, # Apologies to the encapsulation gods
+                    \@wanted_request_headers,
+                    'http.request.header'
+                ),
 
-                # TODO: http.request_content_length will require us
-                # to hook into write_request most likely
+                get_headers(
+                    $options->{headers},
+                    \@wanted_request_headers,
+                    'http.request.header'
+                ),
+
+                # Request body can be generated with a data_callback
+                # parameter, in which case we don't set this attribute
+                # Setting it would likely involve us hooking into the
+                # handle's write_body method
+                $options->{content}
+                    ? ( 'http.request.body.size' => length $options->{content} )
+                    : (),
             },
         );
 
+        defer { $span->end }
+
         my $res = $self->$code( $method, $url, $options );
-        $span->set_attribute( 'http.status_code' => $res->{status} );
+        $span->set_attribute( 'http.response.status_code' => $res->{status} );
 
         # TODO: this should include retries
         $span->set_attribute( 'http.resend_count' => scalar @{ $res->{redirects} } )
             if $res->{redirects};
 
-        unless ( $res->{success} ) {
+        my $length = $res->{headers}{'content-length'};
+        $span->set_attribute( 'http.response.body.size' => $length )
+            if defined $length;
+
+        if ( $res->{success} ) {
+            $span->set_status( SPAN_STATUS_OK );
+        }
+        else {
             my $description = $res->{status} == 599
                 ? ( $res->{content} // '' )
                 : $res->{status};
@@ -66,12 +128,18 @@ sub load ( $class, $load_deps = 0 ) {
             $span->set_status( SPAN_STATUS_ERROR, $description );
         }
 
-        my $length = $res->{headers}{'content-length'};
-        $span->set_attribute( 'http.response_content_length' => $length )
-            if defined $length;
+        $span->set_attribute(
+            get_headers(
+                $res->{headers},
+                \@wanted_response_headers,
+                'http.response.header'
+            )
+        );
 
         return $res;
-    }
+    };
+
+    return $loaded = 1;
 }
 
 1;
@@ -87,6 +155,13 @@ OpenTelemetry::Integration::HTTP::Tiny - OpenTelemetry integration for HTTP::Tin
 =head1 SYNOPSIS
 
     use OpenTelemetry::Integration 'HTTP::Tiny';
+
+    # Or pass options to the integration
+    use OpenTelemetry::Integration 'HTTP::Tiny' => {
+        request_headers  => [ ... ],
+        response_headers => [ ... ],
+    };
+
     HTTP::Tiny->new->get('https://metacpan.org');
 
 =head1 DESCRIPTION
@@ -95,6 +170,34 @@ See L<OpenTelemetry::Integration> for more details.
 
 Since this is a core module, it's included in the L<OpenTelemetry> core
 distribution as well.
+
+=head1 CONFIGURATION
+
+=head2 request_headers
+
+This integration can be configured to store specific request headers with
+every generated span. In order to do so, set this key to an array reference
+with the name of the request headers you want as strings.
+
+The strings will be matched case-insesitively to the header names, but they
+will only match the header name entirely.
+
+Matching headers will be stored as span attributes under the
+C<http.request.header> namespace, as described in
+L<the semantic convention documentation|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md#http-request-and-response-headers>.
+
+=head2 response_headers
+
+This integration can be configured to store specific response headers with
+every generated span. In order to do so, set this key to an array reference
+with the name of the response headers you want as strings.
+
+The strings will be matched case-insesitively to the header names, but they
+will only match the header name entirely.
+
+Matching headers will be stored as span attributes under the
+C<http.response.header> namespace, as described in
+L<the semantic convention documentation|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md#http-request-and-response-headers>.
 
 =head1 COPYRIGHT
 
