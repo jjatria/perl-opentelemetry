@@ -9,7 +9,7 @@ requires 'Module::Pluggable';
 requires 'Mutex';
 requires 'Object::Pad', '0.74'; # For //= field initialisers
 requires 'Ref::Util';
-requires 'Syntax::Keyword::Defer';
+requires 'Feature::Compat::Defer';
 requires 'URI';
 requires 'URL::Encode';
 requires 'UUID::URandom';

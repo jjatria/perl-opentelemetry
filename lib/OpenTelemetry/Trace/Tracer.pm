@@ -9,7 +9,7 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Tracer {
-    use Syntax::Keyword::Defer;
+    use Feature::Compat::Defer;
     use Ref::Util 'is_coderef';
 
     use OpenTelemetry::Context;
