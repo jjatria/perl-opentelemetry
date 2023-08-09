@@ -41,11 +41,22 @@ subtest 'Load all plugins' => sub {
             trace => 'OpenTelemetry',
            'OpenTelemetry::Integration::HTTP::Tiny did not install itself',
         ];
+        item [
+            trace => 'OpenTelemetry',
+           'Loading OpenTelemetry::Integration::DBI',
+        ];
+        item [
+            trace => 'OpenTelemetry',
+           'OpenTelemetry::Integration::DBI did not install itself',
+        ];
         end;
     }, 'Did not install anything because dependencies were not loaded';
 
     is + Class::Inspector->loaded('HTTP::Tiny'), F,
         'Did not load HTTP::Tiny automatically';
+
+    is + Class::Inspector->loaded('DBI'), F,
+        'Did not load DBI automatically';
 
     OpenTelemetry::Integration->unimport;
 };
