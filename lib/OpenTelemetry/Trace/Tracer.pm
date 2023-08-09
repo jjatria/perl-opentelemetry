@@ -10,6 +10,7 @@ my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Tracer {
     use Feature::Compat::Defer;
+    use Syntax::Keyword::Dynamically;
     use Ref::Util 'is_coderef';
 
     use OpenTelemetry::Context;
@@ -32,15 +33,16 @@ class OpenTelemetry::Trace::Tracer {
             return $self;
         }
 
-        my $span = $self->create_span( %args, parent => OpenTelemetry::Context->current );
+        my $span = $self->create_span(
+            %args,
+            parent => OpenTelemetry::Context->current
+        );
 
         defer { $span->end };
 
         my $context = OpenTelemetry::Trace->context_with_span($span);
 
-        my $token = OpenTelemetry::Context->attach($context);
-
-        defer { OpenTelemetry::Context->detach($token) };
+        dynamically OpenTelemetry::Context->current = $context;
 
         $block->( $span, $context );
 

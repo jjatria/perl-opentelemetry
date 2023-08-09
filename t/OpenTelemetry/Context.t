@@ -3,7 +3,7 @@
 use Test2::V0 -target => 'OpenTelemetry::Context';
 
 use OpenTelemetry;
-use OpenTelemetry::Test::Logs;
+use Syntax::Keyword::Dynamically;
 
 my ($ctx, $key, $new);
 
@@ -43,38 +43,30 @@ like dies { $ctx->delete('foo') },
     qr/^Keys in a context object must be instances of OpenTelemetry::Context::Key/,
     'Validate key on delete';
 
-subtest 'Implicit context management' => sub {
+subtest 'Context management' => sub {
     my $key = CLASS->key('x');
 
     is CLASS->current->get($key), U, 'Key is undefined in top-level context';
 
-    is my $token = CLASS->attach( CLASS->current->set( $key => 123 ) ), T, 'Attached a context';
-    is CLASS->current->get($key), 123, 'Attached context masks top-level';
-
     {
-        is my $token = CLASS->current->set( $key => 234 )->attach, T, 'Attached another context';
-        is CLASS->current->get($key), 234, 'Attached context masks previous context';
+        dynamically CLASS->current = CLASS->current->set( $key => 123 );
+        is CLASS->current->get($key), 123, 'New context masks top-level';
 
-        is my $null = CLASS->attach( \1 ), T, 'Attaching a non-context does not modify stack';
-        is CLASS->detach($null), F , 'Detaching a null token has no effect';
-        is CLASS->detach($null), F , 'Detaching a null token really has no effect';
+        {
+            dynamically CLASS->current = CLASS->current->set( $key => 234 );
+            is CLASS->current->get($key), 234, 'New context masks old context';
+        }
 
-        is CLASS->detach('123 bogus token'), F, 'Validate last-attached context';
+        is CLASS->current->get($key), 123, 'Restored previous context';
 
-        is CLASS->detach( $token ), T, 'Can detach this context';
-        is CLASS->current->get($key), 123, 'Detacing a context unmasks previous context';
+        like dies { CLASS->current = 'garbage' },
+            qr/^Current context must be an instance of OpenTelemetry::Context/,
+            'Current context is validated on write';
 
-        is CLASS->detach( $token ), F, 'Cannot detach this context twice';
+        is CLASS->current->get($key), 123, 'Failed modification does nothing';
     }
 
-    is CLASS->detach( $token ), T, 'Can detach last context';
-    is CLASS->current->get($key), U, 'Detaching unmasked top-level context';
-
-    is + OpenTelemetry::Test::Logs->messages, [
-        [ error => OpenTelemetry => match qr/cannot attach without a context object/ ],
-        [ error => OpenTelemetry => match qr/calls to detach should match corresponding calls to attach/ ],
-        [ error => OpenTelemetry => match qr/calls to detach should match corresponding calls to attach/ ],
-    ], 'Logged incorrect calls to detach and attach';
+    is CLASS->current->get($key), U, 'Back to top-level context';
 };
 
 done_testing;

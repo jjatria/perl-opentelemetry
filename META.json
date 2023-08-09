@@ -53,6 +53,8 @@
             "Mutex" : "0",
             "Object::Pad" : "0.74",
             "Ref::Util" : "0",
+            "Sentinel" : "0",
+            "Syntax::Keyword::Dynamically" : "0",
             "URI" : "0",
             "URL::Encode" : "0",
             "UUID::URandom" : "0",

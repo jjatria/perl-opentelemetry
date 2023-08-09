@@ -1,6 +1,7 @@
 requires 'Bytes::Random::Secure';
 requires 'Class::Method::Modifiers';
 requires 'Exporter::Tiny', '0.044'; # For -as => CODE support
+requires 'Feature::Compat::Defer';
 requires 'Future', '0.26'; # For Future->done
 requires 'Future::AsyncAwait';
 requires 'List::Util', '1.45'; # For uniq
@@ -9,7 +10,8 @@ requires 'Module::Pluggable';
 requires 'Mutex';
 requires 'Object::Pad', '0.74'; # For //= field initialisers
 requires 'Ref::Util';
-requires 'Feature::Compat::Defer';
+requires 'Syntax::Keyword::Dynamically';
+requires 'Sentinel';
 requires 'URI';
 requires 'URL::Encode';
 requires 'UUID::URandom';

@@ -60,51 +60,21 @@ class OpenTelemetry::Context {
     }
 }
 
-# Implicit context management
+# Context management
 {
-    use OpenTelemetry::Common;
+    use Sentinel;
+    my $current = OpenTelemetry::Context->new;
+    sub current :lvalue {
+        sentinel(
+            get => sub { $current },
+            set => sub {
+                die OpenTelemetry::X->create(
+                    Invalid => 'Current context must be an instance of OpenTelemetry::Context, received instead ' . ref $_[0],
+                ) unless $_[0] isa OpenTelemetry::Context;
 
-    my @stack;
-    my $root = OpenTelemetry::Context->new;
-    my $null = '~NULL~';
-
-    sub attach ( $caller, $other = undef ) {
-        # Allow both
-        #     OpenTelemetry::Context->attach( $ctx )
-        # and
-        #     $ctx->attach;
-        my $context = $caller isa OpenTelemetry::Context ? $caller : $other;
-
-        if ( $context isa OpenTelemetry::Context ) {
-            push @stack, $context;
-            return scalar @stack;
-        }
-
-        OpenTelemetry::Common->error_handler->(
-            exception => 'cannot attach without a context object',
+                $current = $_[0];
+            },
         );
-
-        return $null;
-    }
-
-    sub detach ( $, $token ) {
-        return 0 if $token eq $null;
-
-        if ( $token eq @stack ) {
-            pop @stack;
-            return 1;
-        }
-
-        # TODO: Exception handling?
-        OpenTelemetry::Common->error_handler->(
-            exception => 'calls to detach should match corresponding calls to attach',
-        );
-
-        return 0;
-    }
-
-    sub current ( $ ) {
-        $stack[-1] // $root
     }
 }
 
@@ -211,41 +181,25 @@ L<the OpenTelemetry specification|https://github.com/open-telemetry/opentelemetr
 =head2 current
 
     $context = OpenTelemetry::Context->current
+    $new     = OpenTelemetry::Context->current = $new
 
-Retrieve the current associated to the current execution unit. See below for
-how to L<attach|/attach> and L<detach|/detach> contexts to modify the context
-this method returns.
+Retrieve the context associated to the current execution unit.
 
-=head2 attach
+This is an lvalue method, so it can also be used to set the current context.
+This is probably most useful when used together with a localisation method
+like the one provided by L<Syntax::Keyword::Dynamically>, to ensure that
+once this execution unit is finished, the previous context is restored:
 
-    $token = OpenTelemetry::Context->attach($context)
-    $token = $context->attach;
+    use Syntax::Keyword::Dynamically;
 
-Associates a context to the current execution unit. This can be called either
-as a method on an existing context (in which case the caller will be the one
-attached) or as a class method with a context as its only argument (in which
-case the provided context will be attached).
+    {
+        my $context = ...;
 
-This method returns an opaque token that can be used to L<detach|/detach> this
-associated at the end of the execution unit.
+        # This assignment will only be active in this scope
+        dynamically OpenTelemetry::Context->current = $context;
 
-Calling this method with an invalid object will log an error and return a null
-token which has no effect when used.
-
-=head2 detach
-
-    $bool = OpenTelemetry::Context->detach($token)
-    $bool = $context->detach($token)
-
-Takes a token, such as those returned by L<attach|/attach>, and resets the
-context associated with the current execution unit to the value it had before
-the corresponding call to L<attach|/attach> (the one that generated the
-provided token).
-
-Returns a true value if the operation was successful, or false otherwise.
-
-The token will be used to try to map corresponding calls to attach and detach.
-If a mismatch is detected, an error will be logged.
+        # ... do other things that rely on this context ...
+    }
 
 =head1 SEE ALSO
 
