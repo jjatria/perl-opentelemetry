@@ -23,10 +23,8 @@ class OpenTelemetry::AttributeMap {
     }
 
     method $validate_attribute_value ( $value ) {
-        unless ( defined $value ) {
-            $logger->debugf('Attribute values cannot be undefined');
-            return;
-        }
+        # Attribute values cannot be undefined but logging this is noisy
+        return unless defined $value;
 
         if ( is_hashref $value ) {
             $logger->debugf('Attribute values cannot be hash references');

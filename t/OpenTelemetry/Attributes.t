@@ -120,7 +120,6 @@ subtest 'Validates values' => sub {
     is $test->([ 1, undef, 3 ]), [ U, 0 ], 'Array reference with invalid value';
 
     is +OpenTelemetry::Test::Logs->messages, [
-        [ debug => OpenTelemetry => 'Attribute values cannot be undefined' ],
         [ debug => OpenTelemetry => 'Attribute values cannot be hash references' ],
         [ debug => OpenTelemetry => match qr/hold references or undefined/ ],
         [ debug => OpenTelemetry => match qr/hold references or undefined/ ],
