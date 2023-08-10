@@ -1,0 +1,74 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+
+        # All supported Perl versions except latest.
+        perl: [
+          '5.32', '5.34', '5.36',
+        ]
+
+        # Variants of the latest Perl.
+        include:
+          - os: macos-latest
+            perl: '5.38'
+
+          - os: windows-latest
+            perl: '5.38'
+
+          # This is effectively our normal one: all features and cover.
+          - name: ' (all)'
+            os: ubuntu-latest
+            perl: '5.38'
+            cover: true
+
+    runs-on: ${{ matrix.os }}
+
+    name: v${{ matrix.perl }} on ${{ matrix.os }}${{ matrix.name }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+
+      - name: Show diagnostics
+        run: |
+          perl -v
+          cpanm --showdeps .
+
+      # FIXME: Why do we need to install M:B:T manually
+      # if cpanm --showdeps correctly reports it as a dependency?
+      - name: Install dependencies
+        run: |
+          cpanm --installdeps -n .
+          cpanm -n Module::Build::Tiny
+
+      - if: ${{ matrix.cover }}
+        run: cpanm -n Devel::Cover::Report::Coveralls
+
+      - name: Build
+        run: |
+          perl Build.PL
+          perl Build build
+
+      - if: ${{ matrix.cover }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: cover -report Coveralls -test
+
+      - if: ${{ !matrix.cover }}
+        run: perl Build test
