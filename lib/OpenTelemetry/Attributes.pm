@@ -24,18 +24,18 @@ class OpenTelemetry::AttributeMap {
 
     method $validate_attribute_value ( $value ) {
         unless ( defined $value ) {
-            $logger->warnf('Attribute values cannot be undefined');
+            $logger->debugf('Attribute values cannot be undefined');
             return;
         }
 
         if ( is_hashref $value ) {
-            $logger->warnf('Attribute values cannot be hash references');
+            $logger->debugf('Attribute values cannot be hash references');
             return;
         }
 
         if ( is_arrayref $value ) {
             if ( any { ref || !defined } @$value ) {
-                $logger->warnf('Attributes values that are lists cannot themselves hold references or undefined values');
+                $logger->debugf('Attributes values that are lists cannot themselves hold references or undefined values');
                 return;
             }
 
@@ -61,7 +61,7 @@ class OpenTelemetry::AttributeMap {
             my ( $key, $value ) = @$_;
 
             $key ||= do {
-                $logger->warnf("Attribute names should not be empty. Setting to 'null' instead");
+                $logger->debugf("Attribute names should not be empty. Setting to 'null' instead");
                 'null';
             };
 
@@ -84,7 +84,7 @@ class OpenTelemetry::AttributeMap {
             $data->{$key} = $value;
         }
 
-        $logger->warnf(
+        $logger->debugf(
             "Dropped $dropped attribute entr%s because %s would exceed specified limit ($max_fields)",
             $dropped > 1 ? ( 'ies', 'they' ) : ( 'y', 'it' ),
         ) if $dropped;

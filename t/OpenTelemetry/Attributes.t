@@ -87,8 +87,8 @@ subtest Limits => sub {
     }, 'Can still replace existing attribute';
 
     is +OpenTelemetry::Test::Logs->messages, [
-        [ warning => OpenTelemetry => match qr/1 attribute entry because it/ ],
-        [ warning => OpenTelemetry => match qr/2 attribute entries because they/ ],
+        [ debug => OpenTelemetry => match qr/1 attribute entry because it/ ],
+        [ debug => OpenTelemetry => match qr/2 attribute entries because they/ ],
     ], 'Logged dropped attributes';
 };
 
@@ -120,10 +120,10 @@ subtest 'Validates values' => sub {
     is $test->([ 1, undef, 3 ]), [ U, 0 ], 'Array reference with invalid value';
 
     is +OpenTelemetry::Test::Logs->messages, [
-        [ warning => OpenTelemetry => 'Attribute values cannot be undefined' ],
-        [ warning => OpenTelemetry => 'Attribute values cannot be hash references' ],
-        [ warning => OpenTelemetry => match qr/hold references or undefined/ ],
-        [ warning => OpenTelemetry => match qr/hold references or undefined/ ],
+        [ debug => OpenTelemetry => 'Attribute values cannot be undefined' ],
+        [ debug => OpenTelemetry => 'Attribute values cannot be hash references' ],
+        [ debug => OpenTelemetry => match qr/hold references or undefined/ ],
+        [ debug => OpenTelemetry => match qr/hold references or undefined/ ],
     ], 'Logged invalid attributes';
 };
 
