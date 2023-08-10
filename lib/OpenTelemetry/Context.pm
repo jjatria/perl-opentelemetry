@@ -1,8 +1,6 @@
 use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: A context class for OpenTelemetry
 
-use feature 'isa';
-
 package
     OpenTelemetry::Context::Key;
 
@@ -27,6 +25,7 @@ sub key ( $, $name ) {
 
 class OpenTelemetry::Context {
     use OpenTelemetry::X;
+    use experimental 'isa';
 
     field $data :param = {};
 
@@ -62,7 +61,9 @@ class OpenTelemetry::Context {
 
 # Context management
 {
+    use experimental 'isa';
     use Sentinel;
+
     my $current = OpenTelemetry::Context->new;
     sub current :lvalue {
         sentinel(

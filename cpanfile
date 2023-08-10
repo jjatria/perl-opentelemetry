@@ -2,6 +2,7 @@ requires 'Bytes::Random::Secure';
 requires 'Class::Method::Modifiers';
 requires 'Exporter::Tiny', '0.044'; # For -as => CODE support
 requires 'Feature::Compat::Defer';
+requires 'Feature::Compat::Try';
 requires 'Future', '0.26'; # For Future->done
 requires 'Future::AsyncAwait';
 requires 'List::Util', '1.45'; # For uniq

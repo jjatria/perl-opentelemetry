@@ -3,11 +3,12 @@ package OpenTelemetry::Integration;
 
 our $VERSION = '0.001';
 
-use experimental qw( try signatures );
+use experimental 'signatures';
 
-use Module::Pluggable search_path => ['OpenTelemetry::Integration'];
-use Module::Load ();
+use Feature::Compat::Try;
 use List::Util 'uniqstr';
+use Module::Load ();
+use Module::Pluggable search_path => ['OpenTelemetry::Integration'];
 use Ref::Util 'is_hashref';
 
 use Log::Any;

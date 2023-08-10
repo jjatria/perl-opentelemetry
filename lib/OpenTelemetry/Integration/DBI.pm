@@ -5,7 +5,7 @@ our $VERSION = '0.001';
 
 use strict;
 use warnings;
-use experimental qw( signatures try );
+use experimental 'signatures';
 use feature 'state';
 
 use Class::Inspector;

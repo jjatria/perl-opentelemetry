@@ -9,15 +9,16 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category =>'OpenTelemetry' );
 
 class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
-    use experimental qw( try isa );
+    use experimental 'isa';
 
+    use Feature::Compat::Try;
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
 
-    use OpenTelemetry::Trace;
-    use OpenTelemetry::Trace::SpanContext;
     use OpenTelemetry::Propagator::TextMap;
     use OpenTelemetry::Propagator::TraceContext::TraceParent;
     use OpenTelemetry::Propagator::TraceContext::TraceState;
+    use OpenTelemetry::Trace::SpanContext;
+    use OpenTelemetry::Trace;
 
     my $TRACE_PARENT_KEY = 'traceparent';
     my $TRACE_STATE_KEY  = 'tracestate';
