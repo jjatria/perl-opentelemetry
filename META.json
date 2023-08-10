@@ -82,6 +82,10 @@
          "file" : "lib/OpenTelemetry.pm",
          "version" : "0.001"
       },
+      "OpenTelemetry::Attributes" : {
+         "file" : "lib/OpenTelemetry/Attributes.pm",
+         "version" : "0.001"
+      },
       "OpenTelemetry::Baggage" : {
          "file" : "lib/OpenTelemetry/Baggage.pm",
          "version" : "0.001"

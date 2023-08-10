@@ -8,12 +8,11 @@ our $VERSION = '0.001';
 use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
-class OpenTelemetry::Trace::Event {
+class OpenTelemetry::Trace::Event :does(OpenTelemetry::Attributes) {
     use Time::HiRes;
 
-    field $name        :param :reader = undef;
-    field $timestamp   :param :reader //= Time::HiRes::time;
-    field $attributes  :param :reader //= {};
+    field $name      :param :reader   = undef;
+    field $timestamp :param :reader //= Time::HiRes::time;
 
     ADJUST {
         $name //= do {

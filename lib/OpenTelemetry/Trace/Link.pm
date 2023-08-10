@@ -5,13 +5,12 @@ package OpenTelemetry::Trace::Link;
 
 our $VERSION = '0.001';
 
-class OpenTelemetry::Trace::Link {
+class OpenTelemetry::Trace::Link :does(OpenTelemetry::Attributes) {
     use experimental 'isa';
 
     use OpenTelemetry::X;
 
-    field $context     :param :reader;
-    field $attributes  :param :reader //= {};
+    field $context :param :reader;
 
     ADJUST {
         die OpenTelemetry::X->create(

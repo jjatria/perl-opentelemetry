@@ -21,7 +21,6 @@ our @EXPORT_OK = qw(
     timeout_timestamp
     maybe_timeout
     config
-    validate_attribute_value
 );
 
 use Log::Any;
@@ -50,20 +49,6 @@ sub config ( @keys ) {
     return $value unless defined $value;
 
     $value =~ /^true$/i ? 1 : $value =~ /^false$/i ? 0 : $value;
-}
-
-sub validate_attribute_value ( $value ) {
-    if ( is_hashref $value ) {
-        $logger->warnf('Span attribute values cannot be hash references');
-        return;
-    }
-
-    if ( is_arrayref $value && any { ref } @$value ) {
-        $logger->warnf('Span attribute values that are lists cannot hold references');
-        return;
-    }
-
-    $value;
 }
 
 {
