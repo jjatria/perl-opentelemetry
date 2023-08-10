@@ -13,8 +13,6 @@ use Time::HiRes qw( clock_gettime CLOCK_MONOTONIC );
 use List::Util qw( any first );
 use Ref::Util qw( is_arrayref is_hashref );
 
-use namespace::clean;
-
 use parent 'Exporter';
 
 our @EXPORT_OK = qw(
@@ -61,5 +59,14 @@ sub config ( @keys ) {
         };
     }
 }
+
+delete $OpenTelemetry::Common::{$_} for qw(
+    CLOCK_MONOTONIC
+    any
+    clock_gettime
+    first
+    is_arrayref
+    is_hashref
+);
 
 1;

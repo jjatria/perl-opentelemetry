@@ -10,13 +10,12 @@ requires 'Module::Pluggable';
 requires 'Mutex';
 requires 'Object::Pad', '0.74'; # For //= field initialisers
 requires 'Ref::Util';
-requires 'Syntax::Keyword::Dynamically';
 requires 'Sentinel';
+requires 'Syntax::Keyword::Dynamically';
 requires 'URI';
 requires 'URL::Encode';
 requires 'UUID::URandom';
 requires 'X::Tiny';
-requires 'namespace::clean';
 
 on test => sub {
     requires 'Test2::V0';

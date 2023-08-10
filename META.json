@@ -59,7 +59,6 @@
             "URL::Encode" : "0",
             "UUID::URandom" : "0",
             "X::Tiny" : "0",
-            "namespace::clean" : "0",
             "perl" : "v5.32.0"
          }
       },
