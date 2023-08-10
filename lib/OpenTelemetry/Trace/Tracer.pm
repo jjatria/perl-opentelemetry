@@ -9,9 +9,8 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Tracer {
-    use experimental 'try';
-
     use Feature::Compat::Defer;
+    use Feature::Compat::Try;
     use Syntax::Keyword::Dynamically;
     use Ref::Util 'is_coderef';
 
