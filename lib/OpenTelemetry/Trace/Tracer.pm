@@ -9,7 +9,6 @@ use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Tracer {
-    use Feature::Compat::Defer;
     use Feature::Compat::Try;
     use Syntax::Keyword::Dynamically;
     use Ref::Util 'is_coderef';
@@ -40,22 +39,21 @@ class OpenTelemetry::Trace::Tracer {
             parent => OpenTelemetry::Context->current
         );
 
-        defer { $span->end };
-
         my $context = OpenTelemetry::Trace->context_with_span($span);
 
         dynamically OpenTelemetry::Context->current = $context;
 
         try {
-            $block->( $span, $context );
+            return $block->( $span, $context );
         }
         catch ($e) {
             $span->record_exception($e);
             $span->set_status( SPAN_STATUS_ERROR, "$e" );
             die $e;
         }
-
-        $self;
+        finally {
+            $span->end;
+        }
     }
 }
 
@@ -131,25 +129,27 @@ method).
 =head2 in_span
 
     # Experimental
-    $tracer = $tracer->in_span(
-        $span_name => sub ( $span, $context ) { ... },
+    $return = $tracer->in_span(
+        $span_name,
         %span_arguments,
+        sub ( $span, $context ) { ...; $return },
     );
 
 This method is currently experimental.
 
-Takes a string and a subroutine reference, and executes the code in that
-reference within a span with that name. The subroutine reference will receive
-the created span and the current context (containing the span) as arguments.
-The span is guaranteed to be ended after execution of the subroutine ends by
-any means.
+Takes a string as the first argument and a subroutine reference as the last
+argument, and executes the code in that reference within a span using the
+string as its name. The subroutine reference will receive the created span and
+the current context (containing the span) as arguments. The span is guaranteed
+to be ended after execution of the subroutine ends by any means.
 
-Any additional parameters passed to this method will be passed as-is to the
-call to L<create_span|/create_span> made when creating the span. Note that the
-name provided before the subroutine reference is mandatory and will take
-precedence over any name set in these additional parameters.
+Any additional parameters passed to this method between the span name and the
+code reference will be passed as-is to the call to L<create_span|/create_span>
+made when creating the span. Note that the name provided as the first argument
+is mandatory and will take precedence over any name set in these additional
+parameters.
 
-This method is chainable.
+This method returns whatever the executed code reference returns.
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -33,20 +33,22 @@ subtest 'Convenience in_span method' => sub {
             'Received a context with the span';
 
         ($mocked) = mocked $span;
+
+        return 'TEST';
     });
 
     is $mocked->call_tracking, [
         { sub_name => 'end', args => [ D ], sub_ref => E },
     ], 'Called span->end at end of block';
 
-    ref_is $ret, $tracer, 'in_span is chainable';
-
-    ref_is $tracer->in_span, $tracer,
-        'in_span is chainable even when no block is provided';
+    is $ret, 'TEST', 'in_span returns what the block returns';
 
     is + OpenTelemetry::Test::Logs->messages, [
         [ warning => OpenTelemetry => match qr/^Missing required code block / ],
     ], 'Faulty call to in_span is logged';
+
+    is [ $tracer->in_span( foo => sub { qw( a b c ) } ) ],
+        [qw( a b c )], 'Can return list context';
 };
 
 done_testing;
