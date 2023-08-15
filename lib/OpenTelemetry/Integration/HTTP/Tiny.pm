@@ -12,8 +12,11 @@ use Class::Method::Modifiers 'install_modifier';
 use Feature::Compat::Defer;
 use List::Util 'any';
 use OpenTelemetry::Constants qw( SPAN_KIND_CLIENT SPAN_STATUS_ERROR SPAN_STATUS_OK );
+use OpenTelemetry::Context;
+use OpenTelemetry::Trace;
 use OpenTelemetry;
 use Ref::Util 'is_arrayref';
+use Syntax::Keyword::Dynamically;
 
 use parent 'OpenTelemetry::Integration';
 
@@ -103,6 +106,9 @@ sub install ( $class, %config ) {
                     : (),
             },
         );
+
+        dynamically OpenTelemetry::Context->current
+            = OpenTelemetry::Trace->context_with_span($span);
 
         defer { $span->end }
 
