@@ -17,6 +17,7 @@ class OpenTelemetry::Trace::Tracer {
     use OpenTelemetry::Context;
     use OpenTelemetry::Trace::Span;
     use OpenTelemetry::Trace;
+    use OpenTelemetry::X;
 
     method create_span ( %args ) {
         OpenTelemetry::Trace::Span::INVALID;
@@ -24,15 +25,17 @@ class OpenTelemetry::Trace::Tracer {
 
     # Experimental
     method in_span {
+        is_coderef $_[-1] or die OpenTelemetry::X->create(
+            Invalid => 'Missing required code block in call to Tracer->in_span',
+        );
+
         my $block = pop;
         my $name  = shift;
         my %args  = @_;
-        $args{name} = $name;
 
-        unless ( is_coderef $block ) {
-            $logger->warn('Missing required code block in call to Tracer->in_span');
-            return $self;
-        }
+        $args{name} = $name or die OpenTelemetry::X->create(
+            Invalid => 'Missing required span name to Tracer->in_span',
+        );
 
         my $span = $self->create_span(
             %args,

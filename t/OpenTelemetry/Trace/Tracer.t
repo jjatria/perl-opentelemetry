@@ -43,9 +43,11 @@ subtest 'Convenience in_span method' => sub {
 
     is $ret, 'TEST', 'in_span returns what the block returns';
 
-    is + OpenTelemetry::Test::Logs->messages, [
-        [ warning => OpenTelemetry => match qr/^Missing required code block / ],
-    ], 'Faulty call to in_span is logged';
+    like dies { $tracer->in_span('name') },
+        qr/^Missing required code block /, 'Requires code block';
+
+    like dies { $tracer->in_span( sub { } ) },
+        qr/^Missing required span name/, 'Requires span name';
 
     is [ $tracer->in_span( foo => sub { qw( a b c ) } ) ],
         [qw( a b c )], 'Can return list context';
