@@ -5,6 +5,7 @@ use Test2::V0 -target => 'OpenTelemetry::Trace::Tracer';
 use experimental 'signatures';
 
 use OpenTelemetry::Test::Logs;
+use OpenTelemetry::Constants 'SPAN_STATUS_ERROR';
 
 is my $tracer = CLASS->new, object {
     prop isa => 'OpenTelemetry::Trace::Tracer';
@@ -51,6 +52,34 @@ subtest 'Convenience in_span method' => sub {
 
     is [ $tracer->in_span( foo => sub { qw( a b c ) } ) ],
         [qw( a b c )], 'Can return list context';
+
+    like dies {
+        $tracer->in_span(
+            dead_span => sub ( $span, $context ) {
+                ($mocked) = mocked $span;
+                die 'An error';
+            },
+        );
+    } => qr/^An error/, 'If sub dies, exception is not caught';
+
+    is $mocked->call_tracking, [
+        {
+            sub_name => 'record_exception',
+            args     => [ D, match qr/^An error/ ],
+            sub_ref  => E
+        },
+        {
+            sub_name => 'set_status',
+            args     => [ D, SPAN_STATUS_ERROR, match qr/^An error/ ],
+            sub_ref  => E
+        },
+        {
+            sub_name => 'end',
+            args     => [ D ],
+            sub_ref  => E
+        },
+    ], 'Span records caught error';
+
 };
 
 done_testing;
