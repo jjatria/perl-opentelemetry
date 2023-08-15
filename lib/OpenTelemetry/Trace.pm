@@ -30,6 +30,17 @@ sub non_recording_span ( $, $context = undef ) {
 sub generate_trace_id { goto \&OpenTelemetry::Trace::Common::generate_trace_id }
 sub generate_span_id  { goto \&OpenTelemetry::Trace::Common::generate_span_id  }
 
+{
+    my $untraced_key = OpenTelemetry::Context->key('untraced');
+    sub untraced_context ( $, $context = undef ) {
+        ( $context // OpenTelemetry::Context->current )->set( $untraced_key => 1 );
+    }
+
+    sub is_untraced_context ( $, $context = undef ) {
+        !! ( $context // OpenTelemetry::Context->current )->get( $untraced_key );
+    }
+}
+
 1;
 
 __END__
@@ -121,6 +132,30 @@ Generate a new random trace ID. This ID is guaranteed to be valid.
     $id = OpenTelemetry::Trace->generate_span_id;
 
 Generate a new random span ID. This ID is guaranteed to be valid.
+
+=head2 untraced_context
+
+    $new_context = OpenTelemetry::Trace->untraced_context($context);
+
+Returns a new L<OpenTelemetry::Context> instance which is marked as untraced.
+This can be used together with the L<is_untraced_context|/is_untraced_context>
+method below to locally disable tracing for internal operations:
+
+    dynamically OpenTelemetry::Context->current
+        = OpenTelemetry::Trace->untraced_context;
+
+This method takes an optional L<OpenTelemetry::Context> to use as the base
+context. If none is provided, the current context will be used.
+
+=head2 is_untraced_context
+
+    $bool = OpenTelemetry::Trace->is_untraced_context($context);
+
+Takes an L<OpenTelemetry::Context> instance and checks if it is marked as an
+untraced context (see the L<untraced_context|/untraced_context> method above).
+If no context is provided, the current context will be used.
+
+Returns true if this is an untraced context, or false otherwise.
 
 =head1 SEE ALSO
 

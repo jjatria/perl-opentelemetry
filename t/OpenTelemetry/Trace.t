@@ -4,6 +4,7 @@ use Test2::V0 -target => 'OpenTelemetry::Trace';
 
 use OpenTelemetry::Context;
 use OpenTelemetry::Constants qw( INVALID_SPAN_ID INVALID_TRACE_ID );
+use Syntax::Keyword::Dynamically;
 
 is CLASS->span_from_context, object {
     call context => object {
@@ -53,6 +54,33 @@ subtest 'Span ID' => sub {
     is my $id = CLASS->generate_span_id, T, 'Can generate a new one';
     is length $id, 8, 'Has the right length';
     isnt $id, INVALID_SPAN_ID, 'Is valid';
+};
+
+subtest 'Untraced context' => sub {
+    my $root = OpenTelemetry::Context->current;
+
+    is +OpenTelemetry::Trace->is_untraced_context, F,
+        'Root context is not untraced';
+
+    is +OpenTelemetry::Trace->is_untraced_context($root), F,
+        'Explicit root context is not untraced';
+
+    is my $untraced = OpenTelemetry::Trace->untraced_context, object {
+        prop isa => 'OpenTelemetry::Context';
+    }, 'Untraced returns an OpenTelemetry::Context object';
+
+    is +OpenTelemetry::Trace->untraced_context($untraced), T,
+        'Untraced context is explicitly detected as such';
+
+    {
+        dynamically OpenTelemetry::Context->current = $untraced;
+
+        is +OpenTelemetry::Trace->is_untraced_context, T,
+            'Current context is untraced';
+    }
+
+    is +OpenTelemetry::Trace->is_untraced_context, F,
+        'Current context is again not untraced';
 };
 
 done_testing;
