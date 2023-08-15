@@ -12,7 +12,10 @@ use Class::Inspector;
 use Class::Method::Modifiers 'install_modifier';
 use Feature::Compat::Try;
 use OpenTelemetry::Constants qw( SPAN_KIND_CLIENT SPAN_STATUS_ERROR SPAN_STATUS_OK );
+use OpenTelemetry::Context;
+use OpenTelemetry::Trace;
 use OpenTelemetry;
+use Syntax::Keyword::Dynamically;
 
 use parent 'OpenTelemetry::Integration';
 
@@ -79,6 +82,9 @@ sub install ( $class, %options ) {
                 %{ $info->{driver_specific} // {} },
             },
         );
+
+        dynamically OpenTelemetry::Context->current
+            = OpenTelemetry::Trace->context_with_span($span);
 
         try {
             return $handle->$orig(@args);
