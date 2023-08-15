@@ -139,10 +139,6 @@ sub install ( $class, %config ) {
 
             install_modifier $package => around => $subname => sub {
                 my ( $orig, $self, @rest ) = @_;
-
-                my $wantarray = wantarray;
-
-                my $return;
                 OpenTelemetry->tracer_provider->tracer(
                     name    => __PACKAGE__,
                     version => $VERSION,
@@ -152,20 +148,9 @@ sub install ( $class, %config ) {
                             'code.function'  => $subname,
                             'code.namespace' => $package,
                         },
-                    ) => sub {
-                        if ( $wantarray ) {
-                            $return = [ $self->$orig(@rest) ];
-                        }
-                        elsif ( !defined $wantarray ) {
-                            $self->$orig(@rest);
-                        }
-                        else {
-                            $return = $self->$orig(@rest);
-                        }
-                    },
+                    ),
+                    sub { $self->$orig(@rest) },
                 );
-
-                defined $wantarray ? $wantarray ? @$return : $return : undef;
             };
 
             warn "Wrapped ${package}::$subname\n" if IS_TRACE;
