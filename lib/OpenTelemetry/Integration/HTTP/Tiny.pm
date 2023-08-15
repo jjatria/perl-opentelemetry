@@ -66,9 +66,10 @@ sub install ( $class, %config ) {
 
         $uri->userinfo('REDACTED:REDACTED') if $uri->userinfo;
 
-        my $tracer = OpenTelemetry->tracer_provider->tracer( name => __PACKAGE__ );
-
-        my $span = $tracer->create_span(
+        my $span = OpenTelemetry->tracer_provider->tracer(
+            name    => __PACKAGE__,
+            version => $VERSION,
+        )->create_span(
             name       => $method,
             kind       => SPAN_KIND_CLIENT,
             attributes => {
