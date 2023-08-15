@@ -49,7 +49,7 @@ subtest 'Load all plugins' => sub {
             trace => 'OpenTelemetry',
            'OpenTelemetry::Integration::DBI did not install itself',
         ];
-        end;
+        etc;
     }, 'Did not install anything because dependencies were not loaded';
 
     is + Class::Inspector->loaded('HTTP::Tiny'), F,
