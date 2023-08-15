@@ -11,7 +11,7 @@ use Class::Inspector;
 use Class::Method::Modifiers 'install_modifier';
 use Feature::Compat::Try;
 use Syntax::Keyword::Dynamically;
-use List::Util 'any';
+use List::Util 'none';
 use OpenTelemetry::Constants qw( SPAN_KIND_CLIENT SPAN_STATUS_ERROR SPAN_STATUS_OK );
 use OpenTelemetry::Context;
 use OpenTelemetry::Trace;
@@ -26,8 +26,9 @@ my sub get_headers ( $have, $want, $prefix ) {
 
     my %attributes;
     $have->scan( sub ( $key, $value ) {
-        return unless any { $key =~ $_ } @$want;
-        push @{ $attributes{ "$prefix.$key" } //= [] }, $value;
+        $key =~ tr/-/_/;
+        return if none { $key =~ $_ } @$want;
+        push @{ $attributes{ $prefix . '.' . lc $key } //= [] }, $value;
     });
 
     %attributes;
@@ -49,10 +50,10 @@ sub install ( $class, %config ) {
     return if $loaded;
     return unless Class::Inspector->loaded('LWP::UserAgent');
 
-    my @wanted_request_headers = map qr/^\Q$_\E$/i,
+    my @wanted_request_headers = map qr/^\Q$_\E$/i, map tr/-/_/r,
         @{ delete $config{request_headers}  // [] };
 
-    my @wanted_response_headers = map qr/^\Q$_\E$/i,
+    my @wanted_response_headers = map qr/^\Q$_\E$/i, map tr/-/_/r,
         @{ delete $config{response_headers} // [] };
 
     $original = \&LWP::UserAgent::request;
@@ -125,8 +126,7 @@ sub install ( $class, %config ) {
                 $span->set_status( SPAN_STATUS_OK );
             }
             else {
-                my $description = $response->decoded_content;
-                $span->set_status( SPAN_STATUS_ERROR, $description );
+                $span->set_status( SPAN_STATUS_ERROR, $response->code );
             }
 
             $span->set_attribute(
@@ -140,7 +140,7 @@ sub install ( $class, %config ) {
             return $response;
         }
         catch ($error) {
-            $span->recor_exception($error);
+            $span->record_exception($error);
             $span->set_status( SPAN_STATUS_ERROR, $error );
             die $error;
         }
@@ -189,8 +189,9 @@ This integration can be configured to store specific request headers with
 every generated span. In order to do so, set this key to an array reference
 with the name of the request headers you want as strings.
 
-The strings will be matched case-insesitively to the header names, but they
-will only match the header name entirely.
+The strings will be matched case-insesitively to the header names, and hyphens
+and underscores will be treated indistinctly. Otherwise, names will be matched
+literally.
 
 Matching headers will be stored as span attributes under the
 C<http.request.header> namespace, as described in
@@ -202,8 +203,9 @@ This integration can be configured to store specific response headers with
 every generated span. In order to do so, set this key to an array reference
 with the name of the response headers you want as strings.
 
-The strings will be matched case-insesitively to the header names, but they
-will only match the header name entirely.
+The strings will be matched case-insesitively to the header names, and hyphens
+and underscores will be treated indistinctly. Otherwise, names will be matched
+literally.
 
 Matching headers will be stored as span attributes under the
 C<http.response.header> namespace, as described in
