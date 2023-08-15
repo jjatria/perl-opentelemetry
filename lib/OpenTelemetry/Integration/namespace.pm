@@ -235,19 +235,29 @@ __END__
 
 =head1 NAME
 
-OpenTelemetry::Integration::HTTP::Tiny - OpenTelemetry integration for HTTP::Tiny
+OpenTelemetry::Integration::namespace - OpenTelemetry integration for a namespace
 
 =head1 SYNOPSIS
 
-    use OpenTelemetry::Integration 'HTTP::Tiny';
+    # This integration is EXPERIMENTAL
 
-    # Or pass options to the integration
-    use OpenTelemetry::Integration 'HTTP::Tiny' => {
-        request_headers  => [ ... ],
-        response_headers => [ ... ],
+    use OpenTelemetry::Integration 'namespace' => {
+        include => {
+            paths => [(
+                lib/Local
+            )],
+        },
+        exclude => {
+            paths => [qw(
+                lib/Local/Secret
+            )],
+            subroutines => {
+                'Some::Package' => [qw(
+                    low_level
+                )],
+            },
+        },
     };
-
-    HTTP::Tiny->new->get('https://metacpan.org');
 
 =head1 DESCRIPTION
 
@@ -258,31 +268,95 @@ distribution as well.
 
 =head1 CONFIGURATION
 
-=head2 request_headers
+=head2 include / exclude
 
-This integration can be configured to store specific request headers with
-every generated span. In order to do so, set this key to an array reference
-with the name of the request headers you want as strings.
+The C<include> and C<exclude> sections control the package and subroutines
+that are considered to be relevant by the monitoring code. Fields in the
+C<exclude> section take precedence.
 
-The strings will be matched case-insesitively to the header names, but they
-will only match the header name entirely.
+=head3 paths
 
-Matching headers will be stored as span attributes under the
-C<http.request.header> namespace, as described in
-L<the semantic convention documentation|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md#http-request-and-response-headers>.
+This field should be set to list of literal paths or path segments. Any code
+that is loaded from those paths will be included or excluded depending on what
+section this was under.
 
-=head2 response_headers
+For example:
 
-This integration can be configured to store specific response headers with
-every generated span. In order to do so, set this key to an array reference
-with the name of the response headers you want as strings.
+    include => {
+        paths => [qw(
+            lib/Local
+            lib/Test
+        )],
+    },
+    exclude => {
+        paths => [qw(
+            lib/Local/Secret
+        )],
+    },
 
-The strings will be matched case-insesitively to the header names, but they
-will only match the header name entirely.
+would make all the code that is loaded from C<lib/Local> and C<lib/Test>,
+except the code loaded from C<lib/Local/Secret>, relevant for monitoring.
 
-Matching headers will be stored as span attributes under the
-C<http.response.header> namespace, as described in
-L<the semantic convention documentation|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md#http-request-and-response-headers>.
+=head3 subpackages
+
+Perl allows multiple packages to be defined inside the same file, so that
+importing one file makes all of those packages available, without the
+subpackages ever being explicitly loaded. Under normal circumstances, this
+makes these packages invisible to the approach in this integration.
+
+This key makes it possible to specify packages that should be wrapped for
+monitoring whenever we detect another packages being loaded.
+
+This field should be set to a hash where the keys are package names and
+the values are lists of packages to be wrapped whenever the parent is.
+
+For example:
+
+    include => {
+        subpackages => {
+            'Local::Foo' => [qw(
+                Local::Foo::Bar
+            )],
+        },
+    },
+
+This mapping has no meaning under C<exclude>, and is ignored in that case.
+
+=head3 subroutines
+
+In some cases, some specific subroutines are of interest even though they
+are defined in packages that would otherwise not be eligible for reporting.
+
+This field makes it possible to mark those subroutines as explicitly
+relevant or irrelevant depending on the section this is under. If under
+C<include>, these subroutines will always be wrapped; while under C<exclude>
+they will I<never> be.
+
+This field should be set to a hash where the keys are package names and
+the values are lists of subroutine names.
+
+For example:
+
+    include => {
+        subroutines => {
+            'Local::Splines' => [qw(
+                reticulate
+            )],
+        },
+    },
+    exclude => {
+        subroutines => {
+            'Local::Splines' => [qw(
+                frobligate
+            )],
+        },
+    },
+
+This would make C<Local::Splines::reticulate> I<always> be wrapped, even
+if C<Local::Splines> was loaded from a path that was not otherwise
+specified as relevant. Likewise, C<Local::Splines::frobligate> would never
+be wrapped, even if C<Local::Splines> was marked as relevant through some
+other method.
 
 =head1 COPYRIGHT
 
