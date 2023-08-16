@@ -58,7 +58,9 @@ jobs:
           cpanm -n Module::Build::Tiny
 
       - if: ${{ matrix.cover }}
-        run: cpanm -n Devel::Cover::Report::Coveralls
+        run: |
+          cpanm -n DBI LWP::UserAgent
+          cpanm -n Devel::Cover::Report::Coveralls
 
       - name: Build
         run: |
