@@ -182,7 +182,7 @@ subtest 'Requested headers' => sub {
     ];
 
     ok +OpenTelemetry::Integration::HTTP::Tiny->install(
-        request_headers  => [qw( default-1 default-2 request_2 request_3 )],
+        request_headers  => [qw( default_1 default-2 request-2 request_3 )],
         response_headers => [qw( response_1 response_[0-9] )],
     ) => 'Installed modifier';
 

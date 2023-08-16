@@ -24,14 +24,14 @@ sub dependencies { 'HTTP::Tiny' }
 
 my sub get_headers ( $have, $want, $prefix ) {
     return unless @$want;
+
     map {
-        "$prefix." . ( lc =~ s/-/_/gr ),
-        is_arrayref $have->{$_} ? $have->{$_} : [ $have->{$_} ];
+        my ( $k, $v ) = ( $_->[0], $have->{ $_->[1] } );
+        "$prefix.$k" => is_arrayref $v ? $v : [ $v ]
     }
-    grep {
-        my $k = $_;
-        any { $k =~ $_ } @$want;
-    } keys %$have;
+    grep { my $k = $_->[0]; any { $k =~ $_ } @$want }
+    map { [ lc tr/-/_/r, $_ ] }
+    keys %$have;
 }
 
 my ( $original, $loaded );
@@ -52,10 +52,10 @@ sub install ( $class, %config ) {
 
     require URI;
 
-    my @wanted_request_headers = map qr/^\Q$_\E$/i,
+    my @wanted_request_headers = map qr/^\Q$_\E$/i, map tr/-/_/r,
         @{ delete $config{request_headers}  // [] };
 
-    my @wanted_response_headers = map qr/^\Q$_\E$/i,
+    my @wanted_response_headers = map qr/^\Q$_\E$/i, map tr/-/_/r,
         @{ delete $config{response_headers} // [] };
 
     $original = \&HTTP::Tiny::request;
@@ -186,8 +186,9 @@ This integration can be configured to store specific request headers with
 every generated span. In order to do so, set this key to an array reference
 with the name of the request headers you want as strings.
 
-The strings will be matched case-insesitively to the header names, but they
-will only match the header name entirely.
+The strings will be matched case-insesitively to the header names, and hyphens
+and underscores will be treated indistinctly. Otherwise, names will be matched
+literally.
 
 Matching headers will be stored as span attributes under the
 C<http.request.header> namespace, as described in
@@ -199,8 +200,9 @@ This integration can be configured to store specific response headers with
 every generated span. In order to do so, set this key to an array reference
 with the name of the response headers you want as strings.
 
-The strings will be matched case-insesitively to the header names, but they
-will only match the header name entirely.
+The strings will be matched case-insesitively to the header names, and hyphens
+and underscores will be treated indistinctly. Otherwise, names will be matched
+literally.
 
 Matching headers will be stored as span attributes under the
 C<http.response.header> namespace, as described in
