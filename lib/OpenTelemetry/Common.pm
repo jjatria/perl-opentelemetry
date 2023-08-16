@@ -36,7 +36,7 @@ sub maybe_timeout ( $timeout = undef, $start = undef ) {
     $timeout > 0 ? $timeout : 0;
 }
 
-# As per https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/sdk-environment-variables.md
+# As per https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/configuration/sdk-environment-variables.md
 sub config ( @keys ) {
     return unless @keys;
 

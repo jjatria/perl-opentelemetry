@@ -102,7 +102,7 @@ Set one or more attributes in this span.
 Setting an attribute will overwrite any attribute of the same name.
 
 Refer to
-L<the OpenTelementry specification|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md>
+L<the OpenTelementry specification|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/README.md>
 for details on some of the standard attribute names and their meanings.
 
 This method returns the calling span, which means it can be chained.
@@ -118,7 +118,7 @@ This method returns the calling span, which means it can be chained.
 Add an event to this span.
 
 Refer to
-L<the OpenTelementry specification|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md>
+L<the OpenTelementry specification|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/README.md>
 for details on some of the standard event names and their meanings.
 
 This method returns the calling span, which means it can be chained.
