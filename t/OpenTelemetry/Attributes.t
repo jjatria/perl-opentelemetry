@@ -4,7 +4,12 @@ use Test2::V0;
 use Object::Pad;
 use OpenTelemetry::Test::Logs;
 
-class Local::Test :does(OpenTelemetry::Attributes) { }
+class Local::Test           :does(OpenTelemetry::Attributes          ) { }
+class Local::Test::Writable :does(OpenTelemetry::Attributes::Writable) { }
+
+like dies { Local::Test->new->_set_attribute },
+    qr/^Can't locate object method "_set_attribute"/,
+    'Default role is not writable';
 
 is Local::Test->new, object {
     call attributes         => {};
@@ -59,7 +64,7 @@ subtest Limits => sub {
     subtest Count => sub {
         OpenTelemetry::Test::Logs->clear;
 
-        my $a = Local::Test->new( attribute_count_limit => 2 );
+        my $a = Local::Test::Writable->new( attribute_count_limit => 2 );
 
         is $a->_set_attribute( foo => 123 ), object {
             call sub { shift->attributes->{foo} } => 123;
@@ -101,7 +106,7 @@ subtest Limits => sub {
     subtest Length => sub {
         OpenTelemetry::Test::Logs->clear;
 
-        my $a = Local::Test->new( attribute_length_limit => 4 );
+        my $a = Local::Test::Writable->new( attribute_length_limit => 4 );
 
         is $a->_set_attribute( foo => 123 ), object {
             call sub { shift->attributes->{foo} } => 123;
