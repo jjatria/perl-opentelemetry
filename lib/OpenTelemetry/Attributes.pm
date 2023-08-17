@@ -15,7 +15,7 @@ class OpenTelemetry::AttributeMap {
 
     field $max_fields       :param  = undef;
     field $max_field_length :param  = undef;
-    field $recorded_fields  :reader = 0;
+    field $dropped_fields   :reader = 0;
     field $data                     = {};
 
     ADJUSTPARAMS ($params) {
@@ -26,20 +26,25 @@ class OpenTelemetry::AttributeMap {
         # Attribute values cannot be undefined but logging this is noisy
         return unless defined $value;
 
-        if ( is_hashref $value ) {
-            $logger->debugf('Attribute values cannot be hash references');
-            return;
-        }
-
         if ( is_arrayref $value ) {
-            if ( any { ref || !defined } @$value ) {
-                $logger->debugf('Attributes values that are lists cannot themselves hold references or undefined values');
+            if ( any { ref } @$value ) {
+                $logger->trace('Attribute values that are lists cannot themselves hold references');
                 return;
             }
 
-            if ( $max_field_length ) {
-                $value = [ map substr( $_, 0, $max_field_length ), @$value ];
-            }
+            # Make sure we do not store the same reference that was
+            # passed as a value, since the list on the other side of
+            # that reference can be modified without going through
+            # our checks
+            $value = $max_field_length ? [
+                map {
+                        defined ? substr( $_, 0, $max_field_length ) : $_
+                } @$value
+            ] : [ @$value ];
+        }
+        elsif ( ref $value ) {
+            $logger->trace('Attribute values cannot be references');
+            return;
         }
         elsif ( $max_field_length ) {
             $value = substr $value, 0, $max_field_length;
@@ -48,13 +53,8 @@ class OpenTelemetry::AttributeMap {
         ( 1, $value );
     }
 
-    method dropped_fields () {
-        $recorded_fields - scalar %$data;
-    }
-
     method set ( %args ) {
-        my $dropped;
-
+        my $recorded = 0;
         for ( pairs %args ) {
             my ( $key, $value ) = @$_;
 
@@ -64,28 +64,30 @@ class OpenTelemetry::AttributeMap {
             };
 
             my $fields = scalar %$data;
-            unless ( exists $data->{$key} ) {
-                $fields++;
-                $recorded_fields++;
-            }
+            $fields++ unless exists $data->{$key};
 
-            if ( $max_fields && $fields > $max_fields ) {
-                $dropped++;
-                next;
-            }
+            next if $max_fields && $fields > $max_fields;
 
             my $ok;
             ( $ok, $value ) = $self->$validate_attribute_value($value);
 
             next unless $ok;
 
+            $recorded++;
             $data->{$key} = $value;
         }
 
+        my $dropped = +( keys %args ) - $recorded;
+
         $logger->debugf(
-            "Dropped $dropped attribute entr%s because %s would exceed specified limit ($max_fields)",
-            $dropped > 1 ? ( 'ies', 'they' ) : ( 'y', 'it' ),
-        ) if $dropped;
+            'Dropped %s attribute entr%s because %s invalid%s',
+            $dropped,
+            $dropped > 1 ? ( 'ies', 'they were' ) : ( 'y', 'it was' ),
+            $max_fields
+                ? " or would have exceeded field limit ($max_fields)" : '',
+        ) if $logger->is_debug && $dropped > 0;
+
+        $dropped_fields += $dropped;
 
         return $self;
     }
@@ -115,7 +117,100 @@ role OpenTelemetry::Attributes {
 
     method dropped_attributes () { $attributes->dropped_fields }
 
-    method recorded_attributes () { $attributes->recorded_fields }
-
     method attributes () { $attributes->to_hash }
 }
+
+__END__
+
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Attributes - A common role for OpenTelemetry classes with attributes
+
+=head1 SYNOPSIS
+
+    class My::Class :does(OpenTelemetry::Attributes) { }
+
+    my $class = My::Class->new(
+        attributes => \%attributes,
+    );
+
+    my $read_only = $class->attributes;
+
+    say $class->dropped_attributes;
+
+=head1 DESCRIPTION
+
+A number of OpenTelemetry classes allow for arbitrary attributes to be stored
+on them. Since the rules for these attributes are shared by all of them, this
+module provides a role that can be consumed by any class that should have
+attributes, and makes it possible to have a consistent behaviour in all of
+them.
+
+See the
+L<OpenTelemetry specification|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/common/README.md#attribute>
+for more details on these behaviours.
+
+=head2 Allowed values
+
+The values stored in an OpenTelemetry attribute hash can be any defined scalar
+that is not a reference. The only exceptions to this rule are array references,
+which are allowed as values as long as they do not contain any values that are
+themselves undefined or references (of any kind).
+
+=head2 Limits
+
+This role can optionally be configured to limit the number of attributes
+it will store, and the length of the stored values. If configured in this way,
+information about how many attributes were dropped will be made available
+via the L<dropped_attributes|/dropped_attributes> method described below.
+
+=head1 METHODS
+
+=head2 new
+
+    $instance = Class::Consuming::Role->new(
+        attributes             => \%attributes // {},
+        attribute_count_limit  => $count       // undef,
+        attribute_length_limit => $length      // undef,
+    );
+
+Creates a new instance of the class that consumes this role. A hash reference
+passed as the value for the C<attributes> parameter will be used as the
+initial set of attribues.
+
+The C<attribute_count_limit> and C<attribute_length_limit> parameters passed
+to the constructor can optionally be used to limit the number of fields the
+attribute store will hold, and the length of the stored values. If not set,
+the store will have no limit.
+
+If the length limit is set, fields set to plain scalar values will be
+truncated at that limit when set. In the case of values that are array
+references, the length limit will apply to each individual value.
+
+=head2 attributes
+
+    $hash = $class->attributes;
+
+Returns a hash reference with a copy of the stored attributes. Because this
+is a copy, the returned hash reference is read-only.
+
+=head2 dropped_attributes
+
+    $count = $class->dropped_attributes;
+
+Return the number of attributes that were dropped if attribute count limits
+have been configured (see L<above|/new>).
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry specification|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/common/README.md#attribute>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
