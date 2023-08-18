@@ -1,11 +1,11 @@
 #!/usr/bin/env perl
 
 use Test2::V0 -target => 'OpenTelemetry::Propagator::TraceContext';
+use Test2::Tools::OpenTelemetry;
 
 use OpenTelemetry::Trace;
 use OpenTelemetry::Propagator::TraceContext::TraceParent;
 use OpenTelemetry::Propagator::TraceContext::TraceState;
-use OpenTelemetry::Test::Logs;
 
 my $carrier = {};
 
@@ -70,28 +70,28 @@ subtest 'Inject with TraceContext' => sub {
 };
 
 subtest 'Extract with TraceContext' => sub {
-    OpenTelemetry::Test::Logs->clear;
+    no_messages {
+        is my $context = $propagator->extract($carrier),
+            object { prop isa => 'OpenTelemetry::Context' },
+            'Extract returns context';
 
-    is my $context = $propagator->extract($carrier),
-        object { prop isa => 'OpenTelemetry::Context' },
-        'Extract returns context';
-
-    is + OpenTelemetry::Trace->span_from_context($context)->context, object {
-        prop isa => 'OpenTelemetry::Trace::SpanContext';
-        call hex_trace_id => '000102030405060708090a0b0c0d0e0f';
-        call hex_span_id  => '0001020304050607';
-        call trace_state  => object { call to_string => 'foo=123,bar=234' };
-        call remote       => T;
-    }, 'Can extract injected TraceContext';
+        is + OpenTelemetry::Trace->span_from_context($context)->context, object {
+            prop isa => 'OpenTelemetry::Trace::SpanContext';
+            call hex_trace_id => '000102030405060708090a0b0c0d0e0f';
+            call hex_span_id  => '0001020304050607';
+            call trace_state  => object { call to_string => 'foo=123,bar=234' };
+            call remote       => T;
+        }, 'Can extract injected TraceContext';
+    };
 
     $carrier->{traceparent} = 'some garbage';
 
-    is $propagator->extract($carrier),
-        object { prop isa => 'OpenTelemetry::Context' },
-        'Extract returns context when things go wrong';
-
-    is + OpenTelemetry::Test::Logs->messages, [
-        [ warning => OpenTelemetry => match qr/^Unsupported TraceParent version \(so\)/ ],
+    is messages {
+        is $propagator->extract($carrier),
+            object { prop isa => 'OpenTelemetry::Context' },
+            'Extract returns context when things go wrong';
+    } => [
+        [ warning => OpenTelemetry => match qr/^Unsupported .* version \(so\)/ ],
     ], 'Possible errors are logged';
 };
 

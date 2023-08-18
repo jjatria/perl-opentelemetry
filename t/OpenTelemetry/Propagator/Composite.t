@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 
 use Test2::V0 -target => 'OpenTelemetry::Propagator::Composite';
+use Test2::Tools::OpenTelemetry;
 
 use OpenTelemetry::Baggage;
 use OpenTelemetry::Propagator::Baggage;
@@ -9,7 +10,6 @@ use OpenTelemetry::Propagator::TraceContext::TraceParent;
 use OpenTelemetry::Propagator::TraceContext;
 use OpenTelemetry::Trace;
 use OpenTelemetry::Trace::SpanContext;
-use OpenTelemetry::Test::Logs;
 
 my $context = do {
     my $parent = OpenTelemetry::Propagator::TraceContext::TraceParent->new(
@@ -74,16 +74,15 @@ is CLASS->new, object {
     prop isa => $CLASS;
 }, 'Constructor can be called with no injectors / extractors for no-op instance';
 
-OpenTelemetry::Test::Logs->clear;
-
-is CLASS->new( mock ), object {
-    prop isa => $CLASS;
-}, 'Constructor with unsuitable injectors / extractors still builds';
-
-is + OpenTelemetry::Test::Logs->messages, [
-    [ warning => OpenTelemetry => match qr/^No suitable propagators when constructing/ ],
+is messages {
+    is CLASS->new( mock ), object {
+        prop isa => $CLASS;
+    }, 'Constructor with unsuitable injectors / extractors still builds';
+} => [
+    [ warning => OpenTelemetry => match qr/^No suitable propagators when/ ],
 ], 'Constructing with no suitable propagators warns';
 
-is [ sort $prop->keys ] , [qw( baggage traceparent tracestate )], 'Get compound keys';
+is [ sort $prop->keys ] , [qw( baggage traceparent tracestate )],
+    'Get compound keys';
 
 done_testing;

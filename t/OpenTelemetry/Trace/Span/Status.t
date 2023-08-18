@@ -1,8 +1,7 @@
 #!/usr/bin/env perl
 
 use Test2::V0 -target => 'OpenTelemetry::Trace::Span::Status';
-
-use OpenTelemetry::Test::Logs;
+use Test2::Tools::OpenTelemetry;
 
 is CLASS->new, object {
     call description => '';
@@ -36,36 +35,29 @@ is CLASS->error, object {
     call is_error    => T;
 }, 'Error constructor sets to error';
 
-OpenTelemetry::Test::Logs->clear;
-
-is CLASS->unset( description => 'foo' ), object {
-    call description => '';
-    call code        => 0;
-}, 'Unset constructor sets to unset';
-
-is + OpenTelemetry::Test::Logs->messages, [
+is messages {
+    is CLASS->unset( description => 'foo' ), object {
+        call description => '';
+        call code        => 0;
+    }, 'Unset constructor sets to unset';
+} => [
     [ warning => OpenTelemetry => 'Ignoring description on a non-error span status' ],
 ], 'Warns when setting a description on an unset status';
 
-OpenTelemetry::Test::Logs->clear;
-
-is CLASS->ok( description => 'foo' ), object {
-    call description => '';
-    call code        => 1;
-}, 'Unset constructor sets to unset';
-
-is + OpenTelemetry::Test::Logs->messages, [
+is messages {
+    is CLASS->ok( description => 'foo' ), object {
+        call description => '';
+        call code        => 1;
+    }, 'Unset constructor sets to unset';
+} => [
     [ warning => OpenTelemetry => 'Ignoring description on a non-error span status' ],
 ], 'Warns when setting a description on an ok status';
 
-OpenTelemetry::Test::Logs->clear;
-
-is CLASS->error( description => 'foo' ), object {
-    call description => 'foo';
-    call code        => 2;
-}, 'Unset constructor sets to unset';
-
-is + OpenTelemetry::Test::Logs->messages, [],
-    'Does not warn when setting a description on an error status';
+no_messages {
+    is CLASS->error( description => 'foo' ), object {
+        call description => 'foo';
+        call code        => 2;
+    }, 'Unset constructor sets to unset';
+};
 
 done_testing;

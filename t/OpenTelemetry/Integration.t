@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 
 use Test2::V0;
+use Test2::Tools::OpenTelemetry;
 
 use Class::Inspector;
 
@@ -8,31 +9,20 @@ use Class::Inspector;
 skip_all 'Module HTTP::Tiny is not installed'
     unless Class::Inspector->installed('HTTP::Tiny');
 
-use OpenTelemetry::Test::Logs;
-
 require OpenTelemetry::Integration;
 
 subtest 'No arguments to import' => sub {
-    OpenTelemetry::Test::Logs->clear;
-    OpenTelemetry::Integration->import;
-    is + OpenTelemetry::Test::Logs->messages, [], 'No messages logged';
-
+    no_messages { OpenTelemetry::Integration->import };
     OpenTelemetry::Integration->unimport;
 };
 
 subtest 'Falsy arguments to import' => sub {
-    OpenTelemetry::Test::Logs->clear;
-    OpenTelemetry::Integration->import( '', undef );
-    is + OpenTelemetry::Test::Logs->messages, [], 'No messages logged';
-
+    no_messages { OpenTelemetry::Integration->import( '', undef ) };
     OpenTelemetry::Integration->unimport;
 };
 
 subtest 'Load all plugins' => sub {
-    OpenTelemetry::Test::Logs->clear;
-    OpenTelemetry::Integration->import(':all');
-
-    is + OpenTelemetry::Test::Logs->messages, bag {
+    is messages { OpenTelemetry::Integration->import(':all') } => bag {
         item [
             trace => 'OpenTelemetry',
            'Loading OpenTelemetry::Integration::HTTP::Tiny',
@@ -62,11 +52,9 @@ subtest 'Load all plugins' => sub {
 };
 
 subtest 'Load a good plugin by name' => sub {
-    OpenTelemetry::Test::Logs->clear;
-
-    OpenTelemetry::Integration->import('HTTP::Tiny');
-
-    is + OpenTelemetry::Test::Logs->messages, [
+    is messages {
+        OpenTelemetry::Integration->import('HTTP::Tiny');
+    } => [
         [
             trace => 'OpenTelemetry',
             'Loading OpenTelemetry::Integration::HTTP::Tiny',
@@ -80,10 +68,9 @@ subtest 'Load a good plugin by name' => sub {
 };
 
 subtest 'Load a missing plugin' => sub {
-    OpenTelemetry::Test::Logs->clear;
-    OpenTelemetry::Integration->import('Fake::Does::Not::Exist');
-
-    is + OpenTelemetry::Test::Logs->messages, [
+    is messages {
+        OpenTelemetry::Integration->import('Fake::Does::Not::Exist');
+    } => [
         [
             trace => 'OpenTelemetry',
             'Loading OpenTelemetry::Integration::Fake::Does::Not::Exist',

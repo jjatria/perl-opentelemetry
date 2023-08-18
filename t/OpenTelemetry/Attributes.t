@@ -1,9 +1,9 @@
 #!/usr/bin/env perl
 
 use Test2::V0;
-use Object::Pad;
-use OpenTelemetry::Test::Logs;
+use Test2::Tools::OpenTelemetry;
 
+use Object::Pad;
 class Local::Test           :does(OpenTelemetry::Attributes          ) { }
 class Local::Test::Writable :does(OpenTelemetry::Attributes::Writable) { }
 
@@ -62,79 +62,85 @@ subtest Arrayref => sub {
 
 subtest Limits => sub {
     subtest Count => sub {
-        OpenTelemetry::Test::Logs->clear;
-
         my $a = Local::Test::Writable->new( attribute_count_limit => 2 );
 
-        is $a->_set_attribute( foo => 123 ), object {
-            call sub { shift->attributes->{foo} } => 123;
-            call dropped_attributes => 0;
-        }, 'Can store attributes below limit';
+        no_messages {
+            is $a->_set_attribute( foo => 123 ), object {
+                call sub { shift->attributes->{foo} } => 123;
+                call dropped_attributes => 0;
+            }, 'Can store attributes below limit';
+        };
 
-        is $a->_set_attribute( bar => 234 ), object {
-            call sub { shift->attributes->{bar} } => 234;
-            call dropped_attributes => 0;
-        }, 'Can record attributes to limit';
+        no_messages {
+            is $a->_set_attribute( bar => 234 ), object {
+                call sub { shift->attributes->{bar} } => 234;
+                call dropped_attributes => 0;
+            }, 'Can record attributes to limit';
+        };
 
-        is $a->_set_attribute( baz => 345 ), object {
-            call sub { shift->attributes->{baz} } => U;
-            call dropped_attributes => 1;
-        }, 'Dropped attribute and recorded it';
-
-        is $a->_set_attribute( baz => 345, boom => 456 ), object {
-            call sub { [ @{ shift->attributes }{qw( baz boom )} ] } => [ U, U ];
-            call dropped_attributes => 3;
-        }, 'Dropped attributes and recorded them';
-
-        is $a->_set_attribute( foo => 345 ), object {
-            call sub { shift->attributes->{foo} } => 345;
-            call dropped_attributes => 3;
-        }, 'Can still replace existing attribute';
-
-        is $a->_set_attribute( foo => undef ), object {
-            call sub { shift->attributes->{foo} } => 345;
-            call dropped_attributes => 4;
-        }, 'Dropped attribute does not overwrite';
-
-        is +OpenTelemetry::Test::Logs->messages, [
+        is messages {
+            is $a->_set_attribute( baz => 345 ), object {
+                call sub { shift->attributes->{baz} } => U;
+                call dropped_attributes => 1;
+            }, 'Dropped attribute and recorded it';
+        } => [
             [ debug => OpenTelemetry => match qr/1 attribute entry because it/ ],
+        ], 'Logged messages';
+
+        is messages {
+            is $a->_set_attribute( baz => 345, boom => 456 ), object {
+                call sub { [ @{ shift->attributes }{qw( baz boom )} ] } => [ U, U ];
+                call dropped_attributes => 3;
+            }, 'Dropped attributes and recorded them';
+        } => [
             [ debug => OpenTelemetry => match qr/2 attribute entries because they/ ],
+        ], 'Logged messages';
+
+        no_messages {
+            is $a->_set_attribute( foo => 345 ), object {
+                call sub { shift->attributes->{foo} } => 345;
+                call dropped_attributes => 3;
+            }, 'Can still replace existing attribute';
+        };
+
+        is messages {
+            is $a->_set_attribute( foo => undef ), object {
+                call sub { shift->attributes->{foo} } => 345;
+                call dropped_attributes => 4;
+            }, 'Dropped attribute does not overwrite';
+        } => [
             [ debug => OpenTelemetry => match qr/1 attribute entry .* limit \(2\)/ ],
-        ], 'Logged dropped attributes';
+        ], 'Logged messages';
     };
 
     subtest Length => sub {
-        OpenTelemetry::Test::Logs->clear;
-
         my $a = Local::Test::Writable->new( attribute_length_limit => 4 );
 
-        is $a->_set_attribute( foo => 123 ), object {
-            call sub { shift->attributes->{foo} } => 123;
-            call dropped_attributes => 0;
-        }, 'Set short attribute';
+        no_messages {
+            is $a->_set_attribute( foo => 123 ), object {
+                call sub { shift->attributes->{foo} } => 123;
+                call dropped_attributes => 0;
+            }, 'Set short attribute';
 
-        is $a->_set_attribute( foo => 1234 ), object {
-            call sub { shift->attributes->{foo} } => 1234;
-            call dropped_attributes => 0;
-        }, 'Set attribute at limit';
+            is $a->_set_attribute( foo => 1234 ), object {
+                call sub { shift->attributes->{foo} } => 1234;
+                call dropped_attributes => 0;
+            }, 'Set attribute at limit';
 
-        is $a->_set_attribute( foo => 12345 ), object {
-            call sub { shift->attributes->{foo} } => 1234;
-            call dropped_attributes => 0;
-        }, 'Set longer attribute';
+            is $a->_set_attribute( foo => 12345 ), object {
+                call sub { shift->attributes->{foo} } => 1234;
+                call dropped_attributes => 0;
+            }, 'Set longer attribute';
 
-        is $a->_set_attribute( foo => [ 123, 1234, 12345, undef ] ), object {
-            call sub { shift->attributes->{foo} } => [ 123, 1234, 1234, undef ];
-            call dropped_attributes => 0;
-        }, 'Applied limit to each value in an array reference';
-
-        is +OpenTelemetry::Test::Logs->messages, [ ], 'Nothing logged';
+            is $a->_set_attribute( foo => [ 123, 1234, 12345, undef ] ), object {
+                call sub { shift->attributes->{foo} } => [ 123, 1234, 1234, undef ];
+                call dropped_attributes => 0;
+            }, 'Applied limit to each value in an array reference';
+        };
     };
 };
 
 subtest 'Value validation' => sub {
-    OpenTelemetry::Test::Logs->clear;
-
     my $test = sub {
         my $x = Local::Test
             ->new( attributes => { x => shift } );
@@ -143,30 +149,32 @@ subtest 'Value validation' => sub {
     };
 
     subtest Valid => sub {
-        is $test->( 'string' ), [ 'string', 0 ], 'String';
-        is $test->(  123456  ), [  123456 , 0 ], 'Integer';
-        is $test->(  123.56  ), [  123.56 , 0 ], 'Float';
-        is $test->(       0  ), [       0 , 0 ], 'Zero';
+        no_messages {
+            is $test->( 'string' ), [ 'string', 0 ], 'String';
+            is $test->(  123456  ), [  123456 , 0 ], 'Integer';
+            is $test->(  123.56  ), [  123.56 , 0 ], 'Float';
+            is $test->(       0  ), [       0 , 0 ], 'Zero';
 
-        # NOTE: We cannot validate types in Perl
-        is $test->( [ 1, undef, 'string', 4 ] ),
-            [ [ 1, undef, 'string', 4 ], 0 ],
-            'Array reference';
+            # NOTE: We cannot validate types in Perl
+            is $test->( [ 1, undef, 'string', 4 ] ),
+                [ [ 1, undef, 'string', 4 ], 0 ],
+                'Array reference';
+        };
     };
 
     subtest Invalid => sub {
-        is $test->(undef),           [ U, 1 ], 'Undef';
-        is $test->({}),              [ U, 1 ], 'Hash reference';
-        is $test->([ 1, {}, 3 ]),    [ U, 1 ], 'Array reference with reference';
+        is messages {
+            is $test->(undef),        [ U, 1 ], 'Undef';
+            is $test->({}),           [ U, 1 ], 'Hash reference';
+            is $test->([ 1, {}, 3 ]), [ U, 1 ], 'Array reference with reference';
+        } => [
+            [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
+            [ trace => OpenTelemetry => 'Attribute values cannot be references' ],
+            [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
+            [ trace => OpenTelemetry => match qr/themselves hold references/ ],
+            [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
+        ] => 'Logged invalid attributes';
     };
-
-    is +OpenTelemetry::Test::Logs->messages, [
-        [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
-        [ trace => OpenTelemetry => 'Attribute values cannot be references' ],
-        [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
-        [ trace => OpenTelemetry => match qr/themselves hold references/ ],
-        [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
-    ], 'Logged invalid attributes';
 };
 
 done_testing;

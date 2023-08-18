@@ -1,11 +1,11 @@
 #!/usr/bin/env perl
 
 use Test2::V0 -target => 'OpenTelemetry::Trace::TracerProvider::Proxy';
+use Test2::Tools::OpenTelemetry;
 
 use experimental 'signatures';
 
 use Scalar::Util 'refaddr';
-use OpenTelemetry::Test::Logs;
 
 is my $provider = CLASS->new, object {
     prop isa => $CLASS;
@@ -64,13 +64,11 @@ subtest Delegate => sub {
         'OpenTelemetry::Trace::Tracer::Proxy',
         'New tracers are not proxies';
 
-    OpenTelemetry::Test::Logs->clear;
-
-    ref_is $provider->delegate( mock {} => add => [ tracer => sub { die } ] ),
-        $provider,
-        'call to delegate is chainable even if ignored';
-
-    is + OpenTelemetry::Test::Logs->messages, [
+    is messages {
+        ref_is $provider->delegate( mock {} => add => [ tracer => sub { die } ] ),
+            $provider,
+            'call to delegate is chainable even if ignored';
+    } => [
         [ warning => OpenTelemetry => match qr/^Attempt to reset delegate .* ignored/ ],
     ], 'Repeated call to delegate logged';
 };

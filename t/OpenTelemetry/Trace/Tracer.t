@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 
 use Test2::V0 -target => 'OpenTelemetry::Trace::Tracer';
+use Test2::Tools::OpenTelemetry;
 
 use experimental 'signatures';
 
-use OpenTelemetry::Test::Logs;
 use OpenTelemetry::Constants 'SPAN_STATUS_ERROR';
 
 is my $tracer = CLASS->new, object {
@@ -21,22 +21,22 @@ subtest 'Convenience in_span method' => sub {
 
     use OpenTelemetry::Trace;
 
-    OpenTelemetry::Test::Logs->clear;
-
     my $mock = mock $tracer => override => [
         create_span => sub ( $, %args ) { mock \%args => track => 1 }
     ];
 
-    my $mocked;
-    my $ret = $tracer->in_span( some_span => sub ( $span, $context ) {
-        ref_is + OpenTelemetry::Trace->span_from_context($context),
-            $span,
-            'Received a context with the span';
+    my ( $ret, $mocked );
+    no_messages {
+        $ret = $tracer->in_span( some_span => sub ( $span, $context ) {
+            ref_is + OpenTelemetry::Trace->span_from_context($context),
+                $span,
+                'Received a context with the span';
 
-        ($mocked) = mocked $span;
+            ($mocked) = mocked $span;
 
-        return 'TEST';
-    });
+            return 'TEST';
+        });
+    };
 
     is $mocked->call_tracking, [
         { sub_name => 'end', args => [ D ], sub_ref => E },
@@ -50,17 +50,21 @@ subtest 'Convenience in_span method' => sub {
     like dies { $tracer->in_span( sub { } ) },
         qr/^Missing required span name/, 'Requires span name';
 
-    is [ $tracer->in_span( foo => sub { qw( a b c ) } ) ],
-        [qw( a b c )], 'Can return list context';
+    no_messages {
+        is [ $tracer->in_span( foo => sub { qw( a b c ) } ) ],
+            [qw( a b c )], 'Can return list context';
+    };
 
-    like dies {
-        $tracer->in_span(
-            dead_span => sub ( $span, $context ) {
-                ($mocked) = mocked $span;
-                die 'An error';
-            },
-        );
-    } => qr/^An error/, 'If sub dies, exception is not caught';
+    no_messages {
+        like dies {
+            $tracer->in_span(
+                dead_span => sub ( $span, $context ) {
+                    ($mocked) = mocked $span;
+                    die 'An error';
+                },
+            );
+        } => qr/^An error/, 'If sub dies, exception is not caught';
+    };
 
     is $mocked->call_tracking, [
         {
@@ -79,7 +83,6 @@ subtest 'Convenience in_span method' => sub {
             sub_ref  => E
         },
     ], 'Span records caught error';
-
 };
 
 done_testing;
