@@ -140,7 +140,7 @@ subtest Limits => sub {
     };
 };
 
-subtest 'Value validation' => sub {
+subtest 'Validation' => sub {
     my $test = sub {
         my $x = Local::Test
             ->new( attributes => { x => shift } );
@@ -148,7 +148,7 @@ subtest 'Value validation' => sub {
         [ $x->attributes->{x}, $x->dropped_attributes ];
     };
 
-    subtest Valid => sub {
+    subtest 'Valid value' => sub {
         no_messages {
             is $test->( 'string' ), [ 'string', 0 ], 'String';
             is $test->(  123456  ), [  123456 , 0 ], 'Integer';
@@ -162,7 +162,7 @@ subtest 'Value validation' => sub {
         };
     };
 
-    subtest Invalid => sub {
+    subtest 'Invalid value' => sub {
         is messages {
             is $test->(undef),        [ U, 1 ], 'Undef';
             is $test->({}),           [ U, 1 ], 'Hash reference';
@@ -173,6 +173,16 @@ subtest 'Value validation' => sub {
             [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
             [ trace => OpenTelemetry => match qr/themselves hold references/ ],
             [ debug => OpenTelemetry => match qr/Dropped 1 attribute/ ],
+        ] => 'Logged invalid attributes';
+    };
+
+    subtest 'Invalid key' => sub {
+        is messages {
+            is Local::Test->new( attributes => { '' => 123 } ), object {
+                call attributes => { null => 123 };
+            }, 'Defaulted empty key';
+        } => [
+            [ debug => OpenTelemetry => match qr/Setting to 'null'/ ],
         ] => 'Logged invalid attributes';
     };
 };

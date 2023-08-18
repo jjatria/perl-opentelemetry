@@ -92,8 +92,6 @@ class OpenTelemetry::AttributeMap {
         return $self;
     }
 
-    method get ( $key ) { $data->{$key} }
-
     method to_hash () {
         dclone $data;
     }
