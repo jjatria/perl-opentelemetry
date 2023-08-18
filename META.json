@@ -110,6 +110,14 @@
          "file" : "lib/OpenTelemetry/Integration/HTTP/Tiny.pm",
          "version" : "0.001"
       },
+      "OpenTelemetry::Integration::LWP::UserAgent" : {
+         "file" : "lib/OpenTelemetry/Integration/LWP/UserAgent.pm",
+         "version" : "0.001"
+      },
+      "OpenTelemetry::Integration::namespace" : {
+         "file" : "lib/OpenTelemetry/Integration/namespace.pm",
+         "version" : "0.001"
+      },
       "OpenTelemetry::Propagator" : {
          "file" : "lib/OpenTelemetry/Propagator.pm",
          "version" : "0.001"
