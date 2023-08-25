@@ -44,25 +44,17 @@ sub install ( $class, %options ) {
 
         my $info = $meta{$name} //= do {
             my %meta = (
-                driver => lc $dbh->{Driver}{Name},
-                user   =>    $dbh->{Username},
+                'db.system' => lc $dbh->{Driver}{Name},
             );
 
-            ( $meta{host} ) = $name =~ /host=([^;]+)/;
-            ( $meta{port} ) = $name =~ /port=([0-9]+)/;
+            $meta{'db.user'}        = $dbh->{Username} if $dbh->{Username};
+            $meta{'server.address'} = $1               if $name =~ /host=([^;]+)/;
+            $meta{'server.port'}    = $1               if $name =~ /port=([0-9]+)/;
 
             # Driver-specific metadata available before call
-            $meta{driver_specific} = do {
-                my %data;
-
-                if ( $meta{driver} eq 'mysql' ) {
-                    %data = (
-                        'network.transport' => 'IP.TCP'
-                    );
-                }
-
-                \%data;
-            };
+            if ( $meta{'db.system'} eq 'mysql' ) {
+                $meta{'network.transport'} = 'IP.TCP';
+            }
 
             \%meta;
         };
@@ -75,11 +67,7 @@ sub install ( $class, %options ) {
             attributes => {
                 'db.connection_string' => $name,
                 'db.statement'         => $statement,
-                'db.system'            => $info->{driver},
-                'db.user'              => $info->{user},
-                'server.address'       => $info->{host},
-                'server.port'          => $info->{port},
-                %{ $info->{driver_specific} // {} },
+                %$info,
             },
         );
 
