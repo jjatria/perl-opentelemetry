@@ -22,8 +22,6 @@ class OpenTelemetry::Trace::Span {
 
     method set_status ( $status, $description = '' ) { $self }
 
-    method add_link ( %args ) { $self }
-
     method add_event ( %args ) { $self }
 
     method end ( $timestamp = time ) { $self }
@@ -57,16 +55,17 @@ An instance of this class represents a single operation within a trace.
 
 Spans have a name that identifies them, and can store additional data
 related to the operation they represent, including start and end timestamps
-as well as other metadata (see the L<add_link|/add_link>,
-L<add_event|/add_event>, and L<set_attribute|/set_attribute> methods below
-for some ways in which this can be achieved).
+as well as other metadata (see L<add_event|/add_event>, and
+L<set_attribute|/set_attribute> methods below for some ways in which this can
+be achieved).
 
 Spans can also link to a parent L<OpenTelemetry::Context>, which allows them
 to form a tree structure within a trace.
 
-The only supported way to create a span is through an L<OpenTelemetry::Trace::Tracer>.
-Refer to the L<create_span|OpenTelemetry::Trace::Tracer/create_span> method in
-that class for details.
+The only supported way to create a span is through an
+L<OpenTelemetry::Trace::Tracer>. Refer to the
+L<create_span|OpenTelemetry::Trace::Tracer/create_span> method in that class
+for details.
 
 =head1 METHODS
 
@@ -120,22 +119,6 @@ Add an event to this span.
 Refer to
 L<the OpenTelementry specification|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/README.md>
 for details on some of the standard event names and their meanings.
-
-This method returns the calling span, which means it can be chained.
-
-=head2 add_link
-
-    $span = $span->add_link(
-        context    => $span_context,
-        attributes => $attributes   // {},
-    )
-
-Add a link to this span.
-
-A span may be linked to zero or more spans that are causally related, even if
-these spans belong to a different trace. Links can be used to represent
-batched operations where a Span was initiated by multiple initiating Spans,
-each representing a single incoming item being processed in the batch.
 
 This method returns the calling span, which means it can be chained.
 

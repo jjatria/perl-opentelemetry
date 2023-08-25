@@ -7,8 +7,6 @@ is my $s = CLASS->new( name => 'foo' ), object { prop isa => CLASS },
 
 ref_is $s->add_event( x => 1),            $s, 'add_link is chainable';
 ref_is $s->add_event,                     $s, 'add_event call can be empty';
-ref_is $s->add_link( x => 1),             $s, 'add_link is chainable';
-ref_is $s->add_link,                      $s, 'add_link call can be empty';
 ref_is $s->end(123),                      $s, 'end takes time';
 ref_is $s->end,                           $s, 'end is chainable';
 ref_is $s->record_exception( 1, a => 1 ), $s, 'record_exception takes pairs';
