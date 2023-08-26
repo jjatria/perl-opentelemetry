@@ -11,7 +11,9 @@ use OpenTelemetry::Common;
 use OpenTelemetry::Propagator::None;
 use OpenTelemetry::Trace::TracerProvider::Proxy;
 
-use Log::Any '$logger';
+use Log::Any;
+my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
+
 use Mutex;
 
 {
