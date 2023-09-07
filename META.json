@@ -178,16 +178,8 @@
          "file" : "lib/OpenTelemetry/Trace/Tracer.pm",
          "version" : "0.001"
       },
-      "OpenTelemetry::Trace::Tracer::Proxy" : {
-         "file" : "lib/OpenTelemetry/Trace/Tracer/Proxy.pm",
-         "version" : "0.001"
-      },
       "OpenTelemetry::Trace::TracerProvider" : {
          "file" : "lib/OpenTelemetry/Trace/TracerProvider.pm",
-         "version" : "0.001"
-      },
-      "OpenTelemetry::Trace::TracerProvider::Proxy" : {
-         "file" : "lib/OpenTelemetry/Trace/TracerProvider/Proxy.pm",
          "version" : "0.001"
       },
       "OpenTelemetry::X" : {

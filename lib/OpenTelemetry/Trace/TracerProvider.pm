@@ -43,9 +43,11 @@ turn be used to create L<OpenTelemetry::Trace::Span> instances to mark the
 scope of an operation.
 
 The provider implemented in this package returns an instance of
-L<OpenTelemetry::Trace::Tracer> which is cached internally, but it is suitable
-to be subclassed by other providers. See
-L<OpenTelemetry::Trace::TracerProvider::Proxy> for one such example.
+L<OpenTelemetry::Trace::Tracer> which is cached internally. This behaviour
+can be modified by inheriting from this class and providing a different
+implementation of the L<tracer|/tracer> method described below. See
+L<OpenTelemetry|OpenTelemetry/tracer_provider> for a way to set this
+modified version as a globall yavailable tracer provider.
 
 =head1 METHODS
 
@@ -64,6 +66,11 @@ provider.
 
 The code implemented in this package ignores all arguments and returns a
 L<OpenTelemetry::Trace::Tracer>, but subclasses are free to modify this.
+
+Callers of this method should B<not> cache this tracer, since the tracer
+provider might have changed since the last time the tracer was created.
+If creating the tracer is expensive, then it's the tracer provider's
+responsibility to cache it.
 
 =head1 COPYRIGHT AND LICENSE
 

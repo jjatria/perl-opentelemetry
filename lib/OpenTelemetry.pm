@@ -9,7 +9,7 @@ our $VERSION = '0.001';
 
 use OpenTelemetry::Common;
 use OpenTelemetry::Propagator::None;
-use OpenTelemetry::Trace::TracerProvider::Proxy;
+use OpenTelemetry::Trace::TracerProvider;
 
 use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
@@ -21,18 +21,8 @@ use Mutex;
     my $lock = Mutex->new;
     sub tracer_provider ( $, $new = undef ) {
         $lock->enter( sub {
-            return $tracer_provider //= OpenTelemetry::Trace::TracerProvider::Proxy->new
-                unless $new;
-
-            if ( $tracer_provider isa OpenTelemetry::Trace::TracerProvider::Proxy ) {
-                $logger->debugf('Upgrading default proxy tracer provider to %s', ref $new);
-                $tracer_provider->delegate($new);
-            }
-            else {
-                $tracer_provider = $new;
-            }
-
-            return $tracer_provider;
+            $tracer_provider = $new if $new;
+            return $tracer_provider //= OpenTelemetry::Trace::TracerProvider->new;
         });
     }
 }
