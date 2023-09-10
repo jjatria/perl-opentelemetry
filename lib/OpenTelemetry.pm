@@ -7,41 +7,374 @@ use experimental qw( isa signatures );
 
 our $VERSION = '0.001';
 
+use Mutex;
 use OpenTelemetry::Common;
+use OpenTelemetry::Context;
 use OpenTelemetry::Propagator::None;
 use OpenTelemetry::Trace::TracerProvider;
+use OpenTelemetry::X;
+use Scalar::Util 'refaddr';
+use Ref::Util 'is_coderef';
+use Sentinel;
 
 use Log::Any;
+
+use Exporter::Shiny qw(
+    otel_context_with_span
+    otel_current_context
+    otel_error_handler
+    otel_handle_error
+    otel_logger
+    otel_propagator
+    otel_span_from_context
+    otel_tracer_provider
+);
+
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
-
-use Mutex;
-
-{
-    my $tracer_provider;
-    my $lock = Mutex->new;
-    sub tracer_provider ( $, $new = undef ) {
-        $lock->enter( sub {
-            $tracer_provider = $new if $new;
-            return $tracer_provider //= OpenTelemetry::Trace::TracerProvider->new;
-        });
-    }
-}
-
-{
-    my $propagation;
-    my $lock = Mutex->new;
-    sub propagation ( $, $new = undef ) {
-        $lock->enter( sub {
-            $propagation = $new if $new;
-            return $propagation //= OpenTelemetry::Propagator::None->new;
-        });
-    }
-}
-
 sub logger { $logger }
+sub _generate_otel_logger { \&logger }
 
-sub error_handler { goto \&OpenTelemetry::Common::error_handler }
+{
+    my $lock = Mutex->new;
+    my $instance = OpenTelemetry::Trace::TracerProvider->new;
 
-sub handle_error ( $pkg, %args ) { $pkg->error_handler->(%args); return }
+    my $set = sub ( $new ) {
+        $lock->enter( sub {
+            die OpenTelemetry::X->create(
+                Invalid => 'Global tracer provider must be a subclass of OpenTelemetry::Trace::TracerProvider, got instead ' . ( ref $new || 'a plain scalar' ),
+            ) unless $new isa OpenTelemetry::Trace::TracerProvider;
+
+            return $instance = $new;
+        });
+    };
+
+    sub _generate_otel_tracer_provider {
+        my $x = sub :lvalue { sentinel get => sub { $instance }, set => $set };
+    }
+
+    sub tracer_provider :lvalue { sentinel get => sub { $instance }, set => $set }
+}
+
+{
+    my $lock = Mutex->new;
+    my $instance = OpenTelemetry::Propagator::None->new;
+
+    my $set = sub ( $new ) {
+        $lock->enter( sub {
+            die OpenTelemetry::X->create(
+                Invalid => 'Global propagator must implement the OpenTelemetry::Propagator role, got instead ' . ( ref $new || 'a plain scalar' ),
+            ) unless $new && $new->DOES('OpenTelemetry::Propagator');
+
+            return $instance = $new;
+        });
+    };
+
+    sub _generate_otel_propagator {
+        my $x = sub :lvalue { sentinel get => sub { $instance }, set => $set };
+    }
+
+    sub propagator :lvalue { sentinel get => sub { $instance }, set => $set }
+}
+
+sub _generate_otel_current_context {
+    my $sub = sub :lvalue { OpenTelemetry::Context->current };
+}
+
+sub _generate_otel_context_with_span {
+    sub { OpenTelemetry::Trace->context_with_span(@_) };
+}
+
+sub _generate_otel_span_from_context {
+    sub { OpenTelemetry::Trace->span_from_context(@_) };
+}
+
+{
+    my $lock = Mutex->new;
+    my $instance = sub (%args) {
+        my $error = join ' - ', grep defined,
+            @args{qw( exception message )};
+
+        $logger->error("OpenTelemetry error: $error");
+    };
+
+    my $set = sub {
+        my $new = shift;
+        $lock->enter( sub {
+            return $instance unless $new;
+
+            die OpenTelemetry::X->create(
+                Invalid => 'Global error handler must be a code reference, got instead ' . ( ref $new || 'a plain scalar' ),
+            ) unless is_coderef $new;
+
+            return $instance = $new;
+        });
+    };
+
+    sub _generate_otel_error_handler {
+        my $x = sub :lvalue { sentinel get => sub { $instance }, set => $set };
+    }
+
+    sub error_handler :lvalue { sentinel get => sub { $instance }, set => $set }
+
+    sub _generate_otel_handle_error { sub {  $instance->(); return } }
+    sub                handle_error { shift; $instance->(); return   }
+}
 
 1;
+
+__END__
+
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry - A Perl implementation of the OpenTelemetry standard
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry;
+
+    # Obtain the current default tracer provider
+    my $provider = OpenTelemetry->tracer_provider;
+
+    # Create a trace
+    my $tracer = $provider->tracer( name => 'my_app', version => '1.0' );
+
+    # Record spans
+    $tracer->in_span( outer => sub ( $span, $context ) {
+        # In outer span
+
+        $tracer->in_span( inner => sub ( $span, $context ) {
+            # In inner span
+        });
+    });
+
+=head1 DESCRIPTION
+
+The OpenTelemetry distribution is the Perl implementation of
+L<OpenTelemetry|https://opentelemetry.io>. This module provides an entrypoint
+and exposes exposes an interface to get and set components that need to be
+globally available.
+
+The OpenTelemetry standard keeps a strict separation betweeen an API layer
+that implements an interface that is backend-agnostic, and an SDK layer that
+can be connected to the API to do the actual work.
+
+The modules in this distribution implement the OpenTelemetry API, and as such
+can be used to instrument code so it generates data about its performance and
+operation. As long as no SDK is used, these data will not be processed in any
+way, or transmitted anywhere.
+
+See L<OpenTelemetry::SDK> for the reference implementation of the
+OpenTelemetry SDK for more details about how it can be configured to make use
+of the data generated by uses of this API.
+
+The OpenTelemetry module offers two main interfaces: functions can be called
+as class methods, in which case nothing needs to be imported; or they can be
+imported into your namespace for a functional interface (in which case the
+functions will have a C<otel_> prefix; see more details below).
+
+In both cases, functions that expose a component that can be set will be
+lvalue functions, which can be used in regular assignments. Note, however,
+that these assignments will be globally visible. For local definitions,
+consider using L<Syntax::Keyword::Dynamically>, or other similar methods.
+
+=head1 CLASS METHODS
+
+=head2 logger
+
+    $logger = OpenTelemetry->logger;
+
+Get the global logger. The logger is a L<Log::Any> logger, and as such, it can
+be connected to any logging adapter that is available. Please see the
+documentation for L<Log::Any> for more details on how to use it.
+
+All logging througout OpenTelemetry and its related modules uses the
+"OpenTelemetry" category.
+
+=head2 tracer_provider
+
+    $tracer_provider = OpenTelemetry->tracer_provider;
+    OpenTelemetry->tracer_provider = $new_tracer_provider;
+
+Get the global tracer provider. This function can be used as an lvalue to set
+a new tracer provider, but if so the new value must be a subclass of
+L<OpenTelemetry::Trace::TracerProvider>. Trying to set it to a class that does
+not inherit from that class is an error.
+
+If the tracer provider is read before any is set, it will default to a
+L<OpenTelemetry::Trace::TracerProvider::Proxy>. The proxy will create
+instances of L<OpenTelemetry::Trace::Tracer::Proxy> which can be used
+even before a tracer provider is set, and will delegate to any tracer provider
+that is set. However, this will only work once: any subsequent attempts to
+reset the delegate of a proxy tracer provider will be ignored.
+
+If you want to be able to locally set a new tracer provider, make sure to
+delay the first read operation on the tracer provider until after a non-proxy
+instance has been set. This also means that if you are writing a library that
+uses a tracer provider, you should read it as late as possible.
+
+See L<that module's documentation|OpenTelemetry::Trace::TracerProvider::Proxy>
+for more details.
+
+=head2 propagator
+
+    $propagator = OpenTelemetry->propagator;
+    OpenTelemetry->propagator = $new_propagator;
+
+Get the global propagator. This function can be used as an lvalue to set
+a new propagator, but if so the new value must implement the
+L<OpenTelemetry::Propagator> role. Trying to set it to a class that does not
+implement that role is an error.
+
+If the propagator is read before any is set, a default
+L<OpenTelemetry::Propagator::None> will be set.
+
+=head2 error_handler
+
+    $handler = OpenTelemetry->error_handler;
+    OpenTelemetry->error_handler = $new_error_handler;
+
+Get the error handler subroutine reference. This function can be used as an
+lvalue to set a new error handler, but if so the new value must me a
+subroutine reference. Trying to set it to a value that is not is an error.
+
+The error handler will be called with the following named parameters:
+
+=over
+
+=item C<exception>, which will be set to the exception that raised the error
+
+=item C<message>, which might be set to a string providing additional context
+
+=back
+
+The default error handler simply concatenates these and logs them using the
+default L<logger|/logger>.
+
+=head2 handle_error
+
+    OpenTelemetry->handle_error(
+        exception => $exception,
+        message   => $message,
+        ...
+    );
+
+Calls the global error handler. This should be called on errors that are
+otherwise recoverable, since the default error handler does not itself die,
+and users are not required to die when setting a new one.
+
+If the error is unrecoverable, prefer raising an exception such as those
+described in L<OpenTelemetry::X>, although bear mind that whenever possible
+the OpenTelemetry instrumentation should not be the cause of code not
+completing, so most if not all errors should be recoverable.
+
+=head1 EXPORTABLE FUNCTIONS
+
+These functions are not available except when requested, so they cannot
+themselves be called on the OpenTelemetry package. They are generated
+on-demand when importing this module.
+
+The exporting itself is done using L<Exporter::Tiny>, which provides ways
+to rename or otherwise restrict imports. Please refer to the documentation
+of that module for more details.
+
+=head2 otel_current_context
+
+    $context = otel_current_context;
+    otel_current_context = $new_context;
+
+Gets the current context. This is provided as a convenience method and
+behaves exactly as the L<current|OpenTelemetry::Context/current> method
+from L<OpenTelemetry::Context>.
+
+Can be used as an lvalue to set the current context, although this should
+in general be localised. This function always returns an
+L<OpenTelemetry::Context> object.
+
+=head2 otel_span_from_context
+
+    $span = otel_span_from_context( $context // undef );
+
+Takes a L<OpenTelemetry::Context> as its only argument and returns the span
+in the context. If no context is provided, the span will be read from the
+current context.
+
+This is provided as a convenience method and behaves exactly as the
+L<span_from_context|OpenTelemetry::Trace/span_from_context> method from
+L<OpenTelemetry::Trace>.
+
+=head2 otel_context_with_span
+
+    $context = otel_context_with_span( $span, $root_context // undef );
+
+Takes a span (such as those returned by calling
+L<create_span|OpenTelemetry::Trace::Tracer/create_span> on a tracer
+provided by the L<tracer provider|/tracer_provider>) and returns a
+L<OpenTelemetry::Context> containing it. If a L<OpenTelemetry::Context> is
+passed as its second argument, the new context will be constructed from the
+one provided, inheriting any existing values. Otherwise, the current context
+will be used.
+
+This is provided as a convenience method and behaves exactly as the
+L<context_with_span|OpenTelemetry::Trace/context_with_span> method from
+L<OpenTelemetry::Trace>.
+
+=head2 otel_logger
+
+    $logger = otel_logger;
+
+Behaves exactly as the L<logger|/logger> class method described above.
+
+=head2 otel_tracer_provider
+
+    $tracer_provider = otel_tracer_provider;
+    otel_tracer_provider = $new_tracer_provider;
+
+Behaves exactly as the L<tracer_provider|/tracer_provider> class method
+described above. Can be used as an lvalue.
+
+=head2 otel_propagator
+
+    $propagator = otel_propagator;
+    otel_propagator = $new_propagator;
+
+Behaves exactly as the L<propagator|/propagator> class method described
+above. Can be used as an lvalue.
+
+=head2 otel_error_handler
+
+    $handler = otel_error_handler;
+    otel_error_handler = $new_error_handler;
+
+Behaves exactly as the L<error_handler|/error_handler> class method
+described above. Can be used as an lvalue.
+
+=head2 otel_handle_error
+
+    otel_handle_error(
+        exception => $exception,
+        message   => $message,
+        ...
+    );
+
+Behaves exactly as the L<handle_error|/handle_error> class method
+described above.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<Log::Any>
+
+=item L<Metrics::Any>
+
+=item L<OpenTelemetry::SDK>
+
+=item L<https://opentelemetry.io>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...

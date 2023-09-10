@@ -49,17 +49,6 @@ sub config ( @keys ) {
     $value =~ /^true$/i ? 1 : $value =~ /^false$/i ? 0 : $value;
 }
 
-{
-    my $error_handler;
-    sub error_handler ( $, $handler = undef ) {
-        $error_handler = $handler if $handler;
-        return $error_handler //= sub (%args) {
-            my $error = join ' - ', grep defined, @args{qw( exception message )};
-            $logger->error("OpenTelemetry error: $error");
-        };
-    }
-}
-
 delete $OpenTelemetry::Common::{$_} for qw(
     CLOCK_MONOTONIC
     any
