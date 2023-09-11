@@ -1,0 +1,131 @@
+=encoding utf8
+
+=head1 NAME
+
+OpenTelemetry::Integration::namespace - OpenTelemetry integration for a namespace
+
+=head1 SYNOPSIS
+
+    # This integration is EXPERIMENTAL
+
+    use OpenTelemetry::Integration 'namespace' => {
+        include => {
+            paths => [(
+                lib/Local
+            )],
+        },
+        exclude => {
+            paths => [qw(
+                lib/Local/Secret
+            )],
+            subroutines => {
+                'Some::Package' => [qw(
+                    low_level
+                )],
+            },
+        },
+    };
+
+=head1 DESCRIPTION
+
+See L<OpenTelemetry::Integration> for more details.
+
+Since this is a core module, it's included in the L<OpenTelemetry> core
+distribution as well.
+
+=head1 CONFIGURATION
+
+=head2 include / exclude
+
+The C<include> and C<exclude> sections control the package and subroutines
+that are considered to be relevant by the monitoring code. Fields in the
+C<exclude> section take precedence.
+
+=head3 paths
+
+This field should be set to list of literal paths or path segments. Any code
+that is loaded from those paths will be included or excluded depending on what
+section this was under.
+
+For example:
+
+    include => {
+        paths => [qw(
+            lib/Local
+            lib/Test
+        )],
+    },
+    exclude => {
+        paths => [qw(
+            lib/Local/Secret
+        )],
+    },
+
+would make all the code that is loaded from C<lib/Local> and C<lib/Test>,
+except the code loaded from C<lib/Local/Secret>, relevant for monitoring.
+
+=head3 subpackages
+
+Perl allows multiple packages to be defined inside the same file, so that
+importing one file makes all of those packages available, without the
+subpackages ever being explicitly loaded. Under normal circumstances, this
+makes these packages invisible to the approach in this integration.
+
+This key makes it possible to specify packages that should be wrapped for
+monitoring whenever we detect another packages being loaded.
+
+This field should be set to a hash where the keys are package names and
+the values are lists of packages to be wrapped whenever the parent is.
+
+For example:
+
+    include => {
+        subpackages => {
+            'Local::Foo' => [qw(
+                Local::Foo::Bar
+            )],
+        },
+    },
+
+This mapping has no meaning under C<exclude>, and is ignored in that case.
+
+=head3 subroutines
+
+In some cases, some specific subroutines are of interest even though they
+are defined in packages that would otherwise not be eligible for reporting.
+
+This field makes it possible to mark those subroutines as explicitly
+relevant or irrelevant depending on the section this is under. If under
+C<include>, these subroutines will always be wrapped; while under C<exclude>
+they will I<never> be.
+
+This field should be set to a hash where the keys are package names and
+the values are lists of subroutine names.
+
+For example:
+
+    include => {
+        subroutines => {
+            'Local::Splines' => [qw(
+                reticulate
+            )],
+        },
+    },
+    exclude => {
+        subroutines => {
+            'Local::Splines' => [qw(
+                frobligate
+            )],
+        },
+    },
+
+This would make C<Local::Splines::reticulate> I<always> be wrapped, even
+if C<Local::Splines> was loaded from a path that was not otherwise
+specified as relevant. Likewise, C<Local::Splines::frobligate> would never
+be wrapped, even if C<Local::Splines> was marked as relevant through some
+other method.
+
+=head1 COPYRIGHT
+
+...
+

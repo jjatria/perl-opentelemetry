@@ -5,36 +5,3 @@ our $VERSION = '0.001';
 use parent 'OpenTelemetry::X';
 
 1;
-
-__END__
-
-=encoding UTF-8
-
-=head1 NAME
-
-OpenTelemetry::X::Invalid - Invalid arguments used in an OpenTelemetry operation
-
-=head1 SYNOPSIS
-
-    use OpenTelemetry::X;
-
-    die OpenTelemetry::X->create( Invalid => $message );
-
-=head1 DESCRIPTION
-
-Represents invalid arguments used in an OpenTelemetry operation.
-
-You should not be manually creating instances of this class. See
-L<OpenTelemetry::X> for details on how to create instances of this class.
-
-=head1 SEE ALSO
-
-=over
-
-=item L<OpenTelemetry::X>
-
-=back
-
-=head1 COPYRIGHT AND LICENSE
-
-...

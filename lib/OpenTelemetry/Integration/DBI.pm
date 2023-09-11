@@ -112,28 +112,3 @@ sub install ( $class, %options ) {
 }
 
 1;
-
-__END__
-
-=encoding utf8
-
-=head1 NAME
-
-OpenTelemetry::Integration::DBI - OpenTelemetry integration for DBI
-
-=head1 SYNOPSIS
-
-    use OpenTelemetry::Integration 'DBI';
-    my $dbh = DBI->connect(...);
-    my $result = $dbh->selectall_hashref($statement);
-
-=head1 DESCRIPTION
-
-See L<OpenTelemetry::Integration> for more details.
-
-Since this is a core module, it's included in the L<OpenTelemetry> core
-distribution as well.
-
-=head1 COPYRIGHT
-
-...

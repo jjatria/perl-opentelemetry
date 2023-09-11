@@ -1,0 +1,128 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Trace - Generic methods for the OpenTelemetry Tracing API
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Trace;
+
+    # Retrieve a span from context
+    my $span = OpenTelemetry::Trace->span_from_context;
+
+    # Store a span in the context
+    my $context = OpenTelemetry::Trace->context_with_span($span);
+
+    # This is a no-op, since we are retrieving the span we stored
+    $span = OpenTelemetry::Trace->span_from_context($context);
+
+=head1 DESCRIPTION
+
+This package provides some methods for injecting L<Span> objects into, and
+extracting them from, a given L<context|OpenTelemetry::Context>.
+
+For the meat and bones of the OpenTelemetry Tracing API, please see the
+following packages:
+
+=over
+
+=item L<OpenTelemetry::Trace::TracerProvider>, which provides access to
+      L<tracers|OpenTelemetry::Trace::Tracer>.
+
+=item L<OpenTelemetry::Trace::Tracer>, which can create
+      L<spans|OpenTelemetry::Trace::Span>.
+
+=item L<OpenTelemetry::Trace::Span>, which allows the trace of a single
+      operation.
+
+=back
+
+=head1 METHODS
+
+=head2 span_from_context
+
+    $span = OpenTelemetry::Trace->span_from_context($context);
+
+Takes an optional L<OpenTelemetry::Context> object, and returns the
+L<OpenTelemetry::Trace::Span> object that has been stored within, if any. If
+no context was provided, the span will be read from the current context.
+
+If no span was found in the context, this method returns an invalid span
+(see L<below|/INVALID_SPAN_ID>).
+
+=head2 context_with_span
+
+    $context = OpenTelemetry::Trace->context_with_span( $span, $context );
+
+Takes a L<OpenTelemetry::Trace::Span> and returns a context that contains it
+(such that passing that context to eg. L<span_from_context|/span_from_context>
+would return the provided span).
+
+An optional L<OpenTelemetry::Context> instance can be passed as a second
+argument, in which case it will be used as the base for the new context. If no
+context is provided, the L<current context|OpenTelemetry::Context/current>
+will be used.
+
+=head2 non_recording_span
+
+    $span = OpenTelemetry::Trace->non_recording_span($span_context)
+
+Returns an instance of L<OpenTelemetry::Trace::Span> that records no trace
+data. Operations on this span are effectively a no-op.
+
+Takes an instance of L<OpenTelemetry::Trace::SpanContext> to use as the
+context of the span. If none is provided, it will default to a new instance.
+
+=head2 generate_trace_id
+
+    $id = OpenTelemetry::Trace->generate_trace_id;
+
+Generate a new random trace ID. This ID is guaranteed to be valid.
+
+=head2 generate_span_id
+
+    $id = OpenTelemetry::Trace->generate_span_id;
+
+Generate a new random span ID. This ID is guaranteed to be valid.
+
+=head2 untraced_context
+
+    $new_context = OpenTelemetry::Trace->untraced_context($context);
+
+Returns a new L<OpenTelemetry::Context> instance which is marked as untraced.
+This can be used together with the L<is_untraced_context|/is_untraced_context>
+method below to locally disable tracing for internal operations:
+
+    dynamically OpenTelemetry::Context->current
+        = OpenTelemetry::Trace->untraced_context;
+
+This method takes an optional L<OpenTelemetry::Context> to use as the base
+context. If none is provided, the current context will be used.
+
+=head2 is_untraced_context
+
+    $bool = OpenTelemetry::Trace->is_untraced_context($context);
+
+Takes an L<OpenTelemetry::Context> instance and checks if it is marked as an
+untraced context (see the L<untraced_context|/untraced_context> method above).
+If no context is provided, the current context will be used.
+
+Returns true if this is an untraced context, or false otherwise.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Trace::TracerProvider>
+
+=item L<OpenTelemetry::Trace::Tracer>
+
+=item L<OpenTelemetry::Trace::Span>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+
