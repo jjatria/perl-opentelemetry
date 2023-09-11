@@ -65,6 +65,10 @@ subtest 'Error handling' => sub {
 };
 
 subtest 'Tracer provider' => sub {
+    is my $provider = CLASS->tracer_provider, object {
+        prop isa => 'OpenTelemetry::Trace::TracerProvider';
+    }, '->tracer_provider returns default TracerProvider';
+
     {
         dynamically otel_tracer_provider = Fake::TracerProvider->new( x => 2 );
 
@@ -82,12 +86,11 @@ subtest 'Tracer provider' => sub {
             '->tracer_provider was dynamically scoped';
     }
 
-    is my $provider = CLASS->tracer_provider, object {
-        prop isa => 'OpenTelemetry::Trace::TracerProvider';
-    }, '->tracer_provider returns default TracerProvider';
+    ref_is CLASS->tracer_provider, $provider,
+        '->tracer_provider again returns default TracerProvider';
 
     ref_is otel_tracer_provider, $provider,
-        'otel_tracer_provider returns default TracerProvider';
+        'otel_tracer_provider returns same default TracerProvider';
 
     like dies { CLASS->tracer_provider = mock },
         qr/Global tracer provider must be a subclass of/,
