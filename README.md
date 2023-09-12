@@ -4,7 +4,7 @@
 
 This is part of an ongoing attempt at implementing the OpenTelemetry
 standard in Perl. The distribution in this repository implements the
-abstract OpenTelemetry API, with an SDK implementation being worked on
+abstract OpenTelemetry API, with [an SDK implementation] being worked on
 separately.
 
 ## What is OpenTelemetry?
@@ -66,5 +66,6 @@ $tracer->in_span( outer => sub ( $span, $context ) {
 });
 ```
 
+[an SDK implementation]: https://github.com/jjatria/perl-opentelemetry-sdk
 [Coverage Status]: https://coveralls.io/repos/github/jjatria/perl-opentelemetry/badge.svg?branch=main
 [coveralls]: https://coveralls.io/github/jjatria/perl-opentelemetry?branch=main
