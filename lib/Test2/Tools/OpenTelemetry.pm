@@ -1,6 +1,8 @@
 package
     Test2::Tools::OpenTelemetry;
 
+our $VERSION = '0.001';
+
 use Exporter 'import';
 our @EXPORT = qw( messages no_messages );
 
