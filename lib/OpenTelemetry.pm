@@ -39,13 +39,11 @@ sub _generate_otel_logger { \&logger }
     my $instance = OpenTelemetry::Trace::TracerProvider->new;
 
     my $set = sub ( $new ) {
-        $lock->enter( sub {
-            die OpenTelemetry::X->create(
-                Invalid => 'Global tracer provider must be a subclass of OpenTelemetry::Trace::TracerProvider, got instead ' . ( ref $new || 'a plain scalar' ),
-            ) unless $new isa OpenTelemetry::Trace::TracerProvider;
+        die OpenTelemetry::X->create(
+            Invalid => 'Global tracer provider must be a subclass of OpenTelemetry::Trace::TracerProvider, got instead ' . ( ref $new || 'a plain scalar' ),
+        ) unless $new isa OpenTelemetry::Trace::TracerProvider;
 
-            return $instance = $new;
-        });
+        $lock->enter( sub { $instance = $new });
     };
 
     sub _generate_otel_tracer_provider {
@@ -60,13 +58,11 @@ sub _generate_otel_logger { \&logger }
     my $instance = OpenTelemetry::Propagator::None->new;
 
     my $set = sub ( $new ) {
-        $lock->enter( sub {
-            die OpenTelemetry::X->create(
-                Invalid => 'Global propagator must implement the OpenTelemetry::Propagator role, got instead ' . ( ref $new || 'a plain scalar' ),
-            ) unless $new && $new->DOES('OpenTelemetry::Propagator');
+        die OpenTelemetry::X->create(
+            Invalid => 'Global propagator must implement the OpenTelemetry::Propagator role, got instead ' . ( ref $new || 'a plain scalar' ),
+        ) unless $new && $new->DOES('OpenTelemetry::Propagator');
 
-            return $instance = $new;
-        });
+        $lock->enter( sub { $instance = $new });
     };
 
     sub _generate_otel_propagator {
@@ -97,17 +93,12 @@ sub _generate_otel_span_from_context {
         $logger->error("OpenTelemetry error: $error");
     };
 
-    my $set = sub {
-        my $new = shift;
-        $lock->enter( sub {
-            return $instance unless $new;
+    my $set = sub ( $new ) {
+        die OpenTelemetry::X->create(
+            Invalid => 'Global error handler must be a code reference, got instead ' . ( ref $new || 'a plain scalar' ),
+        ) unless is_coderef $new;
 
-            die OpenTelemetry::X->create(
-                Invalid => 'Global error handler must be a code reference, got instead ' . ( ref $new || 'a plain scalar' ),
-            ) unless is_coderef $new;
-
-            return $instance = $new;
-        });
+        $lock->enter( sub { $instance = $new });
     };
 
     sub _generate_otel_error_handler {

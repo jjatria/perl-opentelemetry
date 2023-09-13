@@ -25,10 +25,8 @@ jobs:
           - os: macos-latest
             perl: '5.38'
 
-        # Windows builds are broken
-        # See https://github.com/marioroy/mutex-perl/issues/1
-        # - os: windows-latest
-        #   perl: '5.38'
+          - os: windows-latest
+            perl: '5.38'
 
           # This is effectively our normal one: all features and cover.
           - name: ' (all)'
