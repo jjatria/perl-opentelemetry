@@ -1,5 +1,5 @@
 use Object::Pad ':experimental(init_expr)';
-# ABSTRACT: The OpenTelemetry Span abstract interface
+# ABSTRACT: The part of an OpenTelemetry span that propagates
 
 package OpenTelemetry::Trace::SpanContext;
 

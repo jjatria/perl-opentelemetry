@@ -1,0 +1,153 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Trace::SpanContext - The part of an OpenTelemetry span that propagates
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry;
+
+    my $span = OpenTelemetry->tracer_provider->tracer->create_span(...);
+
+    $span_context = $span->context;
+
+    say 'Span ID:  ' . $span_context->hex_span_id;
+    say 'Trace ID: ' . $span_context->hex_trace_id;
+
+=head1 DESCRIPTION
+
+This module represents the portion of a L<OpenTelemetry::Trace::Span> that must
+be serialised and propagated as part of a distributed context. This object is
+immutable.
+
+=head1 METHODS
+
+=head2 new
+
+    $span_context = OpenTelemetry::Trace::SpanContex->new(
+        trace_flags => $trace_flags, # optional
+        trace_state => $trace_state, # optional
+        trace_id    => $trace_id,    # optional
+        span_id     => $span_id,     # optional
+        remote      => $remote // 0,
+    );
+
+Returns a new L<OpenTelemetry::Trace::SpanContext> object. Takes a the
+following named parameters, all of which are optional:
+
+=over
+
+=item span_id
+
+An 8-byte binary ID for the span this span context should be connected to.
+Defaults to a new random trace ID as returned by
+L<OpenTelemetry::Trace/generate_span_id>.
+
+=item trace_id
+
+A 16-byte binary ID for the trace this span context should be connected to.
+Defaults to a new random trace ID as returned by
+L<OpenTelemetry::Trace/generate_trace_id>.
+
+=item trace_state
+
+An instance of L<OpenTelemetry::Propagator::TraceContext::TraceState> carrying
+vendor-specific trace identification data. See that module's documentation for
+more details. Defaults to an empty trace state.
+
+=item trace_flags
+
+An instance of L<OpenTelemetry::Propagator::TraceContext::TraceFlags> with
+details about the trace. See that module's documentation for more details.
+Defaults to an empty set of flags.
+
+=item remote
+
+A boolean value which should be set to true if this span context was received
+from an external source, of false if this was locally generated. Defaults to
+false.
+
+=back
+
+=head2 span_id
+
+    $id = $span_context->span_id;
+
+Returns the binary span ID that was set (or generated) at construction time.
+
+=head2 trace_id
+
+    $id = $span_context->trace_id;
+
+Returns the binary trace ID that was set (or generated) at construction time.
+
+=head2 trace_state
+
+    $state = $span_context->trace_state;
+
+Returns the L<OpenTelemetry::Propagator::TraceContext::TraceState> object set
+(or generated) at construction time.
+
+=head2 trace_flags
+
+    $flags = $span_context->trace_flags;
+
+Returns the L<OpenTelemetry::Propagator::TraceContext::TraceFlags> object set
+(or generated) at construction time.
+
+=head2 remote
+
+    $bool = $span_context->remote;
+
+Returns the value set at construction time, which will be true if this span
+context was received from an external source, or false if it was locally
+generated.
+
+=head2 valid
+
+    $bool = $span_context->valid;
+
+Returns true if the span context's L</span_id> and L</trace_id> are both
+valid. For them to be valid, they must both have at least one non-zero byte.
+
+=head2 hex_trace_id
+
+    $string = $span_context->hex_trace_id;
+
+Returns this span context's L</trace_id> as a hexadecimal lowercase string.
+
+=head2 hex_span_id
+
+    $string = $span_context->hex_span_id;
+
+Returns this span context's L</span_id> as a hexadecimal lowercase string.
+
+=head1 CONSTANTS
+
+=head2 INVALID
+
+Returns a OpenTelemetry::Trace::SpanContext object on which method calls
+can be made, but that can be recognised as not representing a real, valid
+span context.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Trace>
+
+=item L<OpenTelemetry::Trace::Span>
+
+=item L<OpenTelemetry::Propagator::TraceContext::TraceState>
+
+=item L<OpenTelemetry::Propagator::TraceContext::TraceFlags>
+
+=item L<OpenTelemetry specification on SpanContext|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#spancontext>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+
