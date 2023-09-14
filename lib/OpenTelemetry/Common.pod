@@ -1,0 +1,91 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Common - Utility package with shared functions for OpenTelemetry
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Common;
+
+    # Read a config value from the environment for the FOO and BAR keys
+    # or undefined if they are not set
+    my $value = config(qw( FOO BAR )) // $default;
+
+    my $timeout = 10; # seconds
+    my $start   = timeout_timestamp;
+
+    for (@tasks) {
+        last unless maybe_timeout $timeout, $start;
+
+        ...
+    }
+
+=head1 DESCRIPTION
+
+This module contains functions that are useful throughout the OpenTelemetry
+codebase, and help provide a consistent way to handle certain processes.
+
+They will most likely only be of interest to authors of OpenTelemetry
+libraries and integrations.
+
+=head1 FUNCTIONS
+
+=head2 config
+
+    $value = config(@keys);
+
+This function takes a list of keys and tries to read values from those keys
+in the environment, and return the first value it finds, or undefined if no
+value is found.
+
+Keys will be read from the environment in order, after prepending first the
+C<OTEL_> prefix, and then the C<OTEL_PERL_> prefix if no value has been found.
+
+Values will be parsed as described in
+L<the OpenTelemetry specification|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/configuration/sdk-environment-variables.md>, which in the context of Perl means the following:
+
+=over
+
+=item *
+
+Empty values are the same as undefined
+
+=item *
+
+If the variable is set to the string "true" or "false" (case-insensitively),
+it will be returned as a true or false value respectively
+
+=item *
+
+Any other value will be returned as is
+
+=back
+
+=head2 maybe_timeout
+
+    $time_remaining = maybe_timeout(
+        $timeout // undef,
+        $start   // 0,
+    );
+
+Takes a timeout value and an optional starting timestamp, and returns how
+much of the provided timeout is still available. This is useful for timed
+operations that span over several steps, and need to propagate this timeout
+to additional calls.
+
+If the timeout argument was undefined, this function returns undefined, to
+indicate the absence of a timeout (rather than the fact that time has
+run out).
+
+=head2 timeout_timestamp
+
+    $timestamp = timeout_timestamp;
+
+Returns a monotonic timestamp value. This is used internally in
+L</maybe_timeout>, described above.
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+
