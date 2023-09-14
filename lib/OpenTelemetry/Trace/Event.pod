@@ -1,0 +1,96 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Trace::Event - An event associated with an OpenTelemetry span
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Trace::Event;
+
+    my $event = OpenTelemetry::Trace::Event->new(
+        name       => $event_name,
+        attributes => \%attributes,
+    );
+
+    # Or more realistically
+    use OpenTelemetry;
+
+    my $span = OpenTelemetry->tracer_provider->tracer->create_span(...);
+
+    ...
+
+    $span->add_event(
+        name       => 'my event',
+        attributes => \%attributes,
+    );
+
+=head1 DESCRIPTION
+
+Spans created by a L<OpenTelemetry::Trace::Tracer> (or one of its subclasses)
+may record zero or more events. Events can represent all sorts of matters of
+interest, and the most common ones have been given some standardised names
+and set of attributes. Please refer to the
+L<Semantic Conventions|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md>
+document for details on which these are.
+
+Probably the most common event will be exceptions added through the span
+object's L<record_exception|OpenTelemetry::Trace::Span/record_exception>
+method.
+
+=head1 METHODS
+
+This class implements the L<OpenTelemetry::Attributes> role. Please consult
+that module's documentation for details on the behaviours it provides.
+
+=head2 new
+
+    my $event = OpenTelemetry::Trace::Event->new(
+        name       => $event_name,
+        timestamp  => $timestamp // time,
+        attributes => \%attributes,
+    );
+
+Create a new event. The name parameter is required and must be set to a string
+that will identify this event. Note that some event names have standardised
+meanings. Refer to the
+L<Semantic Conventions|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md>
+for details on what these are and what they represent.
+
+The constructor accepts an optional timestamp argument to represent the time
+at which this event took place. If not provided, the timestamp will be the one
+at which the event was created. Note that events associated with a span may
+have a timestamp that took place before their span started, or after it ended.
+
+While the constructor allows you to create events, users will most likely
+create events on a span using the
+L<add_event|OpenTelemetry::Trace::Span/add_event> method instead.
+
+=head2 name
+
+    $name = $event->name;
+
+Reads the name given to this event when created.
+
+=head2 timestamp
+
+    $timestamp = $event->timestamp;
+
+Reads the timestamp associated with this event.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Attributes>
+
+=item L<OpenTelemetry::Trace::Span>
+
+=item L<OpenTelemetry Semantic Conventions|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+

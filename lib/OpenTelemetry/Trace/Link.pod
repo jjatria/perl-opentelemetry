@@ -1,0 +1,82 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Trace::Link - A link to an OpenTelemetry span
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Trace::Link;
+
+    my $link = OpenTelemetry::Trace::Link->new(
+        context    => $span_context,
+        attributes => \%attributes,
+    );
+
+    # Or more realistically
+    use OpenTelemetry;
+
+    my $span = OpenTelemetry->tracer_provider->tracer->create_span(
+        ...,
+        links => [
+            {
+                context    => $other_span->context,
+                attributes => \%attributes,
+            },
+            ...
+        ],
+    );
+
+=head1 DESCRIPTION
+
+Spans created by a L<OpenTelemetry::Trace::Tracer> (or one of its subclasses)
+may be linked to zero or more other spans that are causally related. This can
+be useful to represent batched operations, where a span representing the
+entire operation is linked to multiple spans representing each item making up
+the batch; or fork/join operations, where all forks are under a single span
+representing the aggregation of all tasks. See the
+L<OpenTelemetry specification|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#links-between-spans>
+for more details on links.
+
+Note that links can only be added to a span at creation time, and only through
+the C<links> parameter to
+L<create_span|OpenTelemetry::Trace::Tracer/create_span>. Please refer to that
+module's documentation for more details.
+
+=head1 METHODS
+
+This class implements the L<OpenTelemetry::Attributes> role. Please consult
+that module's documentation for details on the behaviours it provides.
+
+=head2 new
+
+    my $link = OpenTelemetry::Trace::Link->new(
+        context => $span_context,
+    );
+
+Create a new link to a different span. The context parameter must be set to
+a valid L<OpenTelemetry::Trace::SpanContext>, which will identify the span to
+link to.
+
+=head2 context
+
+    $span_context = $link->context;
+
+Retrieves the span context of the span this instance links to.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Attributes>
+
+=item L<OpenTelemetry::SDK::Trace::Span>
+
+=item L<OpenTelemetry specification on span links|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#links-between-spans>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+
