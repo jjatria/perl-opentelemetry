@@ -25,8 +25,8 @@ use in the context of L<OpenTelemetry> data propagation.
 
 =head2 Baggage Entries
 
-Baggage values are stored (by L<set|/set>) and returned (by L<get|/get>) as
-instances of an internal I<entry> object with the following two methods:
+Baggage values are stored (by L</set>) and returned (by L</get>) as instances
+of an internal I<entry> object with the following two methods:
 
 =over
 
@@ -100,7 +100,7 @@ deleted key.
 
 Reads the baggage stored in the context and returns it as a list of
 key / value pairs, where the values will be instances of the internal baggage
-entry object (L<see above|/Baggage Entries>).
+entry object (see L</Baggage Entries>, above).
 
 If an optional L<OpenTelemetry::Context> object is provided, the baggage will
 be read from that context. Otherwise the current context will be used.
@@ -135,8 +135,8 @@ The builder implements two methods:
 
     $builder = $builder->set( $key => $value, $meta );
 
-Takes the same parameters as the L<set|/set> class method and returns the
-builder itself.
+Takes the same parameters as the L</set> class method and returns the builder
+itself.
 
 =item build
 

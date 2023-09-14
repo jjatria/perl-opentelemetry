@@ -26,9 +26,9 @@ scope of an operation.
 The provider implemented in this package returns an instance of
 L<OpenTelemetry::Trace::Tracer> which is cached internally. This behaviour
 can be modified by inheriting from this class and providing a different
-implementation of the L<tracer|/tracer> method described below. See
-L<OpenTelemetry|OpenTelemetry/tracer_provider> for a way to set this
-modified version as a globally available tracer provider.
+implementation of the L</tracer> method described below. See
+L<OpenTelemetry/tracer_provider> for a way to set this modified version as a
+globally available tracer provider.
 
 =head1 METHODS
 

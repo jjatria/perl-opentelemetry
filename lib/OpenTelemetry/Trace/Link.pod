@@ -39,9 +39,8 @@ L<OpenTelemetry specification|https://github.com/open-telemetry/opentelemetry-sp
 for more details on links.
 
 Note that links can only be added to a span at creation time, and only through
-the C<links> parameter to
-L<create_span|OpenTelemetry::Trace::Tracer/create_span>. Please refer to that
-module's documentation for more details.
+the C<links> parameter to L<OpenTelemetry::Trace::Tracer/create_span>. Please
+refer to that module's documentation for more details.
 
 =head1 METHODS
 

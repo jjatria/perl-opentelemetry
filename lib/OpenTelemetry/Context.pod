@@ -40,7 +40,7 @@ For more details, please refer to the OpenTelemetry specification.
 =head2 Key objects
 
 Values in a context are stored using a key object rather than a plain string.
-See the L<key|/key> class method below for details on how to construct these
+See the L</key> class method below for details on how to construct these
 objects.
 
 =head1 METHODS
@@ -66,17 +66,17 @@ method will return an undefined value.
 
     $new_context = $context->set( $key => $value )
 
-Takes a key object (see the L<key|/key> class method) and a value and returns
-a new context object with all the values of the calling context, as well as
-the provided value stored under the provided key.
+Takes a key object (see the L</key> class method) and a value and returns a
+new context object with all the values of the calling context, as well as the
+provided value stored under the provided key.
 
 =head2 delete
 
     $new_context = $context->delete($key)
 
-Takes a key object (see the L<key|/key> class method) and returns a new
-context object with all the values of the calling context, except the value
-stored under the provided key.
+Takes a key object (see the L</key> class method) and returns a new context
+object with all the values of the calling context, except the value stored
+under the provided key.
 
 =head1 CLASS METHODS
 
@@ -87,7 +87,7 @@ stored under the provided key.
 
 Takes a string and creates a key object with that string as its name. The key
 object can be used to store and retrieve values from a context object (see the
-L<get|/get> and L<set|/set> methods above).
+L</get> and L</set> methods above).
 
 Two key objects with the same name are not interchangeable. They are unique to
 ensure that multiple libraries that use the same context to store values under

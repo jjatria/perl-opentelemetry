@@ -40,7 +40,7 @@ themselves undefined or references (of any kind).
 This role can optionally be configured to limit the number of attributes
 it will store, and the length of the stored values. If configured in this way,
 information about how many attributes were dropped will be made available
-via the L<dropped_attributes|/dropped_attributes> method described below.
+via the L</dropped_attributes> method described below.
 
 =head1 METHODS
 
@@ -77,7 +77,7 @@ is a copy, the returned hash reference is read-only.
     $count = $class->dropped_attributes;
 
 Return the number of attributes that were dropped if attribute count limits
-have been configured (see L<above|/new>).
+have been configured (see L</new>, described above).
 
 =head1 SEE ALSO
 

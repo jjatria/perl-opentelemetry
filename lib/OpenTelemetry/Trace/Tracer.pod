@@ -83,9 +83,9 @@ the current context (containing the span) as arguments. The span is guaranteed
 to be ended after execution of the subroutine ends by any means.
 
 Any additional parameters passed to this method between the span name and the
-code reference will be passed as-is to the call to L<create_span|/create_span>
-made when creating the span. Note that the name provided as the first argument
-is mandatory and will take precedence over any name set in these additional
+code reference will be passed as-is to the call to L</create_span> made when
+creating the span. Note that the name provided as the first argument is
+mandatory and will take precedence over any name set in these additional
 parameters.
 
 This method returns whatever the executed code reference returns.

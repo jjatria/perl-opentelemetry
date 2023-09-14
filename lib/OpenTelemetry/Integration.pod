@@ -107,7 +107,7 @@ An example implementation of this method might look like the following:
 Should return the names of the packages that should be loaded to install
 this integration. This method will be called in list context when loading
 dependencies automatically (ie. not when using the C<all> flag) to load
-the dependencies before calling L<install|/install>.
+the dependencies before calling L</install>.
 
 =head1 COPYRIGHT
 

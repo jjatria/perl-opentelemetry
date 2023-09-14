@@ -34,9 +34,8 @@ and set of attributes. Please refer to the
 L<Semantic Conventions|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md>
 document for details on which these are.
 
-Probably the most common event will be exceptions added through the span
-object's L<record_exception|OpenTelemetry::Trace::Span/record_exception>
-method.
+Probably the most common event will be exceptions added through a method like
+L<OpenTelemetry::Trace::Span/record_exception>.
 
 =head1 METHODS
 
@@ -63,8 +62,7 @@ at which the event was created. Note that events associated with a span may
 have a timestamp that took place before their span started, or after it ended.
 
 While the constructor allows you to create events, users will most likely
-create events on a span using the
-L<add_event|OpenTelemetry::Trace::Span/add_event> method instead.
+create events on a span using L<OpenTelemetry::Trace::Span/add_event> instead.
 
 =head2 name
 

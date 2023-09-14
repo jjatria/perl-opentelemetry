@@ -124,7 +124,7 @@ The error handler will be called with the following named parameters:
 =back
 
 The default error handler simply concatenates these and logs them using the
-default L<logger|/logger>.
+default L</logger>.
 
 =head2 handle_error
 
@@ -183,46 +183,44 @@ L<OpenTelemetry::Trace>.
     $context = otel_context_with_span( $span, $root_context // undef );
 
 Takes a span (such as those returned by calling
-L<create_span|OpenTelemetry::Trace::Tracer/create_span> on a tracer
-provided by the L<tracer provider|/tracer_provider>) and returns a
-L<OpenTelemetry::Context> containing it. If a L<OpenTelemetry::Context> is
-passed as its second argument, the new context will be constructed from the
-one provided, inheriting any existing values. Otherwise, the current context
-will be used.
+L<"create_span" on a tracer|OpenTelemetry::Trace::Tracer/create_span>
+provided by the L</tracer_provider>) and returns a L<OpenTelemetry::Context>
+containing it. If a L<OpenTelemetry::Context> is passed as its
+second argument, the new context will be constructed from the one provided,
+inheriting any existing values. Otherwise, the current context will be used.
 
-This is provided as a convenience method and behaves exactly as the
-L<context_with_span|OpenTelemetry::Trace/context_with_span> method from
-L<OpenTelemetry::Trace>.
+This is provided as a convenience method and behaves exactly as
+L<OpenTelemetry::Trace/context_with_span>.
 
 =head2 otel_logger
 
     $logger = otel_logger;
 
-Behaves exactly as the L<logger|/logger> class method described above.
+Behaves exactly as the L</logger> class method described above.
 
 =head2 otel_tracer_provider
 
     $tracer_provider = otel_tracer_provider;
     otel_tracer_provider = $new_tracer_provider;
 
-Behaves exactly as the L<tracer_provider|/tracer_provider> class method
-described above. Can be used as an lvalue.
+Behaves exactly as the L</tracer_provider> class method described above. Can
+be used as an lvalue.
 
 =head2 otel_propagator
 
     $propagator = otel_propagator;
     otel_propagator = $new_propagator;
 
-Behaves exactly as the L<propagator|/propagator> class method described
-above. Can be used as an lvalue.
+Behaves exactly as the L</propagator> class method described above. Can be
+used as an lvalue.
 
 =head2 otel_error_handler
 
     $handler = otel_error_handler;
     otel_error_handler = $new_error_handler;
 
-Behaves exactly as the L<error_handler|/error_handler> class method
-described above. Can be used as an lvalue.
+Behaves exactly as the L</error_handler> class method described above. Can be
+used as an lvalue.
 
 =head2 otel_handle_error
 
@@ -232,8 +230,7 @@ described above. Can be used as an lvalue.
         ...
     );
 
-Behaves exactly as the L<handle_error|/handle_error> class method
-described above.
+Behaves exactly as the L</handle_error> class method described above.
 
 =head1 SEE ALSO
 

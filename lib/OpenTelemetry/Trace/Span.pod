@@ -14,17 +14,15 @@ An instance of this class represents a single operation within a trace.
 
 Spans have a name that identifies them, and can store additional data
 related to the operation they represent, including start and end timestamps
-as well as other metadata (see L<add_event|/add_event>, and
-L<set_attribute|/set_attribute> methods below for some ways in which this can
-be achieved).
+as well as other metadata (see the L</add_event> and L</set_attribute> methods
+below for some ways in which this can be achieved).
 
 Spans can also link to a parent L<OpenTelemetry::Context>, which allows them
 to form a tree structure within a trace.
 
-The only supported way to create a span is through an
-L<OpenTelemetry::Trace::Tracer>. Refer to the
-L<create_span|OpenTelemetry::Trace::Tracer/create_span> method in that class
-for details.
+The only supported way to create a span is through the
+L<OpenTelemetry::Trace::Tracer/create_span>. Please refer to that
+documentation for details.
 
 =head1 METHODS
 
@@ -112,7 +110,7 @@ This method returns the calling span, which means it can be chained.
     $span = $span->end( $timestamp // time )
 
 Marks the span as ended. This will most commonly mean that the span is no
-longer L<recording|/recording>.
+longer recording (see L</recording>, above).
 
 Note that ending a span does not, by itself, affect any of the span's child
 spans. It also does not render the span invalid or limit its capacity to be
