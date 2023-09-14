@@ -7,9 +7,9 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
+use OpenTelemetry::Common;
 use OpenTelemetry::Context;
 use OpenTelemetry::Trace::Span;
-use OpenTelemetry::Trace::Common;
 
 my $current_span_key = OpenTelemetry::Context->key('current-span');
 
@@ -27,8 +27,8 @@ sub non_recording_span ( $, $context = undef ) {
     OpenTelemetry::Trace::Span->new( context => $context );
 }
 
-sub generate_trace_id { goto \&OpenTelemetry::Trace::Common::generate_trace_id }
-sub generate_span_id  { goto \&OpenTelemetry::Trace::Common::generate_span_id  }
+sub generate_trace_id { goto \&OpenTelemetry::Common::generate_trace_id }
+sub generate_span_id  { goto \&OpenTelemetry::Common::generate_span_id  }
 
 {
     my $untraced_key = OpenTelemetry::Context->key('untraced');

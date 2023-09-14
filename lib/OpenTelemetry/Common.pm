@@ -9,16 +9,20 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
-use Time::HiRes qw( clock_gettime CLOCK_MONOTONIC );
+use Bytes::Random::Secure ();
 use List::Util qw( any first );
+use OpenTelemetry::Constants qw( INVALID_TRACE_ID INVALID_SPAN_ID );
 use Ref::Util qw( is_arrayref is_hashref );
+use Time::HiRes qw( clock_gettime CLOCK_MONOTONIC );
 
 use parent 'Exporter';
 
 our @EXPORT_OK = qw(
-    timeout_timestamp
-    maybe_timeout
     config
+    generate_span_id
+    generate_trace_id
+    maybe_timeout
+    timeout_timestamp
 );
 
 use Log::Any;
@@ -49,8 +53,25 @@ sub config ( @keys ) {
     $value =~ /^true$/i ? 1 : $value =~ /^false$/i ? 0 : $value;
 }
 
+# Trace functions
+sub generate_trace_id {
+    while (1) {
+        my $id = Bytes::Random::Secure::random_bytes 16;
+        return $id unless $id eq INVALID_TRACE_ID;
+    }
+}
+
+sub generate_span_id {
+    while (1) {
+        my $id = Bytes::Random::Secure::random_bytes 8;
+        return $id unless $id eq INVALID_SPAN_ID;
+    }
+}
+
 delete $OpenTelemetry::Common::{$_} for qw(
     CLOCK_MONOTONIC
+    INVALID_SPAN_ID
+    INVALID_TRACE_ID
     any
     clock_gettime
     first

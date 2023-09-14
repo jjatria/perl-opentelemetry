@@ -2,10 +2,17 @@
 
 use Test2::V0;
 
+use OpenTelemetry::Constants qw(
+    INVALID_TRACE_ID
+    INVALID_SPAN_ID
+);
+
 use OpenTelemetry::Common qw(
     config
     maybe_timeout
     timeout_timestamp
+    generate_span_id
+    generate_trace_id
 );
 
 subtest Timeout => sub {
@@ -42,6 +49,18 @@ subtest Config => sub {
 
     is config('TRUE'), T, 'Reads "true" case insensitively as a true value';
     is config('FALSE'), F, 'Reads "false" case insensitively as a false value';
+};
+
+subtest 'Trace ID' => sub {
+    is my $id = generate_trace_id, T, 'Can generate a new one';
+    is length $id, 16, 'Has the right length';
+    isnt $id, INVALID_TRACE_ID, 'Is valid';
+};
+
+subtest 'Span ID' => sub {
+    is my $id = generate_span_id, T, 'Can generate a new one';
+    is length $id, 8, 'Has the right length';
+    isnt $id, INVALID_SPAN_ID, 'Is valid';
 };
 
 done_testing;

@@ -85,6 +85,22 @@ run out).
 Returns a monotonic timestamp value. This is used internally in
 L</maybe_timeout>, described above.
 
+=head2 generate_span_id
+
+    $id = generate_span_id;
+
+Generates a new random span ID. Do not use this function directly. Use it
+instead through the interface provided in
+L<OpenTelemetry::Trace|OpenTelemetry::Trace/generate_span_id>.
+
+=head2 generate_trace_id
+
+    $id = generate_trace_id;
+
+Generates a new random trace ID. Do not use this function directly. Use it
+instead through the interface provided in
+L<OpenTelemetry::Trace|OpenTelemetry::Trace/generate_trace_id>.
+
 =head1 COPYRIGHT AND LICENSE
 
 ...
