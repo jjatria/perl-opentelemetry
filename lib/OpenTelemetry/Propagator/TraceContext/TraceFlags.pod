@@ -1,0 +1,72 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Propagator::TraceContext::TraceFlags - Represents TraceFlags in a W3C TraceContext
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Propagator::TraceContext::TraceFlags;
+
+    $off = OpenTelemetry::Propagator::TraceContext::TraceFlags->new;
+    say 'Not sampled' unless $off->sampled;
+
+    $on = OpenTelemetry::Propagator::TraceContext::TraceFlags->new(1);
+    say 'Sampled' if $on->sampled;
+
+=head1 DESCRIPTION
+
+This class can be used to represent the trace flags as defined in a
+L<W3C TraceContext|https://w3c.github.io/trace-context>. Currently, this
+implements version C<00> of that standard, so the only flag that is defined
+is the "sampled" flag.
+
+=head1 METHODS
+
+=head2 new
+
+    $traceflags = OpenTelemetry::Propagator::TraceContext::TraceFlags->new(
+        $numeric_value // 0,
+    );
+
+Takes a positional numeric value to use as the starting value for the
+flags. If the value is not numeric, a warning will be logged and the
+value will be discarded.
+
+If no value is given, the default value is 0, meaning all flags are
+disabled.
+
+=head2 flags
+
+    $numeric = $traceflags->flags;
+
+Returns the flags as a plan numeric scalar.
+
+=head2 sampled
+
+    $bool = $traceflags->sampled;
+
+Returns true if the sampled flag is enabled, or false otherwise.
+
+=head2 to_string
+
+    $string = $traceflags->to_string;
+
+Returns the flags stringified as a lowecase hexadecimal string.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Propagator::TraceContext>
+
+=item L<OpenTelemetry::Trace::SpanContext>
+
+=item L<W3C TraceContext format|https://w3c.github.io/trace-context>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+
