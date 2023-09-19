@@ -7,11 +7,11 @@ our $VERSION = '0.001';
 
 class OpenTelemetry::Propagator::TraceContext::TraceParent {
     use OpenTelemetry::X;
-    use OpenTelemetry::Constants;
+    use OpenTelemetry::Constants qw(
+        HEX_INVALID_TRACE_ID
+        HEX_INVALID_SPAN_ID
+    );
     use OpenTelemetry::Propagator::TraceContext::TraceFlags;
-
-    my $INVALID_TRACE_ID = OpenTelemetry::Constants::HEX_INVALID_TRACE_ID;
-    my $INVALID_SPAN_ID  = OpenTelemetry::Constants::HEX_INVALID_SPAN_ID;
 
     field $trace_id :param :reader;
     field $span_id  :param :reader;
@@ -63,18 +63,20 @@ class OpenTelemetry::Propagator::TraceContext::TraceParent {
         die OpenTelemetry::X->create(
             'Parsing',
             "Invalid trace ID ($trace_id) when parsing string: '$string'"
-        ) if $trace_id eq $INVALID_TRACE_ID;
+        ) if $trace_id eq HEX_INVALID_TRACE_ID;
 
         die OpenTelemetry::X->create(
             'Parsing',
             "Invalid span ID ($span_id) when parsing string: '$string'"
-        ) if $span_id eq $INVALID_SPAN_ID;
+        ) if $span_id eq HEX_INVALID_SPAN_ID;
 
         $class->new(
             version  => 0+$version,
             trace_id => pack( 'H*', $trace_id ),
             span_id  => pack( 'H*', $span_id ),
-            flags    => OpenTelemetry::Propagator::TraceContext::TraceFlags->new( hex $flags ),
+            flags    => OpenTelemetry::Propagator::TraceContext::TraceFlags->new(
+                hex $flags
+            ),
         );
     }
 }
