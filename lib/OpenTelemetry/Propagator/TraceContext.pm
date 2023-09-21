@@ -57,7 +57,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
             my $span_context = OpenTelemetry::Trace::SpanContext->new(
                 trace_id    => $trace_parent->trace_id,
                 span_id     => $trace_parent->span_id,
-                trace_flags => $trace_parent->flags,
+                trace_flags => $trace_parent->trace_flags,
                 trace_state => $trace_state,
                 remote      => 1,
             );

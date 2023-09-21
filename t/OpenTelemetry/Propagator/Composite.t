@@ -13,9 +13,9 @@ use OpenTelemetry::Trace::SpanContext;
 
 my $context = do {
     my $parent = OpenTelemetry::Propagator::TraceContext::TraceParent->new(
-        trace_id => pack( 'H*', '000102030405060708090a0b0c0d0e0f' ),
-        span_id  => pack( 'H*', '0001020304050607' ),
-        flags => OpenTelemetry::Propagator::TraceContext::TraceFlags->new,
+        trace_id    => pack( 'H*', '000102030405060708090a0b0c0d0e0f' ),
+        span_id     => pack( 'H*', '0001020304050607' ),
+        trace_flags => OpenTelemetry::Propagator::TraceContext::TraceFlags->new,
     );
 
     my $state  = OpenTelemetry::Propagator::TraceContext::TraceState
@@ -24,7 +24,7 @@ my $context = do {
     my $span_context = OpenTelemetry::Trace::SpanContext->new(
         trace_id    => $parent->trace_id,
         span_id     => $parent->span_id,
-        trace_flags => $parent->flags,
+        trace_flags => $parent->trace_flags,
         trace_state => $state,
         remote      => 1,
     );

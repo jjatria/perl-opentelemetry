@@ -8,10 +8,10 @@ subtest Parsing => sub {
     my $tp = CLASS->from_string('00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01');
 
     is $tp, object {
-        call version  => 0;
-        call trace_id => pack 'H*', '4bf92f3577b34da6a3ce929d0e0e4736';
-        call span_id  => pack 'H*', '00f067aa0ba902b7';
-        call flags    => object {
+        call version     => 0;
+        call trace_id    => pack 'H*', '4bf92f3577b34da6a3ce929d0e0e4736';
+        call span_id     => pack 'H*', '00f067aa0ba902b7';
+        call trace_flags => object {
             call flags   => 1;
             call sampled => T;
         };

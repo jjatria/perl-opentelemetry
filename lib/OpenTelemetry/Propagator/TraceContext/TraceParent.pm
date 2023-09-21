@@ -13,24 +13,24 @@ class OpenTelemetry::Propagator::TraceContext::TraceParent {
     );
     use OpenTelemetry::Propagator::TraceContext::TraceFlags;
 
-    field $trace_id :param :reader;
-    field $span_id  :param :reader;
-    field $flags    :param :reader;
-    field $version  :param :reader = 0;
+    field $span_id     :param :reader;
+    field $trace_flags :param :reader;
+    field $trace_id    :param :reader;
+    field $version     :param :reader = 0;
 
     method to_string () {
         join '-',
             '00',
             unpack( 'H*', $trace_id ),
             unpack( 'H*', $span_id  ),
-            $flags->to_string;
+            $trace_flags->to_string;
     }
 
     sub from_span_context ( $class, $context ) {
         $class->new(
-            trace_id => $context->trace_id,
-            span_id  => $context->span_id,
-            flags    => $context->trace_flags,
+            span_id     => $context->span_id,
+            trace_flags => $context->trace_flags,
+            trace_id    => $context->trace_id,
         );
     }
 
@@ -44,11 +44,11 @@ class OpenTelemetry::Propagator::TraceContext::TraceParent {
             || $version !~ /^\d+$/a
             || ( $version > 0 && length $string < 55 );
 
-        my ( $trace_id, $span_id, $flags ) = $string =~ /
+        my ( $trace_id, $span_id, $trace_flags ) = $string =~ /
             ^  [A-Za-z0-9]{2}   # version
             - ([A-Za-z0-9]{32}) # trace ID
             - ([A-Za-z0-9]{16}) # span ID
-            - ([A-Za-z0-9]{2})  # flags
+            - ([A-Za-z0-9]{2})  # trace flags
             ( $ | - )
         /x or die OpenTelemetry::X->create(
             'Parsing',
@@ -71,12 +71,11 @@ class OpenTelemetry::Propagator::TraceContext::TraceParent {
         ) if $span_id eq HEX_INVALID_SPAN_ID;
 
         $class->new(
-            version  => 0+$version,
-            trace_id => pack( 'H*', $trace_id ),
-            span_id  => pack( 'H*', $span_id ),
-            flags    => OpenTelemetry::Propagator::TraceContext::TraceFlags->new(
-                hex $flags
-            ),
+            version     => 0+$version,
+            trace_id    => pack( 'H*', $trace_id ),
+            span_id     => pack( 'H*', $span_id ),
+            trace_flags => OpenTelemetry::Propagator::TraceContext::TraceFlags
+                ->new( hex $trace_flags ),
         );
     }
 }
