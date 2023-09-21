@@ -1,0 +1,122 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Propagator::TraceContext::TraceParent - Represents a TraceParent in a W3C TraceContext
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry;
+    use OpenTelemetry::Propagator::TraceContext::TraceParent;
+
+    my $span = OpenTelemetry->span_from_context;
+    my $traceparent = OpenTelemetry::Propagator::TraceContext::TraceParent
+        ->from_span_context( $span->context );
+
+    my $roundtrip = OpenTelemetry::Propagator::TraceContext::TraceParent
+        ->from_string( $traceparent->to_string );
+
+=head1 DESCRIPTION
+
+This class can be used to represent the trace parent as defined in a
+L<W3C TraceContext|https://w3c.github.io/trace-context>. It contains methods
+to parse C<traceparent> header strings, as well as to generate them.
+
+=head1 METHODS
+
+=head2 new
+
+    $new = OpenTelemetry::Propagator::TraceContext::TraceParent->new(
+        trace_id    => $trace_id,
+        span_id     => $span_id,
+        trace_flags => $trace_flags,
+        version     => $version // 0,
+    );
+
+Constructs a new trace parent from scratch. Takes the following named parameters:
+
+=over
+
+=item span_id
+
+An 8-byte binary ID for the span this span context should be connected to.
+Defaults to a new random trace ID as returned by
+L<OpenTelemetry::Trace/generate_span_id>.
+
+=item trace_id
+
+A 16-byte binary ID for the trace this span context should be connected to.
+Defaults to a new random trace ID as returned by
+L<OpenTelemetry::Trace/generate_trace_id>.
+
+=item trace_flags
+
+An instance of L<OpenTelemetry::Propagator::TraceContext::TraceFlags> with
+details about the trace. See that module's documentation for more details.
+Defaults to an empty set of flags.
+=over
+
+=item version
+
+A numeric version identifier. Defaults to 0, which at the moment of writing
+is the only version in existence.
+
+=back
+
+This raw constructor is mostly of used internally. Most commonly, a trace
+parent will be constructed either from the data in a
+L<OpenTelemetry::Trace::SpanContext> with the L<from_span_context>, or from
+a header string with L</from_string>. Both of these constructors are described
+inn more detail below.
+
+=head2 from_span_context
+
+    $new = OpenTelemetry::Propagator::TraceContext::TraceParent->from_span_context(
+        $span_context,
+    );
+
+Takes a positional L<OpenTelemetry::Trace::SpanContext> and constructs a new
+trace parent from the data it contains.
+
+=head2 from_string
+
+    $new = OpenTelemetry::Propagator::TraceContext::TraceParent->from_string(
+        $header_string
+    );
+
+Takes a positional string, such as the one that could be found in a
+C<traceparent> header. This method will parse the string and return the
+trace parent that string represents.
+
+See L</to_string> below for a way to generate this string.
+
+=head2 to_string
+
+    $string = $traceparent->to_string;
+
+Returns the trace parent stringified as defined in the
+L<W3C TraceContext format|https://w3c.github.io/trace-context>. This string is
+suitable to be used as the value eg. in a header for further propagation.
+
+Passing this string to L</from_string> will return an equivalent trace parent.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Trace>
+
+=item L<OpenTelemetry::Propagator::TraceContext>
+
+=item L<OpenTelemetry::Propagator::TraceContext::TraceFlags>
+
+=item L<OpenTelemetry::Trace::SpanContext>
+
+=item L<W3C TraceContext format|https://w3c.github.io/trace-context>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+
