@@ -8,11 +8,7 @@ use OpenTelemetry::Trace::SpanContext;
 our $VERSION = '0.001';
 
 class OpenTelemetry::Trace::Span {
-    field $context :param :reader = undef;
-
-    ADJUST {
-        $context //= OpenTelemetry::Trace::SpanContext->new;
-    }
+    field $context :param :reader //= OpenTelemetry::Trace::SpanContext->new;
 
     method recording { 0 }
 
