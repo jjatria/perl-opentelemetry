@@ -1,0 +1,130 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Trace::Span::Processor - Abstract interface of an OpenTelemetry span processor
+
+=head1 SYNOPSIS
+
+    use Object::Pad;
+    use Future::AsyncAwait;
+
+    class My::Processor :does(OpenTelemetry::Trace::Span::Processor) {
+        method on_start ( $span, $context ) { ... }
+        method on_end   ( $span           ) { ... }
+
+        async method shutdown    ( $timeout // undef ) { ... }
+        async method force_flush ( $timeout // undef ) { ... }
+    }
+
+    # Create it
+    my $processor = My::Processor->new( ... );
+
+    # Register it with the OpenTelemetry tracer provider
+    OpenTelemetry->tracer_provider->add_span_processor($processor);
+
+=head1 DESCRIPTION
+
+This module provides an abstract role that can be used by classes implementing
+OpenTelemetry span processors. Span processors are objects that are registered
+with a L<OpenTelemetry::Trace::TracerProvider> (or, more accurately, with one
+of its subclasses such as those provided by an OpenTelemetry SDK) to perform
+additional operations on spans when they start and end.
+
+The processor is considered to be the start of a pipeline, which must be
+allowed to end with a L<OpenTelemetry::Exporter> to export the telemetry data
+to some collector. To this end, processors are expected to accept an optional
+C<exporter> parameter to their constructor. But processors can be used for
+other ends.
+
+=head1 METHODS
+
+=head2 new
+
+    $processor = Class::Implementing::This::Role->new(
+        exporter => ..., # optional
+        ...
+    );
+
+Should take an optional exporter set to an instance of a class implementing
+the L<OpenTelemetry::Exporter> role. Processor classes are free to accept any
+other parameters they choose.
+
+=head2 on_start
+
+    $processor->on_start( $span, $parent_context );
+
+Called when the span is started. It takes the newly created span object, and
+the L<OpenTelemetry::Context> that holds the span's parent span, if any.
+This is the same value that was passed as the C<parent> paremeter to
+L<OpenTelemetry::Trace::Tracer/create_span>.
+
+If the span that was created was a root span (a span without a parent), this
+value may be undefined, or it may be a L<OpenTelemetry::Context> that does not
+hold a span.
+
+This method is called synchronously when the span was created, so it should
+not block or die.
+
+The return value of this method is ignored.
+
+=head2 on_end
+
+    $processor->on_end( $span );
+
+Called as soon as possible after the span has ended (so the end timestamp is
+already known). It takes the span that has just ended as its only parameter.
+
+This method is called synchronously when the span was created, so it should
+not block or die.
+
+The return value of this method is ignored.
+
+=head2 shutdown
+
+    $result = await $processor->shutdown( $timeout // undef );
+
+Takes an optional timeout value and returns a L<Future> that will be done
+when this span processor has completed shutting down. The shutdown process must
+include the effects of L<force_flush>, described below. After shutting down,
+the processor is not expected to do any further work, and should ignore any
+subsequent calls.
+
+The value of the future will be one of the
+L<OpenTelemetry::Constants/Trace export results>.
+
+=head2 force_flush
+
+    $result = await $processor->force_flush( $timeout // undef );
+
+Takes an optional timeout value and returns a L<Future> that will be done
+when this span processor has finished flushing. Flushing signals to the span
+processor that it should process the data for any unprocessed spans as soon as
+possible. This could be due to an imminent shutdown, but does not have to be.
+
+The value of the future will be one of the
+L<OpenTelemetry::Constants/Trace export results>.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<Future>
+
+=item L<OpenTelemetry::Constants>
+
+=item L<OpenTelemetry::Exporter>
+
+=item L<OpenTelemetry::Trace::TracerProvider>
+
+=item L<OpenTelemetry::SDK>
+
+=item L<OpenTelemetry::SDK::Trace::Span::Readable>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+...
+
+
