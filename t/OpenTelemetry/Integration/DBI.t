@@ -23,9 +23,17 @@ my $otel = mock OpenTelemetry => override => [
                                 };
                             },
                             set_status => sub ( $self, $status, $desc = '' ) {
+                                return if defined $self->{otel}{status};
+
                                 $self->{otel}{status} = {
                                     code => $status,
                                     $desc ? ( description => $desc ) : (),
+                                };
+                            },
+                            record_exception => sub ( $self, $e, %attributes ) {
+                                push @{ $self->{otel}{exceptions} //= [] }, {
+                                    exception  => $e,
+                                    attributes => \%attributes,
                                 };
                             },
                             end => sub ( $self ) {
@@ -106,6 +114,37 @@ subtest Mem => sub {
             'server.port'    => 1234,
         },
     }, 'Captured select data';
+
+    my $sth = $db->prepare('SELECT * FROM foo WHERE id = ?');
+    my $mock = mock $sth, override => [ finish => sub { die 'boom' } ];
+
+    like dies { $sth->execute('secret') },
+        match qr/boom/,
+        'Exception propagates';
+
+    is $span->{otel}, {
+        status     => {
+            code        => SPAN_STATUS_ERROR,
+            description => match qr/boom at /,
+        },
+        ended      => T,
+        kind       => SPAN_KIND_CLIENT,
+        name       => 'SELECT * FROM foo WHERE id = ?',
+        attributes => {
+            'db.connection_string' => '(RaiseError=1):port=1234;',
+            'db.statement'   => 'SELECT * FROM foo WHERE id = ?',
+            'db.system'      => 'mem',
+            'db.user'        => U,
+            'server.address' => U,
+            'server.port'    => 1234,
+        },
+        exceptions => [
+            {
+                exception  => match qr/boom at /,
+                attributes => {},
+            },
+        ],
+    }, 'Captured exception';
 };
 
 done_testing;
