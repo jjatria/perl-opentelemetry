@@ -112,24 +112,3 @@ role OpenTelemetry::Attributes {
 
     method attributes () { $attributes->to_hash }
 }
-
-role OpenTelemetry::Attributes::Writable {
-    field $attributes;
-
-    ADJUSTPARAMS ( $params ) {
-        $attributes = OpenTelemetry::AttributeMap->new(
-            data             => delete $params->{attributes} // {},
-            max_fields       => delete $params->{attribute_count_limit},
-            max_field_length => delete $params->{attribute_length_limit},
-        );
-    }
-
-    method _set_attribute ( %new ) {
-        $attributes->set(%new);
-        $self;
-    }
-
-    method dropped_attributes () { $attributes->dropped_fields }
-
-    method attributes () { $attributes->to_hash }
-}

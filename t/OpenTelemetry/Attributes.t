@@ -3,13 +3,19 @@
 use Test2::V0;
 use Test2::Tools::OpenTelemetry;
 
-use Object::Pad;
-class Local::Test           :does(OpenTelemetry::Attributes          ) { }
-class Local::Test::Writable :does(OpenTelemetry::Attributes::Writable) { }
+use Object::Pad ':experimental(mop)';
+class Local::Test :does(OpenTelemetry::Attributes) { }
 
-like dies { Local::Test->new->_set_attribute },
-    qr/^Can't locate object method "_set_attribute"/,
-    'Default role is not writable';
+# Here to ensure downstream uses do not break
+class Local::Test::Writable :does(OpenTelemetry::Attributes) {
+    method write (%new) {
+        Object::Pad::MOP::Class->for_class('OpenTelemetry::Attributes')
+            ->get_field('$attributes')
+            ->value($self)
+            ->set(%new);
+        $self;
+    }
+}
 
 is Local::Test->new, object {
     call attributes         => {};
@@ -65,21 +71,21 @@ subtest Limits => sub {
         my $a = Local::Test::Writable->new( attribute_count_limit => 2 );
 
         no_messages {
-            is $a->_set_attribute( foo => 123 ), object {
+            is $a->write( foo => 123 ), object {
                 call sub { shift->attributes->{foo} } => 123;
                 call dropped_attributes => 0;
             }, 'Can store attributes below limit';
         };
 
         no_messages {
-            is $a->_set_attribute( bar => 234 ), object {
+            is $a->write( bar => 234 ), object {
                 call sub { shift->attributes->{bar} } => 234;
                 call dropped_attributes => 0;
             }, 'Can record attributes to limit';
         };
 
         is messages {
-            is $a->_set_attribute( baz => 345 ), object {
+            is $a->write( baz => 345 ), object {
                 call sub { shift->attributes->{baz} } => U;
                 call dropped_attributes => 1;
             }, 'Dropped attribute and recorded it';
@@ -88,7 +94,7 @@ subtest Limits => sub {
         ], 'Logged messages';
 
         is messages {
-            is $a->_set_attribute( baz => 345, boom => 456 ), object {
+            is $a->write( baz => 345, boom => 456 ), object {
                 call sub { [ @{ shift->attributes }{qw( baz boom )} ] } => [ U, U ];
                 call dropped_attributes => 3;
             }, 'Dropped attributes and recorded them';
@@ -97,14 +103,14 @@ subtest Limits => sub {
         ], 'Logged messages';
 
         no_messages {
-            is $a->_set_attribute( foo => 345 ), object {
+            is $a->write( foo => 345 ), object {
                 call sub { shift->attributes->{foo} } => 345;
                 call dropped_attributes => 3;
             }, 'Can still replace existing attribute';
         };
 
         is messages {
-            is $a->_set_attribute( foo => undef ), object {
+            is $a->write( foo => undef ), object {
                 call sub { shift->attributes->{foo} } => 345;
                 call dropped_attributes => 4;
             }, 'Dropped attribute does not overwrite';
@@ -117,22 +123,22 @@ subtest Limits => sub {
         my $a = Local::Test::Writable->new( attribute_length_limit => 4 );
 
         no_messages {
-            is $a->_set_attribute( foo => 123 ), object {
+            is $a->write( foo => 123 ), object {
                 call sub { shift->attributes->{foo} } => 123;
                 call dropped_attributes => 0;
             }, 'Set short attribute';
 
-            is $a->_set_attribute( foo => 1234 ), object {
+            is $a->write( foo => 1234 ), object {
                 call sub { shift->attributes->{foo} } => 1234;
                 call dropped_attributes => 0;
             }, 'Set attribute at limit';
 
-            is $a->_set_attribute( foo => 12345 ), object {
+            is $a->write( foo => 12345 ), object {
                 call sub { shift->attributes->{foo} } => 1234;
                 call dropped_attributes => 0;
             }, 'Set longer attribute';
 
-            is $a->_set_attribute( foo => [ 123, 1234, 12345, undef ] ), object {
+            is $a->write( foo => [ 123, 1234, 12345, undef ] ), object {
                 call sub { shift->attributes->{foo} } => [ 123, 1234, 1234, undef ];
                 call dropped_attributes => 0;
             }, 'Applied limit to each value in an array reference';
