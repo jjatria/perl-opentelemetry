@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 
 use Test2::V0 -target => 'OpenTelemetry';
+use Test2::Tools::OpenTelemetry;
+
 use OpenTelemetry -all;
 
 use Object::Pad;
@@ -62,6 +64,18 @@ subtest 'Error handling' => sub {
     }
 
     ref_is otel_error_handler, $code, 'Error handler was dynamically scoped';
+
+    is messages { otel_handle_error message => 'An error' }, [
+        [ error => OpenTelemetry => 'OpenTelemetry error: An error' ],
+    ], 'Default error handler prints message';
+
+    is messages { otel_handle_error exception => 'boom' }, [
+        [ error => OpenTelemetry => 'OpenTelemetry error: boom' ],
+    ], 'Default error handler prints exception';
+
+    is messages { otel_handle_error message => 'an error', exception => 'boom' }, [
+        [ error => OpenTelemetry => 'OpenTelemetry error: an error - boom' ],
+    ], 'Default error handler prints message and exception';
 };
 
 subtest 'Tracer provider' => sub {

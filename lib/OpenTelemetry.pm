@@ -88,7 +88,7 @@ sub _generate_otel_span_from_context {
     my $lock = Mutex->new;
     my $instance = sub (%args) {
         my $error = join ' - ', grep defined,
-            @args{qw( exception message )};
+            @args{qw( message exception )};
 
         $logger->error("OpenTelemetry error: $error");
     };
@@ -107,8 +107,8 @@ sub _generate_otel_span_from_context {
 
     sub error_handler :lvalue { sentinel get => sub { $instance }, set => $set }
 
-    sub _generate_otel_handle_error { sub {  $instance->(); return } }
-    sub                handle_error { shift; $instance->(); return   }
+    sub _generate_otel_handle_error { sub {  $instance->(@_); return } }
+    sub                handle_error { shift; $instance->(@_); return   }
 }
 
 1;
