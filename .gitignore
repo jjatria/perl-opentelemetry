@@ -3,3 +3,9 @@
 *.swo
 .build/
 cover_db/
+
+# Build artifacts
+Build
+blib/
+MYMETA.*
+_build_params
