@@ -37,7 +37,7 @@ Constructs a new instance of this propagator. This propagator will do nothing.
 
 =head2 GETTER
 
-    $getter = OpenTelemetry::Propagator::TextMap->GETTER;;
+    $getter = OpenTelemetry::Propagator::TextMap->GETTER;
     $value  = $carrier->$getter($key);
 
 Returns a subroutine reference that takes a carrier data structure and a
