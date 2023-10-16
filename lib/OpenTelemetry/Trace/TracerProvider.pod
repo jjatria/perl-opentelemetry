@@ -14,7 +14,7 @@ OpenTelemetry::Trace::TracerProvider - Provides access to OpenTelemetry Tracers
     my $span     = $tracer->create_span( name => 'My span' );
 
     # Set a global tracer provider
-    OpenTelemetry->tracer_provider( $another_provider );
+    OpenTelemetry->tracer_provider = $another_provider;
 
 =head1 DESCRIPTION
 
