@@ -42,14 +42,52 @@ Creates a new instance of the tracer provider.
 
     $tracer = $trace_provider->tracer( %args )
 
-Takes a set of named parameters, and returns the tracer provided by this
-provider.
+Takes a set of named parameters, and returns a tracer that can be used to
+generate spans via L<OpenTelemetry::Trace::Tracer/create_span>. Accepted
+parameters are:
+
+=over
+
+=item C<name>
+
+A name that uniquely identifies an
+L<instrumentation scope|OpenTelemetry::SDK::InstrumentationScope>. This can
+be the instrumentation library, a package name, etc. This value I<should> be
+set to a non-empty string.
+
+=item C<version>
+
+Specifies the version of the
+L<instrumentation scope|OpenTelemetry::SDK::InstrumentationScope>, if one is
+available.
+
+=item C<attributes>
+
+A hash reference with a set of attributes for this
+L<instrumentation scope|OpenTelemetry::SDK::InstrumentationScope>.
+
+=item C<schema_url>
+
+The schema URL to be recorded in the emitted telemetry.
+
+=back
 
 The code implemented in this package ignores all arguments and returns a
-L<OpenTelemetry::Trace::Tracer>, but subclasses are free to modify this.
+L<OpenTelemetry::Trace::Tracer>, but subclasses (most notably
+L<OpenTelemetry::SDK::Trace::TracerProvider>) are free to modify this.
 
-Callers of this method should B<not> cache this tracer, since the tracer
-provider might have changed since the last time the tracer was created.
+Callers are free to cache this tracer, which tracer providers must ensure
+can continue to work. In the event that the configuration of the tracer
+provider has changed, it is the responsibility of the provider to
+propagate these changes to existing tracers, or to ensure that existing
+tracers remain usable.
+
+That said, callers should be aware that tracer providers I<may> change,
+even in limited scopes, and while the tracer provider is responsible for
+looking after the tracers it has generated, they are not required (and may
+not be capable) to alter the functioning of tracers that have been created
+by other providers.
+
 If creating the tracer is expensive, then it's the tracer provider's
 responsibility to cache it.
 
