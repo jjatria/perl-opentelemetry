@@ -26,6 +26,7 @@ use Exporter::Shiny qw(
     otel_handle_error
     otel_logger
     otel_propagator
+    otel_schema_url
     otel_span_from_context
     otel_tracer_provider
 );
@@ -70,6 +71,19 @@ sub _generate_otel_logger { \&logger }
     }
 
     sub propagator :lvalue { sentinel get => sub { $instance }, set => $set }
+}
+
+{
+    my $lock = Mutex->new;
+    my $instance = '';
+
+    my $set = sub ( $new ) { $lock->enter( sub { $instance = $new } ) };
+
+    sub _generate_otel_schema_url {
+        my $x = sub :lvalue { sentinel get => sub { $instance }, set => $set };
+    }
+
+    sub schema_url :lvalue { sentinel get => sub { $instance }, set => $set }
 }
 
 sub _generate_otel_current_context {
