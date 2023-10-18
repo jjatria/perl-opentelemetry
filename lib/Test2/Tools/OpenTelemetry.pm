@@ -5,10 +5,8 @@ our $VERSION = '0.001';
 
 use Exporter 'import';
 our @EXPORT = qw(
-    messages
-    no_messages
-    metrics
-    no_metrics
+    messages no_messages
+    metrics  no_metrics
 );
 
 use Feature::Compat::Defer;
@@ -20,7 +18,7 @@ use Metrics::Any::Adapter 'Test';
 
 require Log::Any::Adapter;
 
-my $capture_messages = sub {
+my $messages = sub {
     my $code = shift;
 
     Log::Any::Adapter->set(
@@ -33,27 +31,7 @@ my $capture_messages = sub {
     \@messages;
 };
 
-sub messages (&) { goto $capture_messages }
-
-sub no_messages (&) {
-    my $name = 'No messages logged';
-
-    my $messages = shift->$capture_messages;
-    my $context  = context;
-    my $delta    = compare $messages, [], \&strict_convert;
-
-    if ( $delta ) {
-        $context->fail( $name, $delta->diag );
-    }
-    else {
-        $context->ok( 1, $name );
-    }
-
-    $context->release;
-    return !$delta;
-}
-
-my $capture_metrics = sub {
+my $metrics = sub {
     my $code = shift;
 
     Metrics::Any::Adapter::Test->clear;
@@ -64,24 +42,21 @@ my $capture_metrics = sub {
     [ split /\n/, Metrics::Any::Adapter::Test->metrics ];
 };
 
-sub metrics (&) { goto $capture_metrics }
+my $no = sub {
+    my ( $code, $capture, $name ) = @_;
 
-sub no_metrics (&) {
-    my $name = 'No metrics collected';
-
-    my $data    = shift->$capture_metrics;
     my $context = context;
+    my $data    = $code->$capture;
     my $delta   = compare $data, [], \&strict_convert;
 
-    if ( $delta ) {
-        $context->fail( $name, $delta->diag );
-    }
-    else {
-        $context->ok( 1, $name );
-    }
+    return $context->pass_and_release($name) unless $delta;
+    $context->fail_and_release( $name, $delta->diag );
+};
 
-    $context->release;
-    return !$delta;
-}
+sub messages (&) { goto $messages }
+sub metrics  (&) { goto $metrics  }
+
+sub no_messages (&) { shift->$no( $messages, 'No messages logged'   ) }
+sub no_metrics  (&) { shift->$no( $metrics,  'No metrics collected' ) }
 
 1;
