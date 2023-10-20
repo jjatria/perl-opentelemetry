@@ -20,7 +20,7 @@ documentation of that module for details on what is supported.
 
 =head1 CONSTANTS
 
-=head2 Span status codes
+=head2 Span Status Codes
 
 These constants are used to specify the status of a span once it has
 completed. They can be imported individually, or with the C<span_status> tag.
@@ -43,7 +43,7 @@ by an application.
 
 =back
 
-=head2 Span kinds
+=head2 Span Kinds
 
 These constants are used to specify the type of the span. They can be imported
 individually, or with the C<span_kind> tag.
@@ -76,7 +76,7 @@ The span describes a consumer receiving a message from a broker.
 
 =back
 
-=head2 Trace export results
+=head2 Trace Export Results
 
 These constants are used to distinguish the result of a trace export
 operation. They can be imported individually, or with the C<trace_export> tag.
@@ -97,7 +97,7 @@ Marks an export operation that was interrupted because it took too long.
 
 =back
 
-=head2 Placeholder invalid IDs
+=head2 Placeholder Invalid IDs
 
 These constants are used as global null values for span and trace IDs.
 They can be imported individually.
