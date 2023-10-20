@@ -6,7 +6,17 @@ OpenTelemetry::Trace::Span - A single operation within a trace
 
 =head1 SYNOPSIS
 
-    ...
+    use OpenTelemetry;
+    use Syntax::Keyword::Dynamically;
+
+    my $span = OpenTelemetry->tracer_provider->tracer->create_span(
+        ...
+    );
+
+    # Attach this span to the current context
+    # Doing this dynamically means this is only applied to this scope
+    my $context = OpenTelemetry->context_with_span($span);
+    dynamically OpenTelemetry->current_context = $context;
 
 =head1 DESCRIPTION
 
