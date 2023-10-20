@@ -71,11 +71,33 @@ This method returns the calling span, which means it can be chained.
         attributes => $attributes // {},
     )
 
-Add an event to this span.
+Add an event to this span. It accepts the following parameters:
 
-Refer to
-L<the OpenTelementry specification|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/README.md>
-for details on some of the standard event names and their meanings.
+=over
+
+=item C<attributes>
+
+A hash reference with the attributes of this event. If not set, no attributes
+will be set. Note that the OpenTelementry specification details standard event
+attribute names and values to be used with specific meanings. Please refer to
+the
+<Semantic Conventions for Event Attributes|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/general/events.md>
+specification for more details.
+
+=item C<name>
+
+The name of this event. Note that the OpenTelementry specification details
+standard event names to be used with specific meanings. Please refer to the
+L<Semantic Conventions|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/README.md>
+specification for more details.
+
+If not set, the string C<undef> will be used.
+
+=item C<timestamp>
+
+A timestamp for this event. If not provided, the current time will be used.
+
+=back
 
 This method returns the calling span, which means it can be chained.
 
@@ -111,6 +133,9 @@ This method returns the calling span, which means it can be chained.
 
 Marks the span as ended. This will most commonly mean that the span is no
 longer recording (see L</recording>, above).
+
+It takes an optional timestamp to use as the end timestamp of the span. If
+not provided, the current time will be used.
 
 Note that ending a span does not, by itself, affect any of the span's child
 spans. It also does not render the span invalid or limit its capacity to be
