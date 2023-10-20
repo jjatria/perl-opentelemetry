@@ -10,6 +10,12 @@ our $VERSION = '0.001';
 class OpenTelemetry::Trace::Span {
     field $context :param :reader //= OpenTelemetry::Trace::SpanContext->new;
 
+    method add_event ( %args ) { $self }
+
+    method end ( $timestamp = time ) { $self }
+
+    method record_exception ( $exception, %attributes ) { $self }
+
     method recording { 0 }
 
     method set_attribute ( %args ) { $self }
@@ -17,12 +23,6 @@ class OpenTelemetry::Trace::Span {
     method set_name ( $name ) { $self }
 
     method set_status ( $status, $description = '' ) { $self }
-
-    method add_event ( %args ) { $self }
-
-    method end ( $timestamp = time ) { $self }
-
-    method record_exception ( $exception, %attributes ) { $self }
 }
 
 use constant {
