@@ -19,6 +19,7 @@ requires 'UUID::URandom';
 requires 'X::Tiny';
 
 on test => sub {
-    requires 'Test2::V0';
     requires 'Class::Inspector'; # For OpenTelemetry::Integration test
+    requires 'Metrics::Any';
+    requires 'Test2::V0';
 };

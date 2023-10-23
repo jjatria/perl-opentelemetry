@@ -71,6 +71,7 @@
             "Class::Inspector" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
+            "Metrics::Any" : "0",
             "Test2::V0" : "0",
             "Test::More" : "0",
             "perl" : "v5.32.0"
@@ -668,9 +669,6 @@
          "version" : "6.030"
       }
    },
-   "x_contributors" : [
-      "Jos\u00e9 Joaqu\u00edn Atria <jjatria@gmail.com>"
-   ],
    "x_generated_by_perl" : "v5.36.0",
    "x_serialization_backend" : "Cpanel::JSON::XS version 4.37",
    "x_spdx_expression" : "Artistic-1.0-Perl OR GPL-1.0-or-later"
