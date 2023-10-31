@@ -119,10 +119,6 @@
          "file" : "lib/OpenTelemetry/Integration/LWP/UserAgent.pm",
          "version" : "0.010"
       },
-      "OpenTelemetry::Integration::namespace" : {
-         "file" : "lib/OpenTelemetry/Integration/namespace.pm",
-         "version" : "0.010"
-      },
       "OpenTelemetry::Propagator" : {
          "file" : "lib/OpenTelemetry/Propagator.pm",
          "version" : "0.010"

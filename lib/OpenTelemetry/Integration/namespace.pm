@@ -1,4 +1,5 @@
-package OpenTelemetry::Integration::namespace;
+package
+    OpenTelemetry::Integration::namespace;
 # ABSTRACT: OpenTelemetry integration for a namespace
 
 our $VERSION = '0.010';
