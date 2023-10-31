@@ -81,131 +81,131 @@
    "provides" : {
       "OpenTelemetry" : {
          "file" : "lib/OpenTelemetry.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Attributes" : {
          "file" : "lib/OpenTelemetry/Attributes.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Baggage" : {
          "file" : "lib/OpenTelemetry/Baggage.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Constants" : {
          "file" : "lib/OpenTelemetry/Constants.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Context" : {
          "file" : "lib/OpenTelemetry/Context.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Exporter" : {
          "file" : "lib/OpenTelemetry/Exporter.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Integration" : {
          "file" : "lib/OpenTelemetry/Integration.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Integration::DBI" : {
          "file" : "lib/OpenTelemetry/Integration/DBI.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Integration::HTTP::Tiny" : {
          "file" : "lib/OpenTelemetry/Integration/HTTP/Tiny.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Integration::LWP::UserAgent" : {
          "file" : "lib/OpenTelemetry/Integration/LWP/UserAgent.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Integration::namespace" : {
          "file" : "lib/OpenTelemetry/Integration/namespace.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator" : {
          "file" : "lib/OpenTelemetry/Propagator.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::Baggage" : {
          "file" : "lib/OpenTelemetry/Propagator/Baggage.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::Composite" : {
          "file" : "lib/OpenTelemetry/Propagator/Composite.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::None" : {
          "file" : "lib/OpenTelemetry/Propagator/None.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::TextMap" : {
          "file" : "lib/OpenTelemetry/Propagator/TextMap.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::TraceContext" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::TraceContext::TraceFlags" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext/TraceFlags.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::TraceContext::TraceParent" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext/TraceParent.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Propagator::TraceContext::TraceState" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext/TraceState.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace" : {
          "file" : "lib/OpenTelemetry/Trace.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace::Event" : {
          "file" : "lib/OpenTelemetry/Trace/Event.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace::Link" : {
          "file" : "lib/OpenTelemetry/Trace/Link.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace::Span" : {
          "file" : "lib/OpenTelemetry/Trace/Span.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace::Span::Processor" : {
          "file" : "lib/OpenTelemetry/Trace/Span/Processor.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace::SpanContext" : {
          "file" : "lib/OpenTelemetry/Trace/SpanContext.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace::Tracer" : {
          "file" : "lib/OpenTelemetry/Trace/Tracer.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::Trace::TracerProvider" : {
          "file" : "lib/OpenTelemetry/Trace/TracerProvider.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::X" : {
          "file" : "lib/OpenTelemetry/X.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::X::Invalid" : {
          "file" : "lib/OpenTelemetry/X/Invalid.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::X::Parsing" : {
          "file" : "lib/OpenTelemetry/X/Parsing.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       },
       "OpenTelemetry::X::Unsupported" : {
          "file" : "lib/OpenTelemetry/X/Unsupported.pm",
-         "version" : "0.001"
+         "version" : "0.010"
       }
    },
    "release_status" : "stable",
@@ -219,7 +219,7 @@
          "web" : "https://github.com/jjatria/perl-opentelemetry"
       }
    },
-   "version" : "0.001",
+   "version" : "0.010",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.036000"
@@ -606,6 +606,11 @@
             "version" : "0.036"
          },
          {
+            "class" : "Dist::Zilla::Plugin::Meta::Contributors",
+            "name" : "Meta::Contributors",
+            "version" : "0.003"
+         },
+         {
             "class" : "Dist::Zilla::Plugin::FinderCode",
             "name" : ":InstallModules",
             "version" : "6.030"
@@ -669,6 +674,9 @@
          "version" : "6.030"
       }
    },
+   "x_contributors" : [
+      "Tom Molesworth <TEAM@cpan.org>"
+   ],
    "x_generated_by_perl" : "v5.36.0",
    "x_serialization_backend" : "Cpanel::JSON::XS version 4.37",
    "x_spdx_expression" : "Artistic-1.0-Perl OR GPL-1.0-or-later"

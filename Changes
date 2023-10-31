@@ -1,5 +1,9 @@
 Revision history for OpenTelemetry
 
-0.001     2021-05-29 00:15:39+01:00 Europe/London
+{{$NEXT}}
 
-        First version.
+    Added Tracing API implementation.
+
+0.001     2020-06-29 00:03:29+08:00 Asia/Kuala_Lumpur
+
+    Initial release.
