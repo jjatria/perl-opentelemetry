@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.010     2023-10-31 23:05:38+00:00 Europe/London
 
     Added Tracing API implementation.
 
