@@ -1,7 +1,7 @@
 package
     Test2::Tools::OpenTelemetry;
 
-our $VERSION = '0.010';
+our $VERSION = '0.011';
 
 use Exporter 'import';
 our @EXPORT = qw(
