@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Propagator;
 
-our $VERSION = '0.011';
+our $VERSION = '0.012';
 
 role OpenTelemetry::Propagator {
     method extract;

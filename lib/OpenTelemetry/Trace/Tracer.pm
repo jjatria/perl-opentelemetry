@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Trace::Tracer;
 
-our $VERSION = '0.011';
+our $VERSION = '0.012';
 
 use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );

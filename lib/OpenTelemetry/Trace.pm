@@ -1,7 +1,7 @@
 package OpenTelemetry::Trace;
 # ABSTRACT: Generic methods for the OpenTelemetry Tracing API
 
-our $VERSION = '0.011';
+our $VERSION = '0.012';
 
 use strict;
 use warnings;
