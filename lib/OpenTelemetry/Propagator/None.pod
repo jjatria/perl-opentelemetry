@@ -26,7 +26,7 @@ L<OpenTelemetry::Propagator> interface.
 
 =head2 new
 
-    $propagator = OpenTelemetry::Propagator::TextMap->new
+    $propagator = OpenTelemetry::Propagator::None->new
 
 Constructs a new instance of this propagator. This propagator will do nothing.
 

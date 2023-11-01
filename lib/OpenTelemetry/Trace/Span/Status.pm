@@ -1,8 +1,7 @@
 use Object::Pad ':experimental(init_expr)';
 # ABSTRACT: The status of an OpenTelemetry span
 
-package
-    OpenTelemetry::Trace::Span::Status;
+package OpenTelemetry::Trace::Span::Status;
 
 our $VERSION = '0.011';
 

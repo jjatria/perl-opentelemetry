@@ -1,0 +1,102 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Propagator::TraceContext::TraceState - Represents TraceState in a W3C TraceContext
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry::Propagator::TraceContext::TraceState;
+
+    $state = OpenTelemetry::Propagator::TraceContext::TraceState
+        ->from_string('rojo=00f067aa0ba902b7,congo=t61rcWkgMzE');
+
+    say $state->get('rojo');    # 00f067aa0ba902b7
+    say $state->get('missing'); # undef
+
+    # Object is read-only: write operations generate clones
+    $new = $state
+        ->delete('congo')
+        ->set( blue => 'deadbeef' );
+
+    say $state->to_string; # rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
+    say $new->to_string;   # rojo=00f067aa0ba902b7,blue=deadbeef
+
+=head1 DESCRIPTION
+
+This class can be used to parse, manipulate, and generate the tracestate
+header as defined in a
+L<W3C TraceContext|https://w3c.github.io/trace-context>. Currently, this
+implements version C<00> of that standard.
+
+Note that, as defined in that standard, this header is only to be used to
+store properties that are defined by a tracing system. If you are looking
+to propagate other application-level properties
+L<OpenTelemetry::Propagator::Baggage> might be a better fit.
+
+=head1 METHODS
+
+=head2 new
+
+    $tracestate = OpenTelemetry::Propagator::TraceContext::TraceState->new;
+
+Creates an empty OpenTelemetry::Propagator::TraceContext::TraceState object.
+To create an instance with initial key/value pairs, you should use
+L</from_string>.
+
+=head2 from_string
+
+    $tracestate = OpenTelemetry::Propagator::TraceContext::TraceState
+        ->from_string($tracestate_header);
+
+Takes the value of a tracestate header and returns a
+OpenTelemetry::Propagator::TraceContext::TraceState instance with the
+key/value pairs it contained, if any.
+
+=head2 to_string
+
+    $header = $tracestate->to_string;
+
+Returns a string representation of the calling object, suitable to be used
+as the value of a tracestate header.
+
+=head2 get
+
+    $value = $tracestate->get($key);
+
+Takes the key of a field as a string, and returns the value stored in the
+calling object under that key. If the key was never set, this will return
+an undefined value.
+
+=head2 set
+
+    $new = $tracestate->set( $key => $value );
+
+Takes a key/value pair and returns a clone of the calling object with the
+specified key set to the specified value. If the key already existed, its
+value will be over-written.
+
+=head2 delete
+
+    $new = $tracestate->delete($key);
+
+Takes the key of a field as a string, returns a clone of the calling object
+without the specified key. If the key did not exist, already existed, its
+value will be over-written.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Propagator::TraceContext>
+
+=item L<W3C TraceContext format|https://w3c.github.io/trace-context>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2023 by José Joaquín Atria.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.

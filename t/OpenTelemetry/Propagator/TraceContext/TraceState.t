@@ -48,6 +48,9 @@ subtest Modification => sub {
         'rojo=00f067aa0ba902b7',
         'Can delete members';
 
+    ref_is_not $test->delete('xxx'), $test,
+        'Deleting retusn new object even if missing';
+
     is $test->delete('xxx')->to_string,
         'rojo=00f067aa0ba902b7,congo=t61rcWkgMzE',
         'Deleting missing field does nothing';

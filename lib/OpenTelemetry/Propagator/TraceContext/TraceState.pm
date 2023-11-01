@@ -93,7 +93,6 @@ class OpenTelemetry::Propagator::TraceContext::TraceState {
     }
 
     # Returns a clone of the TraceState without the deleted key
-    # or the same object if no change was needed
     method delete ( $key ) {
         ( ref $self )->new->$init(
             List::Util::pairgrep { $a ne $key } @members

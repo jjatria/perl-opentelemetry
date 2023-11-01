@@ -1,5 +1,12 @@
 Revision history for OpenTelemetry
 
+{{$NEXT}}
+
+    * Added missing documentation for
+      OpenTelemetry::Propagator::TraceContext::TraceState
+    * Publicly index existing OpenTelemetry::Trace::Span::Status
+    * Fix other minor issues in the documentation
+
 0.010     2023-10-31 23:05:38+00:00 Europe/London
 
     Added Tracing API implementation.
