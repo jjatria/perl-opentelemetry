@@ -40,7 +40,9 @@ in the environment, and return the first value it finds, or undefined if no
 value is found.
 
 Keys will be read from the environment in order, after prepending first the
-C<OTEL_> prefix, and then the C<OTEL_PERL_> prefix if no value has been found.
+C<OTEL_PERL_> prefix (which should be specific to this Perl implementation),
+and then the C<OTEL_> prefix (which are the ones defined by the standard) if
+no value has been found.
 
 Values will be parsed as described in
 L<the OpenTelemetry specification|https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/configuration/sdk-environment-variables.md>, which in the context of Perl means the following:
