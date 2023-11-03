@@ -4,6 +4,7 @@ use Test2::V0 -target => 'OpenTelemetry';
 use Test2::Tools::OpenTelemetry;
 
 use OpenTelemetry -all;
+use OpenTelemetry::Trace;
 
 use Object::Pad;
 use Syntax::Keyword::Dynamically;
@@ -173,6 +174,15 @@ subtest Helpers => sub {
 
         ref_is otel_span_from_context, $span,
             'Reads span from current context';
+    };
+
+    subtest 'Untraced context' => sub {
+        is my $context = otel_untraced_context, object {
+            prop isa => 'OpenTelemetry::Context';
+        }, 'Returns a context';
+
+        is +OpenTelemetry::Trace->is_untraced_context($context), T,
+            'Context does not trace';
     };
 };
 

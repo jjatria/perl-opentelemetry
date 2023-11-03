@@ -236,6 +236,16 @@ L<OpenTelemetry::Trace>.
 Behaves exactly as the L</tracer_provider> class method described above. Can
 be used as an lvalue.
 
+=head2 otel_untraced_context
+
+    $context = otel_untraced_context;
+
+Gets the a L<OpenTelemetry::Context> where tracing has been disabled. This
+is provided as a convenience method and behaves exactly as
+L<OpenTelemetry::Trace/untraced_context>.
+
+Available from 0.012.
+
 =head1 SEE ALSO
 
 =over

@@ -28,6 +28,7 @@ use Exporter::Shiny qw(
     otel_propagator
     otel_span_from_context
     otel_tracer_provider
+    otel_untraced_context
 );
 
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
@@ -70,6 +71,10 @@ sub _generate_otel_logger { \&logger }
     }
 
     sub propagator :lvalue { sentinel get => sub { $instance }, set => $set }
+}
+
+sub _generate_otel_untraced_context {
+    my $sub = sub :lvalue { OpenTelemetry::Trace->untraced_context };
 }
 
 sub _generate_otel_current_context {

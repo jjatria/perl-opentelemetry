@@ -4,6 +4,7 @@ Revision history for OpenTelemetry
 
     * Fix the documentation for OpenTelemetry::Common::config, which
       incorrectly stated the order variables are read in
+    * Added otel_untraced_context to OpenTelemetry exportable functions
 
 0.011     2023-11-01 23:18:14+00:00 Europe/London
 
