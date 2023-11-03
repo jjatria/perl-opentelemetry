@@ -157,31 +157,6 @@ The exporting itself is done using L<Exporter::Tiny>, which provides ways
 to rename or otherwise restrict imports. Please refer to the documentation
 of that module for more details.
 
-=head2 otel_current_context
-
-    $context = otel_current_context;
-    otel_current_context = $new_context;
-
-Gets the current context. This is provided as a convenience method and
-behaves exactly as the L<current|OpenTelemetry::Context/current> method
-from L<OpenTelemetry::Context>.
-
-Can be used as an lvalue to set the current context, although this should
-in general be localised. This function always returns an
-L<OpenTelemetry::Context> object.
-
-=head2 otel_span_from_context
-
-    $span = otel_span_from_context( $context // undef );
-
-Takes a L<OpenTelemetry::Context> as its only argument and returns the span
-in the context. If no context is provided, the span will be read from the
-current context.
-
-This is provided as a convenience method and behaves exactly as the
-L<span_from_context|OpenTelemetry::Trace/span_from_context> method from
-L<OpenTelemetry::Trace>.
-
 =head2 otel_context_with_span
 
     $context = otel_context_with_span( $span, $root_context // undef );
@@ -196,27 +171,18 @@ inheriting any existing values. Otherwise, the current context will be used.
 This is provided as a convenience method and behaves exactly as
 L<OpenTelemetry::Trace/context_with_span>.
 
-=head2 otel_logger
+=head2 otel_current_context
 
-    $logger = otel_logger;
+    $context = otel_current_context;
+    otel_current_context = $new_context;
 
-Behaves exactly as the L</logger> class method described above.
+Gets the current context. This is provided as a convenience method and
+behaves exactly as the L<current|OpenTelemetry::Context/current> method
+from L<OpenTelemetry::Context>.
 
-=head2 otel_tracer_provider
-
-    $tracer_provider = otel_tracer_provider;
-    otel_tracer_provider = $new_tracer_provider;
-
-Behaves exactly as the L</tracer_provider> class method described above. Can
-be used as an lvalue.
-
-=head2 otel_propagator
-
-    $propagator = otel_propagator;
-    otel_propagator = $new_propagator;
-
-Behaves exactly as the L</propagator> class method described above. Can be
-used as an lvalue.
+Can be used as an lvalue to set the current context, although this should
+in general be localised. This function always returns an
+L<OpenTelemetry::Context> object.
 
 =head2 otel_error_handler
 
@@ -235,6 +201,40 @@ used as an lvalue.
     );
 
 Behaves exactly as the L</handle_error> class method described above.
+
+=head2 otel_logger
+
+    $logger = otel_logger;
+
+Behaves exactly as the L</logger> class method described above.
+
+=head2 otel_propagator
+
+    $propagator = otel_propagator;
+    otel_propagator = $new_propagator;
+
+Behaves exactly as the L</propagator> class method described above. Can be
+used as an lvalue.
+
+=head2 otel_span_from_context
+
+    $span = otel_span_from_context( $context // undef );
+
+Takes a L<OpenTelemetry::Context> as its only argument and returns the span
+in the context. If no context is provided, the span will be read from the
+current context.
+
+This is provided as a convenience method and behaves exactly as the
+L<span_from_context|OpenTelemetry::Trace/span_from_context> method from
+L<OpenTelemetry::Trace>.
+
+=head2 otel_tracer_provider
+
+    $tracer_provider = otel_tracer_provider;
+    otel_tracer_provider = $new_tracer_provider;
+
+Behaves exactly as the L</tracer_provider> class method described above. Can
+be used as an lvalue.
 
 =head1 SEE ALSO
 
