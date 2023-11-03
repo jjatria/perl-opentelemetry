@@ -117,9 +117,13 @@ The error handler will be called with the following named parameters:
 
 =over
 
-=item C<exception>, which will be set to the exception that raised the error
+=item C<exception>
 
-=item C<message>, which might be set to a string providing additional context
+The exception that raised the error.
+
+=item C<message>
+
+A string providing additional context.
 
 =back
 
