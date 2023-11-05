@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.012     2023-11-05 18:29:49+00:00 Europe/London
 
     * Fix the documentation for OpenTelemetry::Common::config, which
       incorrectly stated the order variables are read in
