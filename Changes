@@ -1,5 +1,7 @@
 Revision history for OpenTelemetry
 
+{{$NEXT}}
+
 0.013     2023-11-07 20:23:49+00:00 Europe/London
 
     * Add support for a `details` parameter to the error handler
