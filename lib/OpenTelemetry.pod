@@ -117,18 +117,23 @@ The error handler will be called with the following named parameters:
 
 =over
 
-=item C<exception>
+=item exception
 
 The exception that raised the error.
 
-=item C<message>
+=item message
 
 A string providing additional context.
+
+=item details
+
+An optional hash reference with additional contextual information.
 
 =back
 
 The default error handler simply concatenates these and logs them using the
-default L</logger>.
+default L</logger>. If present, the details are passed as structured data to
+the logger.
 
 =head2 handle_error
 

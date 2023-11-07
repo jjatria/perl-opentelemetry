@@ -77,6 +77,15 @@ subtest 'Error handling' => sub {
     is messages { otel_handle_error message => 'an error', exception => 'boom' }, [
         [ error => OpenTelemetry => 'OpenTelemetry error: an error - boom' ],
     ], 'Default error handler prints message and exception';
+
+    is messages {
+        otel_handle_error
+            message   => 'an error',
+            exception => 'boom',
+            details   => { some => 'data' };
+    }, [
+        [ error => OpenTelemetry => 'OpenTelemetry error: an error - boom {some => "data"}' ],
+    ], 'Default error handler prints message and exception';
 };
 
 subtest 'Tracer provider' => sub {

@@ -95,7 +95,7 @@ sub _generate_otel_span_from_context {
         my $error = join ' - ', grep defined,
             @args{qw( message exception )};
 
-        $logger->error("OpenTelemetry error: $error");
+        $logger->error( "OpenTelemetry error: $error", $args{details} );
     };
 
     my $set = sub ( $new ) {
