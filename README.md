@@ -34,12 +34,20 @@ developer.
 
 ## How do I get started?
 
-Install this distribution from the repository (the aim is for it to be on CPAN
-at some point):
-
+Install this distribution from CPAN:
 ```
+cpanm OpenTelemetry
+```
+or directly from the repository if you want to install a development
+version (although note that only the CPAN version is recommended for
+production environments):
+```
+# On a local fork
 cd path/to/this/repo
 cpanm install .
+
+# Over the net
+cpanm https://github.com/jjatria/perl-opentelemetry.git
 ```
 
 Then, use the OpenTelemetry interfaces to produces traces and other telemetry
@@ -66,6 +74,19 @@ $tracer->in_span( outer => sub ( $span, $context ) {
 });
 ```
 
+## How can I get involved?
+
+We are in the process of setting up an OpenTelemetry-Perl special interest
+group (SIG). Until that is set up, you are free to [express your
+interest][sig] or join us in IRC on the #io-async channel in irc.perl.org.
+
+## License
+
+The OpenTelemetry distribution is licensed under the same terms as Perl
+itself. See [LICENSE] for more information.
+
 [an SDK implementation]: https://github.com/jjatria/perl-opentelemetry-sdk
 [Coverage Status]: https://coveralls.io/repos/github/jjatria/perl-opentelemetry/badge.svg?branch=main
 [coveralls]: https://coveralls.io/github/jjatria/perl-opentelemetry?branch=main
+[license]: https://github.com/jjatria/perl-opentelemetry/blob/main/LICENSE
+[sig]: https://github.com/open-telemetry/community/issues/828
