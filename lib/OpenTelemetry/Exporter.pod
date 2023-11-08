@@ -34,7 +34,7 @@ implement the interface defined in L<OpenTelemetry::Trace::Span::Processor>.
 
 Although this cannot be enforced in the code, the methods described in this
 role are all expected to return one of the values from
-L<OpenTelemetry::Constants/Trace export results>.
+L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head1 METHODS
 
@@ -47,7 +47,7 @@ L<OpenTelemetry::SDK::Trace::Span::Readable>) and an optional timeout value
 and returns the outcome of exporting the span data.
 
 The return value will be one of the
-L<OpenTelemetry::Constants/Trace export results>.
+L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head2 shutdown
 
@@ -59,11 +59,11 @@ described below. After shutting down, the exporter is not expected to do any
 further work, and should ignore any subsequent calls.
 
 The return value will be one of the
-L<OpenTelemetry::Constants/Trace export results>.
+L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head2 force_flush
 
-    $result = await $exporter->force_flush( $timeout // undef );
+    $result = $exporter->force_flush( $timeout // undef );
 
 Takes an optional timeout value and returns the outcome of the flushing
 process. Flushing signals to the exporter that it should export the data for
@@ -71,7 +71,7 @@ any unexported spans as soon as possible. This could be due to an imminent
 shutdown, but does not have to be.
 
 The return value will be one of the
-L<OpenTelemetry::Constants/Trace export results>.
+L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head1 SEE ALSO
 

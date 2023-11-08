@@ -182,8 +182,7 @@ L<OpenTelemetry::Trace/context_with_span>.
     otel_current_context = $new_context;
 
 Gets the current context. This is provided as a convenience method and
-behaves exactly as the L<current|OpenTelemetry::Context/current> method
-from L<OpenTelemetry::Context>.
+behaves exactly as L<OpenTelemetry::Context/current>.
 
 Can be used as an lvalue to set the current context, although this should
 in general be localised. This function always returns an
@@ -229,9 +228,8 @@ Takes a L<OpenTelemetry::Context> as its only argument and returns the span
 in the context. If no context is provided, the span will be read from the
 current context.
 
-This is provided as a convenience method and behaves exactly as the
-L<span_from_context|OpenTelemetry::Trace/span_from_context> method from
-L<OpenTelemetry::Trace>.
+This is provided as a convenience method and behaves exactly as
+L<OpenTelemetry::Trace/span_from_context>.
 
 =head2 otel_tracer_provider
 
