@@ -51,7 +51,13 @@ class OpenTelemetry::Trace::Tracer {
         }
         catch ($e) {
             $span->record_exception($e);
-            $span->set_status( SPAN_STATUS_ERROR, "$e" );
+
+            my ($message) = split /\n/, "$e", 2;
+
+            $span->set_status(
+                SPAN_STATUS_ERROR, $message =~ s/ at \S+ line \d+\.$//r
+            );
+
             die $e;
         }
         finally {

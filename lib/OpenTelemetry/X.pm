@@ -5,7 +5,7 @@ our $VERSION = '0.014';
 use X::Tiny;
 use parent 'X::Tiny::Base';
 
-sub to_string { shift->[0] } # Do not print full stack trace
+sub to_string { '' . shift->[0] } # Do not print exception type
 
 sub create {
     my $pkg = ref($_[0]) || $_[0];
