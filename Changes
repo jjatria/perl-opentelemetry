@@ -7,6 +7,7 @@ Revision history for OpenTelemetry
     * OpenTelemetry::X errors print stack traces when stringified
     * Improve the reporting of errors caught in calls to
       'in_span' in OpenTelementry::Trace
+    * Minor documentation fixes throughout
 
 0.013     2023-11-07 20:23:49+00:00 Europe/London
 

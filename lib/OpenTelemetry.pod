@@ -77,19 +77,8 @@ L<OpenTelemetry::Trace::TracerProvider>. Trying to set it to a class that does
 not inherit from that class is an error.
 
 If the tracer provider is read before any is set, it will default to a
-L<OpenTelemetry::Trace::TracerProvider::Proxy>. The proxy will create
-instances of L<OpenTelemetry::Trace::Tracer::Proxy> which can be used
-even before a tracer provider is set, and will delegate to any tracer provider
-that is set. However, this will only work once: any subsequent attempts to
-reset the delegate of a proxy tracer provider will be ignored.
-
-If you want to be able to locally set a new tracer provider, make sure to
-delay the first read operation on the tracer provider until after a non-proxy
-instance has been set. This also means that if you are writing a library that
-uses a tracer provider, you should read it as late as possible.
-
-See L<that module's documentation|OpenTelemetry::Trace::TracerProvider::Proxy>
-for more details.
+L<OpenTelemetry::Trace::TracerProvider>, which creates non-recording spans.
+Please refer to the documentation of that class for more details.
 
 =head2 propagator
 

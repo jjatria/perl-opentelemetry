@@ -46,7 +46,8 @@ following packages:
 
 Takes an optional L<OpenTelemetry::Context> object, and returns the
 L<OpenTelemetry::Trace::Span> object that has been stored within, if any. If
-no context was provided, the span will be read from the current context.
+no context was provided, the span will be read from the
+L<current context|OpenTelemetry::Context/current>.
 
 If no span was found in the context, this method returns an invalid span
 (see L</INVALID_SPAN_ID> below).
@@ -55,7 +56,7 @@ If no span was found in the context, this method returns an invalid span
 
     $context = OpenTelemetry::Trace->context_with_span( $span, $context );
 
-Takes a L<OpenTelemetry::Trace::Span> and returns a context that contains it
+Takes an L<OpenTelemetry::Trace::Span> and returns a context that contains it
 (such that passing that context to eg. L</span_from_context> would return the
 provided span).
 
@@ -98,7 +99,8 @@ locally disable tracing for internal operations:
         = OpenTelemetry::Trace->untraced_context;
 
 This method takes an optional L<OpenTelemetry::Context> to use as the base
-context. If none is provided, the current context will be used.
+context. If none is provided, the
+L<current context|OpenTelemetry::Context/current> will be used.
 
 =head2 is_untraced_context
 
@@ -106,7 +108,7 @@ context. If none is provided, the current context will be used.
 
 Takes an L<OpenTelemetry::Context> instance and checks if it is marked as an
 untraced context (see the L</untraced_context> method above). If no context is
-provided, the current context will be used.
+provided, the L<current context|OpenTelemetry::Context/current> will be used.
 
 Returns true if this is an untraced context, or false otherwise.
 
