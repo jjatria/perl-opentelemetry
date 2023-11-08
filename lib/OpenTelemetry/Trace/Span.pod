@@ -113,6 +113,21 @@ children.
 Note also that this method may return true even if the entire span has been
 sampled out.
 
+=head2 record_exception
+
+    $span = $span->record_exception(
+        $exception,
+        %attributes, # optional
+    );
+
+Calls L</add_event> to add an "exception" event. This is a convenience
+method to make it easier to stick to existing event semantic conventions.
+
+It takes a mandatory scalar to use as the exception, and list of
+key/value pairs that will be added as attributes to the event.
+
+This method returns the calling span, which means it can be chained.
+
 =head2 set_attribute
 
     $span = $span->set_attribute( $key => $value )
