@@ -177,6 +177,18 @@ Stores a span with an invalid L<OpenTelemetry::Trace::SpanContext>. This will
 be sometimes returned to mark the lack of a valid span, while still providing
 an instance on which methods can be called.
 
+=head1 SEE ALSO
+
+=over
+
+=item L<OpenTelemetry::Context>
+
+=item L<OpenTelemetry::Trace::SpanContext>
+
+=item L<OpenTelemetry::Trace::Tracer>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2023 by José Joaquín Atria.
