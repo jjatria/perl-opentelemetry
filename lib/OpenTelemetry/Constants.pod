@@ -24,6 +24,7 @@ documentation of that module for details on what is supported.
 
 These constants are used to specify the status of a span once it has
 completed. They can be imported individually, or with the C<span_status> tag.
+They are also imported when using the C<span> tag.
 
 =over
 
@@ -46,7 +47,8 @@ by an application.
 =head2 Span Kinds
 
 These constants are used to specify the type of the span. They can be imported
-individually, or with the C<span_kind> tag.
+individually, or with the C<span_kind> tag. They are also imported when using
+the C<span> tag.
 
 =over
 
@@ -80,6 +82,7 @@ The span describes a consumer receiving a message from a broker.
 
 These constants are used to distinguish the result of a trace export
 operation. They can be imported individually, or with the C<trace_export> tag.
+They are also imported when using the C<trace> tag.
 
 =over
 
@@ -107,20 +110,24 @@ They can be imported individually.
 =item INVALID_SPAN_ID
 
 Returns a constant ID that can be used to identify an invalid span in bytes.
+This is also imported when using the C<span> tag.
 
 =item INVALID_TRACE_ID
 
 Returns a constant ID that can be used to identify an invalid trace in bytes.
+This is also imported when using the C<trace> tag.
 
 =item HEX_INVALID_SPAN_ID
 
 Returns a constant ID that can be used to identify an invalid span as a
-hexadecimal string in lowercase.
+hexadecimal string in lowercase. This is also imported when using the C<span>
+tag.
 
 =item HEX_INVALID_TRACE_ID
 
 Returns a constant ID that can be used to identify an invalid trace as a
-hexadecimal string in lowercase.
+hexadecimal string in lowercase. This is also imported when using the C<trace>
+tag.
 
 =back
 

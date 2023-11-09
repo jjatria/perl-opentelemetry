@@ -5,7 +5,7 @@ use Test2::V0 -target => 'OpenTelemetry::Integration::DBI';
 use experimental 'signatures';
 
 use OpenTelemetry;
-use OpenTelemetry::Constants -span_status, -span_kind;
+use OpenTelemetry::Constants -span;
 use DBI;
 
 my $span;

@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Add -span and -trace export tags to OpenTelemetry::Constants
+
 0.014     2023-11-09 00:01:05+00:00 Europe/London
 
     * Add missing documentation for the 'record_exception' method

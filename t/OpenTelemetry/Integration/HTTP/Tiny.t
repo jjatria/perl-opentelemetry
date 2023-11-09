@@ -4,7 +4,7 @@ use Test2::V0 -target => 'OpenTelemetry::Integration::HTTP::Tiny';
 use experimental 'signatures';
 
 use OpenTelemetry;
-use OpenTelemetry::Constants -span_status, -span_kind;
+use OpenTelemetry::Constants -span;
 use HTTP::Tiny;
 
 my $span;

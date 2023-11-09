@@ -9,7 +9,7 @@ use Test2::V0 -target => 'OpenTelemetry::Integration::LWP::UserAgent';
 use experimental 'signatures';
 
 use OpenTelemetry;
-use OpenTelemetry::Constants -span_status, -span_kind;
+use OpenTelemetry::Constants -span;
 use LWP::UserAgent;
 use HTTP::Response;
 use HTTP::Headers;

@@ -46,13 +46,24 @@ our %EXPORT_TAGS = (
     )],
 );
 
+$EXPORT_TAGS{span}  = [
+    qw(
+        INVALID_SPAN_ID
+        HEX_INVALID_SPAN_ID
+    ),
+    map @$_, @EXPORT_TAGS{qw( span_status span_kind )},
+];
+
+$EXPORT_TAGS{trace} = [
+    qw(
+        INVALID_TRACE_ID
+        HEX_INVALID_TRACE_ID
+    ),
+    @{ $EXPORT_TAGS{trace_export} },
+];
+
 use Exporter::Shiny;
 
-our @EXPORT_OK = map @$_, values %EXPORT_TAGS, [qw(
-    INVALID_TRACE_ID
-    INVALID_SPAN_ID
-    HEX_INVALID_TRACE_ID
-    HEX_INVALID_SPAN_ID
-)];
+our @EXPORT_OK = map @$_, @EXPORT_TAGS{qw( trace span )};
 
 1;
