@@ -64,6 +64,11 @@ L<OpenTelemetry::Propagator>.
 
 =item L<W3C TraceContext format|https://w3c.github.io/trace-context>
 
+=item L<OpenTelemetry::TraceContext::W3C>
+
+A different distribution written to deal with W3C's tracecontext data,
+earlier than this distribution or its related L<OpenTelemetry::SDK>
+
 =back
 
 =head1 COPYRIGHT AND LICENSE
