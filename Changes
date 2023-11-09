@@ -4,6 +4,7 @@ Revision history for OpenTelemetry
 
     * Add -span and -trace export tags to OpenTelemetry::Constants
     * Add tests for OpenTelemetry::Constants
+    * Add otel_config to OpenTelemetry exportable functions
 
 0.014     2023-11-09 00:01:05+00:00 Europe/London
 

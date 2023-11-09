@@ -20,6 +20,7 @@ use Sentinel;
 use Log::Any;
 
 use Exporter::Shiny qw(
+    otel_config
     otel_context_with_span
     otel_current_context
     otel_error_handler
@@ -87,6 +88,10 @@ sub _generate_otel_context_with_span {
 
 sub _generate_otel_span_from_context {
     sub { OpenTelemetry::Trace->span_from_context(@_) };
+}
+
+sub _generate_otel_config {
+    \&OpenTelemetry::Common::config;
 }
 
 {

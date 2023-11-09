@@ -151,6 +151,13 @@ The exporting itself is done using L<Exporter::Tiny>, which provides ways
 to rename or otherwise restrict imports. Please refer to the documentation
 of that module for more details.
 
+=head2 otel_config
+
+    $value = otel_config(@keys);
+
+Reads OpenTelemetry configuration values from the environmen. This is provided
+as a convenience method and behaves exactly as L<OpenTelemetry::Common/config>.
+
 =head2 otel_context_with_span
 
     $context = otel_context_with_span( $span, $root_context // undef );

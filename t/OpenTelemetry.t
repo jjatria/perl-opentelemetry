@@ -193,6 +193,18 @@ subtest Helpers => sub {
         is +OpenTelemetry::Trace->is_untraced_context($context), T,
             'Context does not trace';
     };
+
+    subtest Config => sub {
+        local %ENV = (
+            OTEL_PERL_FOO => 'perl',
+            OTEL_FOO      => 'xxx',
+            OTEL_BAR      => 'otel',
+        );
+
+        is otel_config('FOO'), 'perl', 'Prefers Perl vars';
+        is otel_config('BAR'), 'otel', 'Reads OTel vars';
+        is otel_config('XXX'), U,      'Returns undef if missing';
+    };
 };
 
 done_testing;
