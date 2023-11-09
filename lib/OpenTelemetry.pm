@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use experimental qw( isa signatures );
 
-our $VERSION = '0.015';
+our $VERSION = '0.016';
 
 use Mutex;
 use OpenTelemetry::Common;
