@@ -91,7 +91,7 @@ the processor is not expected to do any further work, and should ignore any
 subsequent calls.
 
 The value of the future will be one of the
-L<OpenTelemetry::Constants/Trace export results>.
+L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head2 force_flush
 
@@ -103,7 +103,7 @@ processor that it should process the data for any unprocessed spans as soon as
 possible. This could be due to an imminent shutdown, but does not have to be.
 
 The value of the future will be one of the
-L<OpenTelemetry::Constants/Trace export results>.
+L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head1 SEE ALSO
 

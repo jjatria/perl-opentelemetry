@@ -7,7 +7,7 @@ OpenTelemetry::Exporter - Abstract interface of an OpenTelemetry exporter
 =head1 SYNOPSIS
 
     use Object::Pad;
-    use Future::AsyncAwait;
+    use OpenTelemetry::SDK::Trace::Span::Processor::Batch;
 
     class My::Exporter :does(OpenTelemetry::Exporter) {
         method export      ( $spans, $timeout // undef ) { ... }
