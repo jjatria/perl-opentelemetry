@@ -1,6 +1,6 @@
 package OpenTelemetry::Constants;
 
-our $VERSION = '0.014';
+our $VERSION = '0.015';
 
 use constant {
     SPAN_STATUS_UNSET    => 0,

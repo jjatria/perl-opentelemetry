@@ -9,7 +9,7 @@ my $BAGGAGE_KEY = OpenTelemetry::Context->key('baggage');
 package
     OpenTelemetry::Baggage::Entry;
 
-our $VERSION = '0.014';
+our $VERSION = '0.015';
 
 class OpenTelemetry::Baggage::Entry {
     field $value :param :reader;

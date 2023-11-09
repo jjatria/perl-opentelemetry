@@ -1,7 +1,7 @@
 package OpenTelemetry::Propagator::None;
 # ABSTRACT: A context propagator for OpenTelemetry that does nothing
 
-our $VERSION = '0.014';
+our $VERSION = '0.015';
 
 use parent 'OpenTelemetry::Propagator::TextMap';
 
