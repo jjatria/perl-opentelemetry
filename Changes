@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.015     2023-11-09 23:42:47+00:00 Europe/London
 
     * Add -span and -trace export tags to OpenTelemetry::Constants
     * Add tests for OpenTelemetry::Constants
