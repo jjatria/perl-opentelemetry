@@ -3,6 +3,12 @@ Revision history for OpenTelemetry
 {{$NEXT}}
 
     * Fix issue tracker link in meta
+    * Try to limit information set as span error descriptions in
+      integrations. Instead of passing in the entire, which could
+      have multiple lines and contextual information, we trim and
+      pass only the first line, without the trailing `at line #`
+      added from eg. plain `die`. This error is still set unmodified
+      as the exception.
 
 0.015     2023-11-09 23:42:47+00:00 Europe/London
 

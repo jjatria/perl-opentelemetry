@@ -62,7 +62,7 @@ subtest Mem => sub {
     is $span->{otel}, {
         status => {
             code        => SPAN_STATUS_ERROR,
-            description => match qr/^No such column 'id'/,
+            description => match qr/No such column 'id'/,
         },
         ended      => T,
         kind       => SPAN_KIND_CLIENT,
@@ -125,7 +125,7 @@ subtest Mem => sub {
     is $span->{otel}, {
         status     => {
             code        => SPAN_STATUS_ERROR,
-            description => match qr/boom at /,
+            description => 'boom',
         },
         ended      => T,
         kind       => SPAN_KIND_CLIENT,
@@ -140,7 +140,7 @@ subtest Mem => sub {
         },
         exceptions => [
             {
-                exception  => match qr/boom at /,
+                exception  => match qr/^boom at \S+ line \d+\.$/a,
                 attributes => {},
             },
         ],
