@@ -5,7 +5,7 @@ use Test2::Tools::OpenTelemetry;
 
 use experimental 'signatures';
 
-use OpenTelemetry::Constants 'SPAN_STATUS_ERROR';
+use OpenTelemetry::Constants -span;
 
 is my $tracer = CLASS->new, object {
     prop isa => 'OpenTelemetry::Trace::Tracer';
@@ -22,7 +22,21 @@ subtest 'Convenience in_span method' => sub {
     use OpenTelemetry::Trace;
 
     my $mock = mock $tracer => override => [
-        create_span => sub ( $, %args ) { mock \%args => track => 1 }
+        create_span => sub ( $, %args ) {
+            mock \%args => track => 1 => add => [
+                status => sub {
+                    mock obj => add => [
+                        is_unset => sub {
+                            !( defined $args{status} )
+                            || $args{status} == SPAN_STATUS_UNSET;
+                        },
+                    ];
+                },
+                set_status => sub ( $span, $status, @ ){
+                    $span->{status} = $status;
+                }
+            ];
+        },
     ];
 
     my ( $ret, $mocked );
@@ -39,8 +53,21 @@ subtest 'Convenience in_span method' => sub {
     };
 
     is $mocked->call_tracking, [
-        { sub_name => 'end', args => [ D ], sub_ref => E },
-    ], 'Called span->end at end of block';
+        {
+            sub_name => 'status',
+            args     => [ D ],
+            sub_ref  => E,
+        },
+        {
+            sub_name => 'set_status',
+            args     => [ D, SPAN_STATUS_OK ],
+            sub_ref  => E,
+        },
+        {   sub_name => 'end',
+            args     => [ D ],
+            sub_ref  => E,
+        },
+    ], 'Set status and ended at end of block';
 
     is $ret, 'TEST', 'in_span returns what the block returns';
 
@@ -73,6 +100,11 @@ subtest 'Convenience in_span method' => sub {
             sub_ref  => E
         },
         {
+            sub_name => 'status',
+            args     => [ D ],
+            sub_ref  => E
+        },
+        {
             sub_name => 'set_status',
             args     => [ D, SPAN_STATUS_ERROR, match qr/^An error/ ],
             sub_ref  => E
@@ -83,6 +115,41 @@ subtest 'Convenience in_span method' => sub {
             sub_ref  => E
         },
     ], 'Span records caught error';
+
+    no_messages {
+        like dies {
+            $tracer->in_span(
+                dead_span => sub ( $span, $context ) {
+                    ($mocked) = mocked $span;
+                    $span->set_status( SPAN_STATUS_ERROR, 'My error' );
+                    die 'An error';
+                },
+            );
+        } => qr/^An error/, 'If sub dies, exception is not caught';
+    };
+
+    is $mocked->call_tracking, [
+        {
+            sub_name => 'set_status',
+            args     => [ D, SPAN_STATUS_ERROR, match qr/^My error/ ],
+            sub_ref  => E
+        },
+        {
+            sub_name => 'record_exception',
+            args     => [ D, match qr/^An error/ ],
+            sub_ref  => E
+        },
+        {
+            sub_name => 'status',
+            args     => [ D ],
+            sub_ref  => E
+        },
+        {
+            sub_name => 'end',
+            args     => [ D ],
+            sub_ref  => E
+        },
+    ], 'Status not set automatically if already set manually';
 };
 
 done_testing;

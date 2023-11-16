@@ -10,10 +10,11 @@ my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
 class OpenTelemetry::Trace::Tracer {
     use Feature::Compat::Try;
+    use Feature::Compat::Defer;
     use Syntax::Keyword::Dynamically;
     use Ref::Util 'is_coderef';
 
-    use OpenTelemetry::Constants 'SPAN_STATUS_ERROR';
+    use OpenTelemetry::Constants qw( SPAN_STATUS_ERROR SPAN_STATUS_OK );
     use OpenTelemetry::Context;
     use OpenTelemetry::Trace::Span;
     use OpenTelemetry::Trace;
@@ -46,21 +47,23 @@ class OpenTelemetry::Trace::Tracer {
 
         dynamically OpenTelemetry::Context->current = $context;
 
+        my ( $error );
         try {
             return $block->( $span, $context );
         }
         catch ($e) {
             $span->record_exception($e);
 
-            my ($message) = split /\n/, "$e", 2;
-
-            $span->set_status(
-                SPAN_STATUS_ERROR, $message =~ s/ at \S+ line \d+\.$//r
-            );
+            ($error) = split /\n/, "$e", 2;
+            $error =~ s/ at \S+ line \d+\.$//;
 
             die $e;
         }
         finally {
+            $span->set_status(
+                $error ? ( SPAN_STATUS_ERROR, $error ) : SPAN_STATUS_OK
+            ) if $span->status->is_unset;
+
             $span->end;
         }
     }

@@ -14,6 +14,9 @@ Revision history for OpenTelemetry
       https://opentelemetry.io/docs/specs/otel/error-handling/#guidance
     * Validate initial values for TraceContext::TraceFlags: they
       must be in the 0-255 range (inclusive) or they are ignored
+    * The Tracer's experimental in_span interface now automatically
+      sets the status of the span as long as the span's status remains
+      unset at the end of the block
 
 0.015     2023-11-09 23:42:47+00:00 Europe/London
 
