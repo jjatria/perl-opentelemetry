@@ -1,0 +1,101 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Logs::Logger - A log record factory for OpenTelemetry
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry;
+
+    my $provider = OpenTelemetry->logger_provider;
+    my $logger   = $provider->logger;
+
+    # Emit a log record
+    $logger->emit_record(%args);
+
+=head1 DESCRIPTION
+
+A logger is responsible for emitting log records. The class provided by this
+module does nothing, but is suitable to be sub-classed to emit specific kinds
+of logs. See L<OpenTelemetry::SDK::Logs::Logger> for one such example which
+emits L<OpenTelemetry::SDK::Logs::LogRecord> objects.
+
+=head1 METHODS
+
+=head2 emit_record
+
+    $logger->emit_record(
+        attributes         => %attributes // {},
+        body               => $body,
+        context            => $context    // undef,
+        observed_timestamp => $timestamp  // time,
+        severity_number    => $number     // undef,
+        severity_text      => $text       // undef,
+        timestamp          => $timestamp  // undef,
+    )
+
+Emits a log record.
+
+Takes a list of key / value pairs. Of these, the only one that callers are
+I<always> expected to provide is the log record body: not doing so may result
+in a warning being logged. All other keys are optional and can be used to
+further specify the record. The value of the C<body> parameter is not required
+to be a string, in order to support structured loggers.
+
+If provided, the value of the C<context> parameter should be an instance of
+L<OpenTelemetry::Context>. Otherwise, the current context will be used. In
+either case, this will be used to access the span context this log record
+should be associated to, if any.
+
+The value of the C<timestamp> parameter represents the time at which the
+event the log record is associated with took place. This can be left unset
+if no such time is known. This is different from the C<observed_timestamp>,
+which is the time at which the record was seen by the collection platform.
+If this is not provided, it will be given a default value by the platform.
+
+The value of the C<severity_text> parameter should be set to the name of
+the level of the logged event (eg. "error", "warning", etc) as known at the
+source. The value of the C<severity_number>, on the other hand, should be
+a number between 1 and 24, with numbers mapping to the following levels:
+
+=over
+
+=item TRACE
+
+Levels 1-4. A fine-grained debugging event. Typically disabled in default
+configurations.
+
+=item DEBUG
+
+Levels 5-8. A debugging event.
+
+=item INFO
+
+Levels 9-12. An informational event. Indicates that an event happened.
+
+=item WARN
+
+Levels 13-16. A warning event. Not an error but is likely more important
+than an informational event.
+
+=item ERROR
+
+Levels 17-20. An error event. Something went wrong.
+
+=item FATAL
+
+Levels 21-24. A fatal error such as application or system crash.
+
+=back
+
+Values in L<OpenTelemetry::Constants/Log Severity Values> are suitable to
+be used as values for C<severity_number>. They will be evaluated in numeric
+context internally.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2024 by José Joaquín Atria.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.
