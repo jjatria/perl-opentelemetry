@@ -12,6 +12,7 @@ use OpenTelemetry::Common;
 use OpenTelemetry::Context;
 use OpenTelemetry::Propagator::None;
 use OpenTelemetry::Trace::TracerProvider;
+use OpenTelemetry::Logs::LoggerProvider;
 use OpenTelemetry::X;
 use Scalar::Util 'refaddr';
 use Ref::Util 'is_coderef';
@@ -26,6 +27,7 @@ use Exporter::Shiny qw(
     otel_error_handler
     otel_handle_error
     otel_logger
+    otel_logger_provider
     otel_propagator
     otel_span_from_context
     otel_tracer_provider
@@ -53,6 +55,38 @@ sub _generate_otel_logger { \&logger }
     }
 
     sub tracer_provider :lvalue { sentinel get => sub { $instance }, set => $set }
+}
+
+# FIXME: The functions in this block mean that in all likelihood
+# OpenTelemetry->logger will have to go away. It no longer fits,
+# since we gain the concept of a logger, which is different from
+# the logger we used to return (which is just a Log::Any logger).
+# This is not such a big problem: it just means that users who
+# want to use the same logger as the rest of the OpenTelemetry
+# implementation need to do
+#
+#     my $log = Log::Any->get_logger( category => 'OpenTelemetry' );
+#
+# but you can argue that that's not so onerous, and if it is, that
+# logging on that given category rather than the default one is
+# pointless.
+{
+    my $lock = Mutex->new;
+    my $instance = OpenTelemetry::Logs::LoggerProvider->new;
+
+    my $set = sub ( $new ) {
+        die OpenTelemetry::X->create(
+            Invalid => 'Global logger provider must be a subclass of OpenTelemetry::Logs::LoggerProvider, got instead ' . ( ref $new || 'a plain scalar' ),
+        ) unless $new isa OpenTelemetry::Logs::LoggerProvider;
+
+        $lock->enter( sub { $instance = $new });
+    };
+
+    sub _generate_otel_logger_provider {
+        my $x = sub :lvalue { sentinel get => sub { $instance }, set => $set };
+    }
+
+    sub logger_provider :lvalue { sentinel get => sub { $instance }, set => $set }
 }
 
 {
