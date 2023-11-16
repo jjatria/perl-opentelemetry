@@ -82,12 +82,12 @@ string as its name. The subroutine reference will receive the created span and
 the current context (containing the span) as arguments. The span is guaranteed
 to be ended after execution of the subroutine ends by any means.
 
-If at the end of the subroutine the span's status remains unset, it will be
-set automatically either to an Ok status (if the subroutine ended without
-error) or to Error otherwise. In the latter case, the first line of the
-stringified error will be set as the description, after removing any code
-context data (ie. the " at script.pl line 123." that is added automatically
-by Perl).
+The status of the span will be set automatically at the end of the block
+either to an Ok status (if the subroutine ended without error) or to Error
+otherwise. In the latter case, the first line of the stringified error will be
+set as the description, after removing any code context data (ie. the " at
+script.pl line 123." that is added automatically by Perl). This can be avoided
+by manually ending the span if needed.
 
 Any additional parameters passed to this method between the span name and the
 code reference will be passed as-is to the call to L</create_span> made when

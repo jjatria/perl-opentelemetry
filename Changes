@@ -2,6 +2,12 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Undo conditional logic in Tracer's in_span introduced in 0.016.
+      The span is read-only, so we cannot read its status. We now set
+      the status unconditionally, but the user is free to mark the span
+      as ended, in which case the automatically set status will be
+      discarded.
+
 0.016     2023-11-16 23:37:27+00:00 Europe/London
 
     * Fix issue tracker link in meta

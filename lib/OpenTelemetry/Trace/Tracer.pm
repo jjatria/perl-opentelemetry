@@ -62,7 +62,7 @@ class OpenTelemetry::Trace::Tracer {
         finally {
             $span->set_status(
                 $error ? ( SPAN_STATUS_ERROR, $error ) : SPAN_STATUS_OK
-            ) if $span->status->is_unset;
+            );
 
             $span->end;
         }
