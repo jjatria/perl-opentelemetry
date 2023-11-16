@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 
 use Test2::V0 -target => 'OpenTelemetry::Propagator::Baggage';
+use Test2::Tools::OpenTelemetry;
 
 use OpenTelemetry::Context;
 use OpenTelemetry::Baggage;
@@ -66,6 +67,31 @@ subtest 'Extract with baggage' => sub {
         call value => '123';
         call meta  => 'META';
     }, 'Baggage can read injected key from extracted context';
+};
+
+subtest 'Exceptions from callbacks' => sub {
+    subtest Inject => sub {
+        my $context = OpenTelemetry::Baggage->set( foo => 123, 'META' );
+
+        is messages {
+            ref_is $propagator->inject( {}, $context, sub { die 'boom' } ),
+                $propagator, 'Returns self';
+        } => [
+            [ error => OpenTelemetry => match qr/Error while injecting .* boom/ ],
+        ], 'Logs error from callback';
+    };
+
+    subtest Extract => sub {
+        is messages {
+            my $context = OpenTelemetry::Context->new;
+            my $carrier = { $KEY => 'foo=123;META' };
+
+            ref_is $propagator->extract( $carrier, $context, sub { die 'boom' } ),
+                $context, 'Returns provided context';
+        } => [
+            [ error => OpenTelemetry => match qr/Error while extracting .* boom/ ],
+        ], 'Logs error from callback';
+    };
 };
 
 done_testing;

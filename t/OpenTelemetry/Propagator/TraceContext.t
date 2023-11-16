@@ -9,6 +9,30 @@ use OpenTelemetry::Propagator::TraceContext::TraceState;
 
 my $carrier = {};
 
+# A context with a TraceContext
+my $context = do {
+    my $parent = OpenTelemetry::Propagator::TraceContext::TraceParent->new(
+        trace_id    => pack( 'H*', '000102030405060708090a0b0c0d0e0f' ),
+        span_id     => pack( 'H*', '0001020304050607' ),
+        trace_flags => OpenTelemetry::Propagator::TraceContext::TraceFlags->new,
+    );
+
+    my $state  = OpenTelemetry::Propagator::TraceContext::TraceState
+        ->from_string('foo=123,bar=234');
+
+    my $span_context = OpenTelemetry::Trace::SpanContext->new(
+        trace_id    => $parent->trace_id,
+        span_id     => $parent->span_id,
+        trace_flags => $parent->trace_flags,
+        trace_state => $state,
+        remote      => 1,
+    );
+
+    my $span = OpenTelemetry::Trace->non_recording_span( $span_context );
+
+    OpenTelemetry::Trace->context_with_span($span);
+};
+
 is my $propagator = CLASS->new, object {
     call_list keys => [qw( traceparent tracestate )];
 }, 'Can create a propagator with correct keys';
@@ -39,27 +63,6 @@ subtest 'Inject without TraceContext' => sub {
 };
 
 subtest 'Inject with TraceContext' => sub {
-    my $parent = OpenTelemetry::Propagator::TraceContext::TraceParent->new(
-        trace_id    => pack( 'H*', '000102030405060708090a0b0c0d0e0f' ),
-        span_id     => pack( 'H*', '0001020304050607' ),
-        trace_flags => OpenTelemetry::Propagator::TraceContext::TraceFlags->new,
-    );
-
-    my $state  = OpenTelemetry::Propagator::TraceContext::TraceState
-        ->from_string('foo=123,bar=234');
-
-    my $span_context = OpenTelemetry::Trace::SpanContext->new(
-        trace_id    => $parent->trace_id,
-        span_id     => $parent->span_id,
-        trace_flags => $parent->trace_flags,
-        trace_state => $state,
-        remote      => 1,
-    );
-
-    my $span = OpenTelemetry::Trace->non_recording_span( $span_context );
-
-    my $context = OpenTelemetry::Trace->context_with_span($span);
-
     ref_is $propagator->inject( $carrier, $context ), $propagator,
         'Inject returns self';
 
@@ -84,7 +87,7 @@ subtest 'Extract with TraceContext' => sub {
         }, 'Can extract injected TraceContext';
     };
 
-    $carrier->{traceparent} = 'some garbage';
+    local $carrier->{traceparent} = 'some garbage';
 
     is messages {
         is $propagator->extract($carrier),
@@ -93,6 +96,27 @@ subtest 'Extract with TraceContext' => sub {
     } => [
         [ warning => OpenTelemetry => match qr/^Unsupported .* version \(so\)/ ],
     ], 'Possible errors are logged';
+};
+
+subtest 'Exceptions from callbacks' => sub {
+    subtest Inject => sub {
+        is messages {
+            ref_is $propagator->inject( {}, $context, sub { die 'boom' } ),
+                $propagator, 'Returns self';
+        } => [
+            [ error => OpenTelemetry => match qr/Error while injecting .* boom/ ],
+        ], 'Logs error from callback';
+    };
+
+    subtest Extract => sub {
+        is messages {
+            my $context = OpenTelemetry::Context->new;
+            ref_is $propagator->extract( $carrier, $context, sub { die 'boom' } ),
+                $context, 'Returns provided context';
+        } => [
+            [ error => OpenTelemetry => match qr/Error while extracting .* boom/ ],
+        ], 'Logs error from callback';
+    };
 };
 
 done_testing;

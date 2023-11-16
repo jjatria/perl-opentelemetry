@@ -6,15 +6,22 @@ package OpenTelemetry::Propagator::Baggage;
 our $VERSION = '0.016';
 
 class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
+    use OpenTelemetry;
+    use Feature::Compat::Try;
     use OpenTelemetry::Baggage;
     use OpenTelemetry::Context;
     use OpenTelemetry::Propagator::TextMap;
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
 
+    use experimental 'isa';
+
     my $KEY              = 'baggage';
     my $MAX_ENTRIES      = 180;
     my $MAX_ENTRY_LENGTH = 4096;
     my $MAX_TOTAL_LENGTH = 8192;
+
+    use Log::Any;
+    my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 
     method $encode (%baggage) {
         my $encoded = '';
@@ -50,11 +57,22 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
         $context = OpenTelemetry::Context->current,
         $setter  = OpenTelemetry::Propagator::TextMap::SETTER
     ) {
-        my %baggage = OpenTelemetry::Baggage->all($context);
-        return $self unless %baggage;
+        try {
+            my %baggage = OpenTelemetry::Baggage->all($context);
+            return $self unless %baggage;
 
-        my $encoded = $self->$encode(%baggage);
-        $setter->( $carrier, $KEY, $encoded ) if $encoded;
+            my $encoded = $self->$encode(%baggage);
+            $setter->( $carrier, $KEY, $encoded ) if $encoded;
+        }
+        catch($e) {
+            if ( $e isa OpenTelemetry::X ) { $logger->warn($e->get_message) }
+            else {
+                OpenTelemetry->handle_error(
+                    exception => $e,
+                    message   => 'Error while injecting baggage',
+                );
+            }
+        }
 
         return $self;
     }
@@ -64,17 +82,30 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
         $context = OpenTelemetry::Context->current,
         $getter  = OpenTelemetry::Propagator::TextMap::GETTER
     ) {
-        my $header = $carrier->$getter($KEY) or return $context;
+        try {
+            my $header = $carrier->$getter($KEY) or return $context;
 
-        my $builder = OpenTelemetry::Baggage->builder;
+            my $builder = OpenTelemetry::Baggage->builder;
 
-        for ( split ',', $header =~ s/\s//gr ) {
-            my ( $kv, $meta ) = split ';', $_, 2;
-            my ( $key, $value ) = map url_decode_utf8($_), split '=', $kv, 2;
-            $builder->set( $key, $value, $meta );
+            for ( split ',', $header =~ s/\s//gr ) {
+                my ( $kv, $meta ) = split ';', $_, 2;
+                my ( $key, $value ) = map url_decode_utf8($_), split '=', $kv, 2;
+                $builder->set( $key, $value, $meta );
+            }
+
+            $builder->build($context);
         }
+        catch($e) {
+            if ( $e isa OpenTelemetry::X ) { $logger->warn($e->get_message) }
+            else {
+                OpenTelemetry->handle_error(
+                    exception => $e,
+                    message   => 'Error while extracting baggage',
+                );
+            }
 
-        $builder->build($context);
+            return $context;
+        }
     }
 
     method keys () { $KEY }

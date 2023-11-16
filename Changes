@@ -9,6 +9,9 @@ Revision history for OpenTelemetry
       pass only the first line, without the trailing `at line #`
       added from eg. plain `die`. This error is still set unmodified
       as the exception.
+    * Injection and extraction methods for processors catch errors
+      from their callbacks as required by
+      https://opentelemetry.io/docs/specs/otel/error-handling/#guidance
 
 0.015     2023-11-09 23:42:47+00:00 Europe/London
 
