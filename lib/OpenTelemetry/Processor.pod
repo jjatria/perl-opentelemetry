@@ -1,0 +1,76 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Processor - An abstract interface for OpenTelemetry processors
+
+=head1 SYNOPSIS
+
+    use Object::Pad;
+    use Future::AsyncAwait;
+
+    class My::Processor :does(OpenTelemetry::Processor) {
+              method process     { ... }
+        async method shutdown    { ... }
+        async method force_flush { ... }
+
+        # Any additional methods in your processor
+        ...
+    }
+
+    my $processor = My::Processor->new;
+
+=head1 DESCRIPTION
+
+This package provides an L<Object::Pad> role that defines the interface
+that OpenTelemetry processor classes should implement. Processors are
+objects that represent the start of a pipeline that starts with a provider
+and will, in most cases, end with a class implementing the
+L<OpenTelemetry::Exporter> role.
+
+=head1 METHODS
+
+Although there is unfortunately no way to currently enforce it, this document
+describes the way the methods of a class implementing this role are expected
+to behave.
+
+=head2 process
+
+    $processor->process(@items)
+
+Takes a list of elements to process, and calls
+L<"export"|OpenTelemetry::Exporter/export> on the configured exporter on those
+elements. Returns nothing.
+
+=head2 shutdown
+
+    $result = await $processor->shutdown( ... )
+
+Calls L<"shutdown"|OpenTelemetry::Exporter/shutdown> on the configured
+exporter and returns a L<Future> that will hold the result of that operation.
+
+=head2 force_flush
+
+    $result = await $processor->force_flush( ... )
+
+Calls L<"force_flush"|OpenTelemetry::Exporter/force_flush> on the configured
+exporter and returns a L<Future> that will hold the result of that operation.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<Future>
+
+=item L<Object::Pod>
+
+=item L<OpenTelemetry::Exporter>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2024 by José Joaquín Atria.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.

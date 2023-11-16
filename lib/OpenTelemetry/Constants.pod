@@ -78,25 +78,160 @@ The span describes a consumer receiving a message from a broker.
 
 =back
 
+=head2 Export Results
+
+These constants are used to distinguish the result of an export operation.
+They can be imported individually, or with the C<export> tag.
+
+=over
+
+=item EXPORT_RESULT_SUCCESS
+
+Marks an export operation as a success.
+
+=item EXPORT_RESULT_FAILURE
+
+Marks an export operation as a failure.
+
+=item EXPORT_RESULT_TIMEOUT
+
+Marks an export operation that was interrupted because it took too long.
+
+=back
+
 =head2 Trace Export Results
 
-These constants are used to distinguish the result of a trace export
-operation. They can be imported individually, or with the C<trace_export> tag.
-They are also imported when using the C<trace> tag.
+These constants are the sames as those described in the section above, but
+were defined when they were only expected to be used for the export of traces.
+They are kept for backwards compatibility, and because these names continue to
+be used by the OpenTelemetry specifiction.
+
+They can be imported individually, or with the C<trace_export> tag. They are
+also imported when using the C<trace> tag.
 
 =over
 
 =item TRACE_EXPORT_SUCCESS
 
-Marks an export operation as a success.
+Marks an export operation as a success. A synomym for
+L</EXPORT_RESULT_SUCCESS>.
 
 =item TRACE_EXPORT_FAILURE
 
-Marks an export operation as a failure.
+Marks an export operation as a failure. A synomym for
+L</EXPORT_RESULT_FAILURE>.
 
 =item TRACE_EXPORT_TIMEOUT
 
 Marks an export operation that was interrupted because it took too long.
+A synomym for L</EXPORT_RESULT_TIMEOUT>.
+
+=back
+
+=head2 Log Severity Values
+
+These constants are used to identify the severity of different log record
+objects. They can be imported individually, or with the C<log> tag. They
+are dualvar scalars, with a numeric value and a string value suitable to
+be used when displaying to a human-readable location.
+
+=over
+
+=item LOG_LEVEL_TRACE
+
+Equivalent to 1 when used as a number, and C<TRACE> when used as a string.
+
+=item LOG_LEVEL_TRACE2
+
+Equivalent to 2 when used as a number, and C<TRACE2> when used as a string.
+
+=item LOG_LEVEL_TRACE3
+
+Equivalent to 3 when used as a number, and C<TRACE3> when used as a string.
+
+=item LOG_LEVEL_TRACE4
+
+Equivalent to 4 when used as a number, and C<TRACE4> when used as a string.
+
+=item LOG_LEVEL_DEBUG
+
+Equivalent to 5 when used as a number, and C<DEBUG> when used as a string.
+
+=item LOG_LEVEL_DEBUG2
+
+Equivalent to 6 when used as a number, and C<DEBUG2> when used as a string.
+
+=item LOG_LEVEL_DEBUG3
+
+Equivalent to 7 when used as a number, and C<DEBUG3> when used as a string.
+
+=item LOG_LEVEL_DEBUG4
+
+Equivalent to 8 when used as a number, and C<DEBUG4> when used as a string.
+
+=item LOG_LEVEL_INFO
+
+Equivalent to 9 when used as a number, and C<INFO> when used as a string.
+
+=item LOG_LEVEL_INFO2
+
+Equivalent to 10 when used as a number, and C<INFO2> when used as a string.
+
+=item LOG_LEVEL_INFO3
+
+Equivalent to 11 when used as a number, and C<INFO3> when used as a string.
+
+=item LOG_LEVEL_INFO4
+
+Equivalent to 12 when used as a number, and C<INFO4> when used as a string.
+
+=item LOG_LEVEL_WARN
+
+Equivalent to 13 when used as a number, and C<WARN> when used as a string.
+
+=item LOG_LEVEL_WARN2
+
+Equivalent to 14 when used as a number, and C<WARN2> when used as a string.
+
+=item LOG_LEVEL_WARN3
+
+Equivalent to 15 when used as a number, and C<WARN3> when used as a string.
+
+=item LOG_LEVEL_WARN4
+
+Equivalent to 16 when used as a number, and C<WARN4> when used as a string.
+
+=item LOG_LEVEL_ERROR
+
+Equivalent to 17 when used as a number, and C<ERROR> when used as a string.
+
+=item LOG_LEVEL_ERROR2
+
+Equivalent to 18 when used as a number, and C<ERROR2> when used as a string.
+
+=item LOG_LEVEL_ERROR3
+
+Equivalent to 19 when used as a number, and C<ERROR3> when used as a string.
+
+=item LOG_LEVEL_ERROR4
+
+Equivalent to 20 when used as a number, and C<ERROR4> when used as a string.
+
+=item LOG_LEVEL_FATAL
+
+Equivalent to 21 when used as a number, and C<FATAL> when used as a string.
+
+=item LOG_LEVEL_FATAL2
+
+Equivalent to 22 when used as a number, and C<FATAL2> when used as a string.
+
+=item LOG_LEVEL_FATAL3
+
+Equivalent to 23 when used as a number, and C<FATAL3> when used as a string.
+
+=item LOG_LEVEL_FATAL4
+
+Equivalent to 24 when used as a number, and C<FATAL4> when used as a string.
 
 =back
 

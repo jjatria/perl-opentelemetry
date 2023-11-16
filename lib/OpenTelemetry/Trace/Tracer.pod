@@ -28,11 +28,11 @@ A tracer is responsible for creating L<OpenTelemetry::Trace::Span> objects.
 =head2 create_span
 
     $span = $tracer->create_span(
+        attributes => $attributes // {},
+        kind       => $span_kind  // $internal,
+        links      => $links      // [],
         name       => $name,      // 'empty',
         parent     => $context    // undef,
-        kind       => $span_kind  // $internal,
-        attributes => $attributes // {},
-        links      => $links      // [],
         start      => $timestamp  // time,
     )
 

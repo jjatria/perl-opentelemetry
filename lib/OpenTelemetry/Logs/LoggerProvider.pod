@@ -1,0 +1,98 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Logs::LoggerProvider - Provides access to OpenTelemetry Loggers
+
+=head1 SYNOPSIS
+
+    use OpenTelemetry;
+
+    # Read the globally set provider
+    my $provider = OpenTelemetry->logger_provider;
+    my $logger   = $provider->logger;
+    $logger->emit_record( body => 'Reticulating splines' );
+
+    # Set a global logger provider
+    OpenTelemetry->logger_provider = $another_provider;
+
+=head1 DESCRIPTION
+
+As implied by its name, the logger provider is responsible for providing
+access to a usable instance of L<OpenTelemetry::Logs::Logger>, which can in
+turn be used to emit log records.
+
+The provider implemented in this package returns an instance of
+L<OpenTelemetry::Logs::Logger> which is cached internally. This behaviour
+can be modified by inheriting from this class and providing a different
+implementation of the L</logger> method described below. See
+L<OpenTelemetry/logger_provider> for a way to set this modified version as a
+globally available logger provider.
+
+=head1 METHODS
+
+=head2 new
+
+    $provider = OpenTelemetry::Logs::LoggerProvider->new
+
+Creates a new instance of the logger provider.
+
+=head2 logger
+
+    $logger = $logger_provider->logger( %args )
+
+Takes a set of named parameters, and returns a logger that can be used to
+emit log records via L<OpenTelemetry:::Logs::Logger/emit_record>. Accepted
+parameters are:
+
+=over
+
+=item C<name>
+
+A name that uniquely identifies an
+L<instrumentation scope|OpenTelemetry::SDK::InstrumentationScope>. This can
+be the instrumentation library, a package name, etc. This value I<should> be
+set to a non-empty string.
+
+=item C<version>
+
+Specifies the version of the
+L<instrumentation scope|OpenTelemetry::SDK::InstrumentationScope>, if one is
+available.
+
+=item C<attributes>
+
+A hash reference with a set of attributes for this
+L<instrumentation scope|OpenTelemetry::SDK::InstrumentationScope>.
+
+=item C<schema_url>
+
+The schema URL to be recorded in the emitted data.
+
+=back
+
+The code implemented in this package ignores all arguments and returns a
+L<OpenTelemetry::Logs::Logger>, but subclasses (most notably
+L<OpenTelemetry::SDK::Logs::LoggerProvider>) are free to modify this.
+
+Callers are free to cache this logger, which logger providers must ensure
+can continue to work. In the event that the configuration of the logger
+provider has changed, it is the responsibility of the provider to
+propagate these changes to existing loggers, or to ensure that existing
+loggers remain usable.
+
+That said, callers should be aware that logger providers I<may> change,
+even in limited scopes, and while the logger provider is responsible for
+looking after the loggers it has generated, they are not required (and may
+not be capable) to alter the functioning of loggers that have been created
+by other providers.
+
+If creating the logger is expensive, then it's the logger provider's
+responsibility to cache it.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2024 by José Joaquín Atria.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.

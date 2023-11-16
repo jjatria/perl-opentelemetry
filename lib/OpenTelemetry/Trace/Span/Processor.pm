@@ -5,10 +5,7 @@ package OpenTelemetry::Trace::Span::Processor;
 
 our $VERSION = '0.024';
 
-role OpenTelemetry::Trace::Span::Processor {
+role OpenTelemetry::Trace::Span::Processor :does(OpenTelemetry::Processor) {
     method on_start;
     method on_end;
-
-    method shutdown;
-    method force_flush;
 }
