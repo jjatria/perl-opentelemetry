@@ -30,11 +30,11 @@ is the "sampled" flag.
     );
 
 Takes a positional numeric value to use as the starting value for the
-flags. If the value is not numeric, a warning will be logged and the
-value will be discarded.
+flags. The value must be a positive integer less than or equal to 255. If
+the value is not, a warning will be logged and the value will be discarded.
 
-If no value is given, the default value is 0, meaning all flags are
-disabled.
+If no value is given (or if the value given is undefined), the value will be
+set to a default of 0, meaning all flags are disabled.
 
 =head2 flags
 

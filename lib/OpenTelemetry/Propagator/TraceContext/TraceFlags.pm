@@ -11,9 +11,22 @@ my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
 class OpenTelemetry::Propagator::TraceContext::TraceFlags {
     field $flags :param :reader = 0;
 
-    sub BUILDARGS ( $class, $flags = 0 ) {
+    sub BUILDARGS ( $class, $flags = undef ) {
+        $flags //= 0;
+
         if ( $flags !~ /^\d+$/a ) {
-            $logger->warnf('Non-numeric value when creating TraceFlags: %s', $flags);
+            $logger->warn(
+                'Non-numeric value when creating TraceFlags',
+                { value => $flags },
+            );
+            $flags = 0;
+        }
+
+        if ( 0 > $flags || $flags > 255 ) {
+            $logger->warn(
+                'Out-of-range value when creating TraceFlags',
+                { value => $flags },
+            );
             $flags = 0;
         }
 
