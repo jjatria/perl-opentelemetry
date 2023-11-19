@@ -1,5 +1,7 @@
 Revision history for OpenTelemetry
 
+{{$NEXT}}
+
 0.017     2023-11-19 12:39:37+00:00 Europe/London
 
     * Undo conditional logic in Tracer's in_span introduced in 0.016.
