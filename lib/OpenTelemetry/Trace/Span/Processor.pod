@@ -7,13 +7,14 @@ OpenTelemetry::Trace::Span::Processor - Abstract interface of an OpenTelemetry s
 =head1 SYNOPSIS
 
     use Object::Pad;
+    use Future::AsyncAwait;
 
     class My::Processor :does(OpenTelemetry::Trace::Span::Processor) {
         method on_start ( $span, $context ) { ... }
         method on_end   ( $span           ) { ... }
 
-        method shutdown    ( $timeout // undef ) { ... }
-        method force_flush ( $timeout // undef ) { ... }
+        async method shutdown    ( $timeout // undef ) { ... }
+        async method force_flush ( $timeout // undef ) { ... }
     }
 
     # Create it
@@ -81,31 +82,34 @@ The return value of this method is ignored.
 
 =head2 shutdown
 
-    $result = $processor->shutdown( $timeout // undef );
+    $result = await $processor->shutdown( $timeout // undef );
 
-Takes an optional timeout value and returns when this span processor has
-completed shutting down. The shutdown process must include the effects of
-L<force_flush>, described below. After shutting down, the processor is not
-expected to do any further work, and should ignore any subsequent calls.
+Takes an optional timeout value and returns a L<Future> that will be done
+when this span processor has completed shutting down. The shutdown process must
+include the effects of L<force_flush>, described below. After shutting down,
+the processor is not expected to do any further work, and should ignore any
+subsequent calls.
 
-The return value will be one of the
+The value of the future will be one of the
 L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head2 force_flush
 
-    $result = $processor->force_flush( $timeout // undef );
+    $result = await $processor->force_flush( $timeout // undef );
 
-Takes an optional timeout value and returns when this span processor has
-finished flushing. Flushing signals to the span processor that it should
-process the data for any unprocessed spans as soon as possible. This could
-be due to an imminent shutdown, but does not have to be.
+Takes an optional timeout value and returns a L<Future> that will be done
+when this span processor has finished flushing. Flushing signals to the span
+processor that it should process the data for any unprocessed spans as soon as
+possible. This could be due to an imminent shutdown, but does not have to be.
 
-The return value will be one of the
+The value of the future will be one of the
 L<OpenTelemetry::Constants/Trace Export Results>.
 
 =head1 SEE ALSO
 
 =over
+
+=item L<Future>
 
 =item L<OpenTelemetry::Constants>
 
