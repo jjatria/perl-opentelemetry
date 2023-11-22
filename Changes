@@ -2,6 +2,12 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * The 'shutdown' and 'force_flush' methods of span processors
+      are no longer expected to return Future objects. This makes them
+      consistent with the equivalent methods in the exporter and the
+      SDK's tracer provider. So far, all internal uses of these methods
+      were blocking.
+
 0.017     2023-11-19 12:39:37+00:00 Europe/London
 
     * Undo conditional logic in Tracer's in_span introduced in 0.016.

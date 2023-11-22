@@ -46,8 +46,6 @@
             "Exporter::Tiny" : "0.044",
             "Feature::Compat::Defer" : "0",
             "Feature::Compat::Try" : "0",
-            "Future" : "0.26",
-            "Future::AsyncAwait" : "0",
             "List::Util" : "1.45",
             "Log::Any" : "0",
             "Module::Pluggable" : "0",
