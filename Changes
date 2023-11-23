@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.018     2023-11-23 19:28:38+00:00 Europe/London
 
     * Document all shutdown and force_flush methods as async
 
