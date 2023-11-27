@@ -59,12 +59,11 @@ consider using L<Syntax::Keyword::Dynamically>, or other similar methods.
 
     $logger = OpenTelemetry->logger;
 
-Get the global logger. The logger is a L<Log::Any> logger, and as such, it can
-be connected to any logging adapter that is available. Please see the
-documentation for L<Log::Any> for more details on how to use it.
+I<Deprecated>: This method will be removed in an upcoming release.
 
-All logging throughout OpenTelemetry and its related modules uses the
-"OpenTelemetry" category.
+Get a L<Log::Any> logger that is configured to log in the "OpenTelemetry"
+category. There is no reason to use this instead of obtaining your own logger
+via the standard L<Log::Any> interface.
 
 =head2 tracer_provider
 
