@@ -22,6 +22,9 @@ no_messages {
     ref_is $prop->extract( $carrier, $root, sub { die } ), $root,
         'Propagator does nothing';
 
+    ref_is $prop->extract( $carrier, undef, sub { die } ), $root,
+        'Undef context defaults to current';
+
     is [ $prop->keys ], [], 'No keys';
 };
 

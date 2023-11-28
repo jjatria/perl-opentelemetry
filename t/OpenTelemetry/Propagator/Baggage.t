@@ -15,14 +15,18 @@ is my $KEY = $propagator->keys, 'baggage', 'Can read propagator keys';
 # no baggage injected into it returns the current context
 # or whatever context has been provided
 subtest 'Extract without baggage' => sub {
-    is my $a = $propagator->extract($carrier),
-        object { prop isa => 'OpenTelemetry::Context' },
+    ref_is my $a = $propagator->extract($carrier),
+        OpenTelemetry::Context->current,
         'Returns current context if none provided';
 
-    my $key = $a->key('x');
+    ref_is $propagator->extract($carrier, undef),
+        OpenTelemetry::Context->current,
+        'Returns current context if undef provided';
 
-    is my $b = $propagator->extract( $carrier, $a->set( $key, 123 ) ),
-        object { prop isa => 'OpenTelemetry::Context' },
+    my $key = $a->key('x');
+    my $b = $a->set( $key, 123 );
+
+    ref_is $propagator->extract( $carrier, $b ) => $b,
         'Returns provided context if not in carrier';
 
     is $b->get($key), 123, 'Can read from defaulted context';
@@ -39,6 +43,11 @@ subtest 'Inject without baggage' => sub {
     ref_is $propagator->inject( $carrier, OpenTelemetry::Context->current ),
         $propagator,
         'Inject returns self with context with no baggage';
+
+    ref_is $propagator->inject( $carrier, undef ),
+        $propagator,
+        'Inject returns self with undef context';
+
     is $carrier, {}, 'Nothing injected';
 };
 

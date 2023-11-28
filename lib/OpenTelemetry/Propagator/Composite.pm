@@ -37,18 +37,24 @@ class OpenTelemetry::Propagator::Composite :does(OpenTelemetry::Propagator) {
 
     method inject (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $setter  = OpenTelemetry::Propagator::TextMap::SETTER
+        $context = undef,
+        $setter  = undef
     ) {
+        $context //= OpenTelemetry::Context->current;
+        $setter  //= OpenTelemetry::Propagator::TextMap::SETTER;
+
         $_->inject( $carrier, $context, $setter ) for @injectors;
         return $self;
     }
 
     method extract (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $getter  = OpenTelemetry::Propagator::TextMap::GETTER
+        $context = undef,
+        $getter  = undef
     ) {
+        $context //= OpenTelemetry::Context->current;
+        $getter  //= OpenTelemetry::Propagator::TextMap::GETTER;
+
         my $ctx = $context;
         $ctx = $_->extract( $carrier, $ctx, $getter ) for @extractors;
         return $ctx;

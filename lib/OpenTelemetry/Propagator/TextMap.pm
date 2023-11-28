@@ -20,18 +20,18 @@ class OpenTelemetry::Propagator::TextMap :does(OpenTelemetry::Propagator) {
 
     method inject (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $setter  = SETTER
+        $context = undef,
+        $setter  = undef
     ) {
         return $self;
     }
 
     method extract (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $getter  = GETTER
+        $context = undef,
+        $getter  = undef
     ) {
-        return $context;
+        return $context // OpenTelemetry::Context->current;
     }
 
     method keys () { }

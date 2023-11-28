@@ -26,9 +26,12 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
 
     method inject (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $setter  = OpenTelemetry::Propagator::TextMap::SETTER
+        $context = undef,
+        $setter  = undef
     ) {
+        $context //= OpenTelemetry::Context->current;
+        $setter  //= OpenTelemetry::Propagator::TextMap::SETTER;
+
         try {
             my $span_context = OpenTelemetry::Trace
                 ->span_from_context($context)
@@ -57,9 +60,12 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
 
     method extract (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $getter  = OpenTelemetry::Propagator::TextMap::GETTER
+        $context = undef,
+        $getter  = undef
     ) {
+        $context //= OpenTelemetry::Context->current;
+        $getter  //= OpenTelemetry::Propagator::TextMap::GETTER;
+
         try {
             my $string = $getter->( $carrier, $TRACE_PARENT_KEY )
                 or return $context;

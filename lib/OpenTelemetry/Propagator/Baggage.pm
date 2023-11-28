@@ -54,9 +54,12 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
 
     method inject (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $setter  = OpenTelemetry::Propagator::TextMap::SETTER
+        $context = undef,
+        $setter  = undef
     ) {
+        $context //= OpenTelemetry::Context->current;
+        $setter  //= OpenTelemetry::Propagator::TextMap::SETTER;
+
         try {
             my %baggage = OpenTelemetry::Baggage->all($context);
             return $self unless %baggage;
@@ -79,9 +82,12 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
 
     method extract (
         $carrier,
-        $context = OpenTelemetry::Context->current,
-        $getter  = OpenTelemetry::Propagator::TextMap::GETTER
+        $context = undef,
+        $getter  = undef
     ) {
+        $context //= OpenTelemetry::Context->current;
+        $getter  //= OpenTelemetry::Propagator::TextMap::GETTER;
+
         try {
             my $header = $carrier->$getter($KEY) or return $context;
 
