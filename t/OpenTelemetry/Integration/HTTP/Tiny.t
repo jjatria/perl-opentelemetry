@@ -3,9 +3,13 @@
 use Test2::V0 -target => 'OpenTelemetry::Integration::HTTP::Tiny';
 use experimental 'signatures';
 
-use OpenTelemetry;
-use OpenTelemetry::Constants -span;
 use HTTP::Tiny;
+use OpenTelemetry::Baggage;
+use OpenTelemetry::Constants -span;
+use OpenTelemetry::Context;
+use OpenTelemetry::Propagator::Baggage;
+use OpenTelemetry;
+use Syntax::Keyword::Dynamically;
 
 my $span;
 my $otel = mock OpenTelemetry => override => [
@@ -43,8 +47,16 @@ is [ CLASS->dependencies ], ['HTTP::Tiny'], 'Reports dependencies';
 subtest 'No headers' => sub {
     CLASS->uninstall;
 
+    dynamically OpenTelemetry::Context->current
+        = OpenTelemetry::Baggage->set( foo => 123, 'META' );
+
+    dynamically OpenTelemetry->propagator
+        = OpenTelemetry::Propagator::Baggage->new,
+
+    my $request;
     my $http = mock 'HTTP::Tiny' => override => [
-        request => sub {
+        request => sub ( $self, $method, $url, $options = undef ) {
+            $request = $options // {};
             {
                 success => 'TEST',
                 status  => 123,
@@ -83,6 +95,11 @@ subtest 'No headers' => sub {
             'user_agent.original'       => $ua->agent,
         },
     }, 'Captured basic data';
+
+    is $request, {
+        content => '0123456789',
+        headers => { baggage => 'foo=123;META' },
+    }, 'Injected propagation data';
 };
 
 subtest 'HTTP error' => sub {

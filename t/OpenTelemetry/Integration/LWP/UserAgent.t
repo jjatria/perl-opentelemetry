@@ -8,12 +8,16 @@ use Test2::Require::Module 'HTTP::Request::Common';
 use Test2::V0 -target => 'OpenTelemetry::Integration::LWP::UserAgent';
 use experimental 'signatures';
 
-use OpenTelemetry;
-use OpenTelemetry::Constants -span;
-use LWP::UserAgent;
-use HTTP::Response;
 use HTTP::Headers;
 use HTTP::Request::Common;
+use HTTP::Response;
+use LWP::UserAgent;
+use OpenTelemetry::Baggage;
+use OpenTelemetry::Constants -span;
+use OpenTelemetry::Context;
+use OpenTelemetry::Propagator::Baggage;
+use OpenTelemetry;
+use Syntax::Keyword::Dynamically;
 
 my $span;
 my $otel = mock OpenTelemetry => override => [
@@ -56,8 +60,16 @@ is [ CLASS->dependencies ], ['LWP::UserAgent'], 'Reports dependencies';
 subtest 'No headers' => sub {
     CLASS->uninstall;
 
+    dynamically OpenTelemetry::Context->current
+        = OpenTelemetry::Baggage->set( foo => 123, 'META' );
+
+    dynamically OpenTelemetry->propagator
+        = OpenTelemetry::Propagator::Baggage->new,
+
+    my $request;
     my $http = mock 'LWP::UserAgent' => override => [
-        request => sub {
+        request => sub ( $self, $req ) {
+            $request = $req;
             HTTP::Response->new(
                 204,
                 'This is a test',
@@ -97,6 +109,9 @@ subtest 'No headers' => sub {
             'user_agent.original'       => $ua->agent,
         },
     }, 'Captured basic data';
+
+    is $request->header('baggage'), 'foo=123;META',
+        'Injected propagation data';
 };
 
 subtest 'HTTP error' => sub {

@@ -106,6 +106,12 @@ sub install ( $class, %config ) {
             },
         );
 
+        OpenTelemetry->propagator->inject(
+            $request,
+            undef,
+            sub { shift->header(@_) },
+        );
+
         dynamically OpenTelemetry::Context->current
             = OpenTelemetry::Trace->context_with_span($span);
 
