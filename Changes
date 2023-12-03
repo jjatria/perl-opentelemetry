@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.019     2023-12-03 14:44:05+00:00 Europe/London
 
     * Document OpenTelemetry->logger as deprecated, as this will soon
       be removed to make room for the implementation of the Logs API.
