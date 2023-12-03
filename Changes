@@ -7,6 +7,8 @@ Revision history for OpenTelemetry
     * Apply default values appropriately when receiving undefined values
     * The HTTP::Tiny and LWP::UserAgent integrations inject propagation
       data as appropriate
+    * Bump dependency on Feature::Compat::Try to 0.05 for finally support
+      in perl versions under 5.35 (GH #11)
 
 0.018     2023-11-23 19:28:38+00:00 Europe/London
 
