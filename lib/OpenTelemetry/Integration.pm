@@ -1,7 +1,7 @@
 package OpenTelemetry::Integration;
 # ABSTRACT: Top-level interface for OpenTelemetry integrations
 
-our $VERSION = '0.019';
+our $VERSION = '0.020';
 
 use experimental 'signatures';
 
