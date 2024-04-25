@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.020     2024-04-25 18:54:56+01:00 Europe/London
 
     * Switch LWP::UserAgent integration to wrap around that module's
       'simple_request' method instead of its 'request' method. This
