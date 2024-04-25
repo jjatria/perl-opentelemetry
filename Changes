@@ -5,6 +5,8 @@ Revision history for OpenTelemetry
     * Switch LWP::UserAgent integration to wrap around that module's
       'simple_request' method instead of its 'request' method. This
       should catch some more cases, and fix GH #13.
+    * Added a minimal example application. See the `examples` directory
+      in the distribution files.
 
 0.019     2023-12-03 14:44:05+00:00 Europe/London
 
