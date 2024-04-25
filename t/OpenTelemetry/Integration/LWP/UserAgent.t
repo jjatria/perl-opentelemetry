@@ -68,7 +68,7 @@ subtest 'No headers' => sub {
 
     my $request;
     my $http = mock 'LWP::UserAgent' => override => [
-        request => sub ( $self, $req ) {
+        simple_request => sub ( $self, $req, @ ) {
             $request = $req;
             HTTP::Response->new(
                 204,
@@ -118,7 +118,7 @@ subtest 'HTTP error' => sub {
     CLASS->uninstall;
 
     my $http = mock 'LWP::UserAgent' => override => [
-        request => sub { HTTP::Response->new( 404, 'TEST' ) },
+        simple_request => sub { HTTP::Response->new( 404, 'TEST' ) },
     ];
 
     ok +CLASS->install, 'Installed modifier';
@@ -154,7 +154,7 @@ subtest 'Internal error' => sub {
     CLASS->uninstall;
 
     my $http = mock 'LWP::UserAgent' => override => [
-        request => sub { die 'boom' },
+        simple_request => sub { die 'boom' },
     ];
 
     ok +CLASS->install, 'Installed modifier';
@@ -192,7 +192,7 @@ subtest 'Requested headers' => sub {
     CLASS->uninstall;
 
     my $http = mock 'LWP::UserAgent' => override => [
-        request => sub {
+        simple_request => sub {
             HTTP::Response->new(
                 204,
                 'TEST',
