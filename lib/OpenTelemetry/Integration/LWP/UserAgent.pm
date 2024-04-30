@@ -132,7 +132,7 @@ sub install ( $class, %config ) {
                 $span->set_status( SPAN_STATUS_OK );
             }
             else {
-                $span->set_status( SPAN_STATUS_ERROR, "HTTP Response Code "+$response->code );
+                $span->set_status( SPAN_STATUS_ERROR, "HTTP Response Code ".$response->code );
             }
 
             $span->set_attribute(
