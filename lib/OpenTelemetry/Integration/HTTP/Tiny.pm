@@ -128,7 +128,7 @@ sub install ( $class, %config ) {
         $span->set_attribute( 'http.response.body.size' => $length )
             if defined $length;
 
-        if ( $res->{success} ) {
+        if ( $res->{status} < 500 ) {
             $span->set_status( SPAN_STATUS_OK );
         }
         elsif ( $res->{status} == 599 ) {
