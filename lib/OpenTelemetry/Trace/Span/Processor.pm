@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Trace::Span::Processor;
 
-our $VERSION = '0.021';
+our $VERSION = '0.022';
 
 role OpenTelemetry::Trace::Span::Processor {
     method on_start;
