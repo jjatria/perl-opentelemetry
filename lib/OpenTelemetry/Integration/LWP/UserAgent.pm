@@ -83,9 +83,6 @@ sub install ( $class, %config ) {
                 'url.full'                 => "$uri", # redacted
                 'user_agent.original'      => $self->agent,
 
-                # This does not include auto-generated headers
-                # Capturing those would require to hook into the
-                # handle's write_request method
                 get_headers(
                     $self->default_headers,
                     \@wanted_request_headers,
@@ -98,10 +95,6 @@ sub install ( $class, %config ) {
                     'http.request.header'
                 ),
 
-                # Request body can be generated with a data_callback
-                # parameter, in which case we don't set this attribute
-                # Setting it would likely involve us hooking into the
-                # handle's write_body method
                 $length ? ( 'http.request.body.size' => $length ) : (),
             },
         );
