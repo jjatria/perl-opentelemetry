@@ -8,6 +8,7 @@ Revision history for OpenTelemetry
     * Fixed an issue in the HTTP::Tiny integration where the content size
       of requests with a content callback was incorrectly reported. It is
       now not reported at all.
+    * Expand and update documentation of HTTP integrations.
 
 0.020     2024-04-25 18:54:56+01:00 Europe/London
 
