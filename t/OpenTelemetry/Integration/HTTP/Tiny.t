@@ -101,6 +101,51 @@ subtest 'No headers' => sub {
     }, 'Injected propagation data';
 };
 
+subtest 'Request size' => sub {
+    CLASS->uninstall;
+
+    my $http = mock 'HTTP::Tiny' => override => [
+        request => sub ( $self, $method, $url, $options = undef ) {
+            {
+                success => 'TEST',
+                status  => 123,
+            };
+        },
+    ];
+
+    ok +OpenTelemetry::Integration::HTTP::Tiny->install,
+        'Installed modifier';
+
+    my $ua = HTTP::Tiny->new;
+
+    subtest 'No content' => sub {
+        like $ua->get('http://fa.ke'),
+            { success => 'TEST' },
+            'Can request';
+
+        like $span->{otel}, { attributes => { 'http.request.body.size' => DNE } },
+            'Did not capture content size';
+    };
+
+    subtest 'Content is callback' => sub {
+        like $ua->get('http://fa.ke', { content => sub { '0123456789' } } ),
+            { success => 'TEST' },
+            'Can request';
+
+        like $span->{otel}, { attributes => { 'http.request.body.size' => DNE } },
+            'Did not capture content size';
+    };
+
+    subtest 'Content is false' => sub {
+        like $ua->get('http://fa.ke', { content => 0 } ),
+            { success => 'TEST' },
+            'Can request';
+
+        like $span->{otel}, { attributes => { 'http.request.body.size' => 1 } },
+            'Captured content size';
+    };
+};
+
 subtest 'HTTP error' => sub {
     CLASS->uninstall;
 
