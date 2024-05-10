@@ -2,6 +2,10 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Leave the status of a span unset on success responses in the
+      HTTP::Tiny and LWP::UserAgent integrations. This behaviour matches
+      the OpenTelemetry specification.
+
 0.020     2024-04-25 18:54:56+01:00 Europe/London
 
     * Switch LWP::UserAgent integration to wrap around that module's

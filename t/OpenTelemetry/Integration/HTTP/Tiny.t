@@ -77,7 +77,6 @@ subtest 'No headers' => sub {
         'Can request';
 
     is $span->{otel}, {
-        status     => { code => SPAN_STATUS_OK },
         ended      => T,
         kind       => SPAN_KIND_CLIENT,
         name       => 'POST',
@@ -222,7 +221,6 @@ subtest 'Requested headers' => sub {
     ) => { success => 'TEST' } => 'Can request';
 
     is $span->{otel}, {
-        status     => { code => SPAN_STATUS_OK },
         ended      => T,
         kind       => SPAN_KIND_CLIENT,
         name       => 'GET',

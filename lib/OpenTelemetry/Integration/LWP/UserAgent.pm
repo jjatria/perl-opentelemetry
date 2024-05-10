@@ -12,7 +12,7 @@ use Class::Method::Modifiers 'install_modifier';
 use Feature::Compat::Try;
 use Syntax::Keyword::Dynamically;
 use List::Util 'none';
-use OpenTelemetry::Constants qw( SPAN_KIND_CLIENT SPAN_STATUS_ERROR SPAN_STATUS_OK );
+use OpenTelemetry::Constants qw( SPAN_KIND_CLIENT SPAN_STATUS_ERROR );
 use OpenTelemetry::Context;
 use OpenTelemetry::Trace;
 use OpenTelemetry;
@@ -128,12 +128,8 @@ sub install ( $class, %config ) {
             $span->set_attribute( 'http.response.body.size' => $length )
                 if defined $length;
 
-            if ( $response->is_success ) {
-                $span->set_status( SPAN_STATUS_OK );
-            }
-            else {
-                $span->set_status( SPAN_STATUS_ERROR, $response->code );
-            }
+            $span->set_status( SPAN_STATUS_ERROR, $response->code )
+                unless $response->is_success;
 
             $span->set_attribute(
                 get_headers(
