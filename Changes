@@ -2,6 +2,9 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Fixed a minor rendering issue in the documentation of the HTTP
+      integrations, and added a "See Also" section to both.
+
 0.021     2024-05-10 19:21:15+01:00 Europe/London
 
     * Leave the status of a span unset on success responses in the

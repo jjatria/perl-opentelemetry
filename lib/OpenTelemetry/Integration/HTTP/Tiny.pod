@@ -144,6 +144,22 @@ The strings will be matched case-insensitively to the header names, and
 hyphens and underscores will be treated indistinctly. Otherwise, names will
 be matched literally.
 
+=head2 SEE ALSO
+
+=over
+
+=item L<HTTP::Tiny>
+
+=item L<OpenTelemetry>
+
+=item L<OpenTelemetry::Integration>
+
+=item L<OpenTelemetry::Integration::LWP::UserAgent>
+
+=item L<URI>
+
+=back
+
 =head1 COPYRIGHT
 
 This software is copyright (c) 2023 by José Joaquín Atria.

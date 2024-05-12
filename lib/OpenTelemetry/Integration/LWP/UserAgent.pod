@@ -149,6 +149,26 @@ Matching headers will be stored as span attributes under the
 C<http.response.header> namespace, as described in
 L<the semantic convention documentation|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md#http-request-and-response-headers>.
 
+=head2 SEE ALSO
+
+=over
+
+=item L<HTTP::Request>
+
+=item L<HTTP::Response>
+
+=item L<LWP::UserAgent>
+
+=item L<OpenTelemetry>
+
+=item L<OpenTelemetry::Integration>
+
+=item L<OpenTelemetry::Integration::HTTP::Tiny>
+
+=item L<URI>
+
+=back
+
 =head1 COPYRIGHT
 
 This software is copyright (c) 2023 by José Joaquín Atria.
