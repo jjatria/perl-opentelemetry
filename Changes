@@ -1,5 +1,7 @@
 Revision history for OpenTelemetry
 
+{{$NEXT}}
+
 0.023     2024-06-03 10:31:57+01:00 Europe/London
 
     * Fixed an issue with experimental cleanup where "DBI::db::execute"
