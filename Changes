@@ -4,6 +4,9 @@ Revision history for OpenTelemetry
 
     * Fixed an issue with experimental cleanup where "DBI::db::execute"
       was replaced with "DBI::db::do" by mistake (GH #17)
+    * Fixed an issue with the versioning of the OpenTelemetry::Baggage
+      module, which has been reporting the same version number since
+      0.010. (GH #18)
 
 0.022     2024-05-12 20:08:13+01:00 Europe/London
 
