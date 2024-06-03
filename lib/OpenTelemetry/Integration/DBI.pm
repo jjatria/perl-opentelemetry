@@ -110,7 +110,7 @@ sub install ( $class, %options ) {
         goto $wrapper;
     };
 
-    $DO = \&DBI::st::execute;
+    $DO = \&DBI::st::do;
     install_modifier 'DBI::db' => around => do => sub {
         my ( undef, $dbh, $sql ) = @_;
         unshift @_, $dbh, $sql;
