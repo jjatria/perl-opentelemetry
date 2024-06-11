@@ -57,9 +57,10 @@ trace will only have one root span.
 
 Spans can also have links to other spans, including those that belong to a
 different trace. These can be set on span creation via the C<links> parameter,
-which must hold a reference to an array of hashes, each of which should
-be usable (when dereferenced) as the parameters to the span's
-L<add_link|OpenTelemetry::Trace::Span/add_link> method.
+which must hold a reference to an array of hashes. The hashes should have a
+C<context> key set to the L<OpenTelemetry::Trace::SpanContext> of the span to
+link to, and an optional C<attributes> key set to a hashref of attributes
+to set on the link.
 
 It is the responsibility of the user to make sure that every span that has
 been created is ended (via a call to its L<end|OpenTelemetry::Trace::Span/end>

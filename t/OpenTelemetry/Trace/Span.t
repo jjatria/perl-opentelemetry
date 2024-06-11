@@ -5,7 +5,7 @@ use Test2::V0 -target => 'OpenTelemetry::Trace::Span';
 is my $s = CLASS->new( name => 'foo' ), object { prop isa => CLASS },
     'Can create span';
 
-ref_is $s->add_event( x => 1),            $s, 'add_link is chainable';
+ref_is $s->add_event( x => 1),            $s, 'add_event is chainable';
 ref_is $s->add_event,                     $s, 'add_event call can be empty';
 ref_is $s->end(123),                      $s, 'end takes time';
 ref_is $s->end,                           $s, 'end is chainable';
