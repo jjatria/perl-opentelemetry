@@ -1,0 +1,110 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Logs::LogRecord::Processor - Abstract interface of an OpenTelemetry log record processor
+
+=head1 SYNOPSIS
+
+    use Object::Pad;
+    use Future::AsyncAwait;
+
+    class My::Processor :does(OpenTelemetry::Logs::LogRecord::Processor) {
+        method on_emit ( $log_record ) { ... }
+    }
+
+    # Create it
+    my $processor = My::Processor->new( ... );
+
+    # Register it with the OpenTelemetry tracer provider
+    OpenTelemetry->logger_provider->add_log_record_processor($processor);
+
+=head1 DESCRIPTION
+
+This module provides an abstract role that can be used by classes implementing
+OpenTelemetry log record processors. Log record processors are objects that are
+registered with a L<OpenTelemetry::Logs::LoggerProvider> (or, more accurately,
+with one of its subclasses such as those provided by an OpenTelemetry SDK) to
+perform additional operations on log records when they are emitted.
+
+The processor is considered to be the start of a pipeline, which must be
+allowed to end with a L<OpenTelemetry::Exporter> to export the log records
+to some collector. To this end, processors are expected to accept an optional
+C<exporter> parameter to their constructor. But processors can be used for
+other ends.
+
+=head1 METHODS
+
+=head2 new
+
+    $processor = Class::Implementing::This::Role->new(
+        exporter => ..., # optional
+        ...
+    );
+
+Should take an optional exporter set to an instance of a class implementing
+the L<OpenTelemetry::Exporter> role. Processor classes are free to accept any
+other parameters they choose.
+
+=head2 on_emit
+
+    $processor->on_emit( $log_record );
+
+Called when the log record is emitted. It takes the emitted log record as its
+only parameter.
+
+This method is called synchronously when the log record is emitted, so it
+should not block or die.
+
+The return value of this method is ignored.
+
+=head2 shutdown
+
+    $result = await $processor->shutdown( $timeout // undef );
+
+Takes an optional timeout value and returns a L<Future> that will be done
+when this log record processor has completed shutting down. The shutdown
+process must include the effects of L<force_flush>, described below. After
+shutting down, the processor is not expected to do any further work, and
+should ignore any subsequent calls.
+
+The value of the future will be one of the
+L<OpenTelemetry::Constants/Trace Export Results>.
+
+=head2 force_flush
+
+    $result = await $processor->force_flush( $timeout // undef );
+
+Takes an optional timeout value and returns a L<Future> that will be done
+when this log record processor has finished flushing. Flushing signals to the
+processor that it should process the data for any unprocessed elements as soon
+as possible. This could be due to an imminent shutdown, but does not have to
+be.
+
+The value of the future will be one of the
+L<OpenTelemetry::Constants/Trace Export Results>.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<Future>
+
+=item L<OpenTelemetry::Constants>
+
+=item L<OpenTelemetry::Exporter>
+
+=item L<OpenTelemetry::Logs::LoggerProvider>
+
+=item L<OpenTelemetry::SDK>
+
+=item L<OpenTelemetry::SDK::Logs::LogRecord>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2024 by José Joaquín Atria.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.

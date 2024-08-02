@@ -55,15 +55,19 @@ consider using L<Syntax::Keyword::Dynamically>, or other similar methods.
 
 =head1 CLASS METHODS
 
-=head2 logger
+=head2 logger_provider
 
-    $logger = OpenTelemetry->logger;
+    $logger_provider = OpenTelemetry->logger_provider;
+    OpenTelemetry->logger_provider = $new_logger_provider;
 
-I<Deprecated>: This method will be removed in an upcoming release.
+Get the global logger provider. This function can be used as an lvalue to set
+a new logger provider, but if so the new value must be a subclass of
+L<OpenTelemetry::Logs::LoggerProvider>. Trying to set it to a class that does
+not inherit from that class is an error.
 
-Get a L<Log::Any> logger that is configured to log in the "OpenTelemetry"
-category. There is no reason to use this instead of obtaining your own logger
-via the standard L<Log::Any> interface.
+If the logger provider is read before any is set, it will default to a
+L<OpenTelemetry::Logs::LoggerProvider>, which returns a logger that does
+nothing. Please refer to the documentation of that class for more details.
 
 =head2 tracer_provider
 
@@ -119,8 +123,8 @@ An optional hash reference with additional contextual information.
 
 =back
 
-The default error handler simply concatenates these and logs them using the
-default L</logger>. If present, the details are passed as structured data to
+The default error handler simply concatenates these and logs them using
+L<Log::Any>. If present, the details are passed as structured data to
 the logger.
 
 =head2 handle_error
@@ -201,11 +205,13 @@ used as an lvalue.
 
 Behaves exactly as the L</handle_error> class method described above.
 
-=head2 otel_logger
+=head2 otel_logger_provider
 
-    $logger = otel_logger;
+    $logger_provider = otel_logger_provider;
+    otel_logger_provider = $new_logger_provider;
 
-Behaves exactly as the L</logger> class method described above.
+Behaves exactly as the L</logger_provider> class method described above. Can
+be used as an lvalue.
 
 =head2 otel_propagator
 

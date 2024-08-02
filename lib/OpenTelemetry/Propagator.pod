@@ -40,8 +40,8 @@ to define those formats.
 =head1 METHODS
 
 Although there is unfortunately no way to currently enforce it, this document
-describes the behaviour of the methods that a class implementing this role
-is expected to follow.
+describes the way the methods of a class implementing this role are expected
+to behave.
 
 =head2 inject
 
