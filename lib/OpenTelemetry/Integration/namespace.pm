@@ -2,7 +2,7 @@ package
     OpenTelemetry::Integration::namespace;
 # ABSTRACT: OpenTelemetry integration for a namespace
 
-our $VERSION = '0.023001';
+our $VERSION = '0.023002';
 
 use strict;
 use warnings;

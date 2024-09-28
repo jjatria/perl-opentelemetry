@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
-our $VERSION = '0.023001';
+our $VERSION = '0.023002';
 
 use Log::Any::Adapter::Util ();
 use OpenTelemetry qw( otel_config otel_span_from_context otel_logger_provider );
