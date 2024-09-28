@@ -4,7 +4,7 @@ use Object::Pad ':experimental(init_expr)';
 package
     OpenTelemetry::Context::Key;
 
-our $VERSION = '0.024';
+our $VERSION = '0.023001';
 
 class OpenTelemetry::Context::Key {
     use UUID::URandom 'create_uuid';
@@ -17,7 +17,7 @@ class OpenTelemetry::Context::Key {
 
 package OpenTelemetry::Context;
 
-our $VERSION = '0.010';
+our $VERSION = '0.023001';
 
 sub key ( $, $name ) {
     OpenTelemetry::Context::Key->new( name => $name );

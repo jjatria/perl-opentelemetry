@@ -3,7 +3,7 @@ use Object::Pad ':experimental(init_expr)';
 
 package OpenTelemetry::Attributes;
 
-our $VERSION = '0.024';
+our $VERSION = '0.023001';
 
 class OpenTelemetry::AttributeMap {
     use Log::Any;
