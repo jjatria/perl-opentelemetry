@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Expand test coverage and documentation for logging code
+
 0.023001  2024-09-28 14:48:24+01:00 Europe/London (TRIAL RELEASE)
 
     * Updated the documentation to remove remaining mentions of the
