@@ -1,0 +1,50 @@
+=encoding UTF-8
+
+=head1 NAME
+
+Log::Any::Adapter::OpenTelemetry - Send Log::Any logs to OpenTelemetry
+
+=head1 SYNOPSIS
+
+    use Log::Any::Adapter 'OpenTelemetry';
+
+=head1 DESCRIPTION
+
+This L<Log::Any> plugin configures your logger to generate L<OpenTelemetry>
+log data using the configured L<OpenTelemetry::Logs::LoggerProvider>.
+
+L<Log::Any> log levels are mapped to L<OpenTelemetry> log levels as follows:
+
+=over
+
+=item C<trace> maps to L<OpenTelemetry::Constants/LOG_LEVEL_TRACE>
+
+=item C<debug> maps to L<OpenTelemetry::Constants/LOG_LEVEL_DEBUG>
+
+=item C<info> and C<notice> map to L<OpenTelemetry::Constants/LOG_LEVEL_INFO>
+
+=item C<warning> maps to L<OpenTelemetry::Constants/LOG_LEVEL_WARN>
+
+=item C<error> maps to L<OpenTelemetry::Constants/LOG_LEVEL_ERROR>
+
+=item C<critical>, C<alert>, and C<emergency> map to L<OpenTelemetry::Constants/LOG_LEVEL_FATAL>
+
+=back
+
+When determining whether a log level is enabled or not, the value
+of C<OTEL_LOG_LEVEL> will be read from the environment, or that of
+C<PERL_OTEL_LOG_LEVEL> if the former is not set. If neither is set,
+or if that variable is set to an unknown value, the default value
+will be "info".
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to L<CV-Library Ltd.|https://cv-library.co.uk> for their
+support in the development of this library.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2023 by José Joaquín Atria.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.

@@ -67,7 +67,8 @@ for my $method ( Log::Any::Adapter::Util::detection_methods() ) {
 
     no strict 'refs';
     *$method = sub {
-        $numeric <= $OTEL2LOG{ lc( otel_config('LOG_LEVEL') // 'info' ) };
+        my $level = $OTEL2LOG{ lc( otel_config('LOG_LEVEL') // 'info' ) };
+        $numeric <= ( $level // $OTEL2LOG{info} );
     };
 }
 
