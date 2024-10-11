@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Processor;
 
-our $VERSION = '0.024';
+our $VERSION = '0.025';
 
 # NOTE: Moving this here creates a nice symmetry where we have
 # OpenTelemetry::{Propagator,Processor,Exporter} at the top-level
