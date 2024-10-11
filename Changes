@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.024     2024-10-11 18:36:41+01:00 Europe/London
 
     * Expand test coverage and documentation for logging code
 
