@@ -1,7 +1,7 @@
 package OpenTelemetry::Integration::DBI;
 # ABSTRACT: OpenTelemetry integration for DBI
 
-our $VERSION = '0.023002';
+our $VERSION = '0.024';
 
 use strict;
 use warnings;
