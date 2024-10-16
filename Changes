@@ -2,6 +2,11 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Fixed an issue in the integrations for HTTP::Tiny and
+      LWP::UserAgent which meant that if the spans created
+      internally were root spans, their data would not propagate
+      correctly
+
 0.024     2024-10-11 18:36:41+01:00 Europe/London
 
     * Expand test coverage and documentation for logging code

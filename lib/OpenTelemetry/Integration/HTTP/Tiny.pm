@@ -108,12 +108,12 @@ sub install ( $class, %config ) {
             },
         );
 
+        dynamically OpenTelemetry::Context->current
+            = OpenTelemetry::Trace->context_with_span($span);
+
         OpenTelemetry->propagator->inject( \my %carrier );
         $options->{headers} = { %{ $options->{headers} // {} }, %carrier }
             if %carrier;
-
-        dynamically OpenTelemetry::Context->current
-            = OpenTelemetry::Trace->context_with_span($span);
 
         defer { $span->end }
 
