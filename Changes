@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.025     2024-10-20 13:50:19+01:00 Europe/London
 
     * Fixed an issue in the integrations for HTTP::Tiny and
       LWP::UserAgent which meant that if the spans created
