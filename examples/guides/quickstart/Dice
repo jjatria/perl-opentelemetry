@@ -1,0 +1,11 @@
+#!/usr/bin/env perl
+use Mojolicious::Lite -signatures;
+
+use OpenTelemetry::SDK;
+plugin 'OpenTelemetry';
+
+get '/roll' => sub ($c) {
+  $c->render( json => int 1 + rand 6 );
+};
+
+app->start;

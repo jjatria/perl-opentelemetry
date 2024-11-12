@@ -1,0 +1,198 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Guides::Quickstart - Get telemetry from your app in less than 5 minutes!
+
+=head1 DESCRIPTION
+
+This page will show you how to get started with L<OpenTelemetry> in Perl.
+
+You will learn how you can instrument a simple application, in such a way that
+L<traces|https://opentelemetry.io/docs/concepts/signals/traces> are emitted
+to the console.
+
+=head1 EXAMPLE APPLICATION
+
+The following example uses a basic L<Mojolicious> application. If you are not
+using Mojolicious, that's OK — you can use OpenTelemetry Perl with other web
+frameworks as well, such as Dancer2 and Plack. For a complete list of
+libraries for supported frameworks, see the
+L<registry|https://opentelemetry.io/ecosystem/registry/?component=instrumentation&language=perl>.
+
+For more examples, including the code described below, see
+our other L<examples|https://github.com/jjatria/perl-opentelemetry/tree/main/examples>.
+
+=head2 Dependencies
+
+To begin, install Mojolicious:
+
+    cpanm Mojolicious
+
+=head2 Create the application
+
+Create a new "lite" application called C<Dice>. You can also use a full
+application, but this should be enough to illustrate the process:
+
+    mojo generate lite_app Dice
+
+Open the newly generated C<Dice> file with your preferred editor and update
+it with the following code:
+
+    #!/usr/bin/env perl
+    use Mojolicious::Lite -signatures;
+
+    get '/roll' => sub ($c) {
+      $c->render( json => int 1 + rand 6 );
+    };
+
+    app->start;
+
+Run the application with the following command and open
+L<http://localhost:3000/roll> in your web browser to ensure it is working.
+
+    ./Dice daemon
+
+If everything works fine you should see a number between 1 and 6 returned to
+you. You can now stop the application and instrument it using OpenTelemetry.
+
+=head2 Instrumentation
+
+Install the L<OpenTelemetry::SDK> and L<Mojolicious::Plugin::OpenTelemetry>
+packages:
+
+    cpanm OpenTelemetry::SDK Mojolicious::Plugin::OpenTelemetry
+
+OpenTelemetry should be initialised as early as possible. If loading the
+SDK with the C<use> keyword, this will guarantee that configuration takes
+place during the C<BEGIN> phase, which happens before your application
+starts up.
+
+Modify your application to load the SDK and enable the Mojolicious
+integration plugin:
+
+    #!/usr/bin/env perl
+    use Mojolicious::Lite -signatures;
+
+    use OpenTelemetry::SDK;
+    plugin 'OpenTelemetry';
+
+    get '/roll' => sub ($c) {
+      $c->render( json => int 1 + rand 6 );
+    };
+
+    app->start;
+
+=head2 Run the instrumented app
+
+You can now run your instrumented app and have it print to the console for
+now:
+
+    OTEL_TRACES_EXPORTER=console ./Dice daemon
+
+Open L<http://localhost:3000/roll> in your web browser and reload the page a
+few times. You should see the spans printed in the console, such as the
+following (pretty printed here for clarity):
+
+    {
+        'attributes' => {
+            'client.address' => '127.0.0.1',
+            'client.port' => '33940',
+            'http.request.method' => 'GET',
+            'http.response.status_code' => 200,
+            'http.route' => '/roll',
+            'network.protocol.version' => '1.1',
+            'server.address' => 'localhost',
+            'server.port' => '3000',
+            'url.path' => '/roll',
+            'user_agent.original' => 'curl/7.81.0'
+        },
+        'dropped_attributes' => 0,
+        'dropped_events' => 0,
+        'dropped_links' => 0,
+        'end_timestamp' => '1731063350.62094',
+        'events' => [],
+        'instrumentation_scope' => {
+            'name' => 'Dice',
+            'version' => ''
+        },
+        'kind' => 2,
+        'links' => [],
+        'name' => 'GET /roll',
+        'parent_span_id' => '0000000000000000',
+        'resource' => {
+            'process.command' => './Dice',
+            'process.command_args' => [
+                'daemon'
+            ],
+            'process.executable.name' => 'perl',
+            'process.executable.path' => '/home/user/.perl/perls/perl-5.40.0/bin/perl',
+            'process.pid' => 2035718,
+            'process.runtime.name' => 'perl',
+            'process.runtime.version' => 'v5.40.0',
+            'telemetry.sdk.language' => 'perl',
+            'telemetry.sdk.name' => 'opentelemetry',
+            'telemetry.sdk.version' => '0.024'
+        },
+        'span_id' => '7363cd7eb6b4adb0',
+        'start_timestamp' => '1731063350.62022',
+        'status' => {
+            'code' => 0,
+            'description' => ''
+        },
+        'trace_flags' => 1,
+        'trace_id' => '84dd369e4961f076a6c437a16a1e6107',
+        'trace_state' => ''
+    }
+
+=head2 What next?
+
+Adding tracing to a single service is a great first step. OpenTelemetry
+provides a few more features that will allow you gain even deeper insights!
+
+=over
+
+=item *
+
+L<OpenTelemetry::Guides::Exporters|Exporters> allow you to export your
+data to a preferred backend.
+
+=item *
+
+L<Context propagation|OpenTelemetry::Guides::Instrumentation/Context Propagation>
+is perhaps one of the most powerful concepts in OpenTelemetry because it will
+upgrade your single service trace into a I<distributed trace>, which makes it
+possible for OpenTelemetry vendors to visualise a request from end-to-end
+across process and network boundaries.
+
+=item *
+
+L<Span events|OpenTelemetry::Guides::Instrumentation/Add Span Events> allow
+you to add a human-readable message on a span that represents "something
+happening" during its lifetime.
+
+=item *
+
+L<OpenTelemetry::Guides::Instrumentation> will give provide you the ability
+to enrich your traces with domain specific data.
+
+=item *
+
+L<The OpenTelemetry Demo|https://opentelemetry.io/docs/demo> provides a full working system of
+services spanning several languages that showcases the versatility of
+OpenTelemetry. The fork at L<https://github.com/jjatria/opentelemetry-demo/tree/perl>
+includes a Perl port of the L<Email Service|https://opentelemetry.io/docs/demo/services/email>.
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This document is copyright (c) 2024 by José Joaquín Atria.
+
+It is based on the original OpenTelemetry documentation for Ruby which is
+(c) OpenTelemetry Authors and available at
+L<https://opentelemetry.io/docs/languages/ruby>. It has been modified to
+fit the Perl implementation.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.

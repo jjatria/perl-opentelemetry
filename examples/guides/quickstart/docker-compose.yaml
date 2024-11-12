@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+    volumes:
+    - .:/app
+    command:
+    - ./Dice
+    - daemon
+    - -l
+    - http://*:3000
+    environment:
+      OTEL_TRACES_EXPORTER: console
+    ports:
+    - 3000:3000

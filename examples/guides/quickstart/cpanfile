@@ -1,0 +1,4 @@
+requires 'Mojolicious';
+requires 'Mojolicious::Plugin::OpenTelemetry';
+requires 'OpenTelemetry';
+requires 'OpenTelemetry::SDK';

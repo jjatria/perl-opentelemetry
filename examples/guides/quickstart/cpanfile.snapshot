@@ -1,0 +1,867 @@
+# carton snapshot format: version 1.0
+DISTRIBUTIONS
+  Bytes-Random-Secure-0.29
+    pathname: D/DA/DAVIDO/Bytes-Random-Secure-0.29.tar.gz
+    provides:
+      Bytes::Random::Secure 0.29
+    requirements:
+      Carp 0
+      Crypt::Random::Seed 0
+      ExtUtils::MakeMaker 6.56
+      MIME::Base64 0
+      MIME::QuotedPrint 3.03
+      Math::Random::ISAAC 0
+      Scalar::Util 1.21
+      Test::More 0.98
+      perl 5.006000
+  Class-Inspector-1.36
+    pathname: P/PL/PLICEASE/Class-Inspector-1.36.tar.gz
+    provides:
+      Class::Inspector 1.36
+      Class::Inspector::Functions 1.36
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Spec 0.80
+      base 0
+      perl 5.008
+  Class-Method-Modifiers-2.15
+    pathname: E/ET/ETHER/Class-Method-Modifiers-2.15.tar.gz
+    provides:
+      Class::Method::Modifiers 2.15
+    requirements:
+      B 0
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      base 0
+      perl 5.006
+      strict 0
+      warnings 0
+  Crypt-Random-Seed-0.03
+    pathname: D/DA/DANAJ/Crypt-Random-Seed-0.03.tar.gz
+    provides:
+      Crypt::Random::Seed 0.03
+    requirements:
+      Carp 0
+      Crypt::Random::TESHA2 0
+      Exporter 5.562
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      Test::More 0.45
+      base 0
+      constant 0
+      perl 5.006002
+  Crypt-Random-TESHA2-0.01
+    pathname: D/DA/DANAJ/Crypt-Random-TESHA2-0.01.tar.gz
+    provides:
+      Crypt::Random::TESHA2 0.01
+      Crypt::Random::TESHA2::Config 0.01
+    requirements:
+      Carp 0
+      Digest::SHA 5.22
+      Exporter 5.562
+      ExtUtils::MakeMaker 0
+      Test::More 0.45
+      Time::HiRes 1.9711
+      base 0
+      perl 5.006002
+  Crypt-URandom-0.40
+    pathname: D/DD/DDICK/Crypt-URandom-0.40.tar.gz
+    provides:
+      Crypt::URandom 0.40
+    requirements:
+      Carp 0
+      English 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      FileHandle 0
+      constant 0
+      perl 5.006
+  Exporter-Tiny-1.006002
+    pathname: T/TO/TOBYINK/Exporter-Tiny-1.006002.tar.gz
+    provides:
+      Exporter::Shiny 1.006002
+      Exporter::Tiny 1.006002
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      perl 5.006001
+  ExtUtils-CChecker-0.12
+    pathname: P/PE/PEVANS/ExtUtils-CChecker-0.12.tar.gz
+    provides:
+      ExtUtils::CChecker 0.12
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4004
+      perl 5.014
+  ExtUtils-Config-0.010
+    pathname: L/LE/LEONT/ExtUtils-Config-0.010.tar.gz
+    provides:
+      ExtUtils::Config 0.010
+      ExtUtils::Config::MakeMaker 0.010
+    requirements:
+      Data::Dumper 0
+      ExtUtils::MakeMaker 0
+      ExtUtils::MakeMaker::Config 0
+      perl 5.006
+      strict 0
+      warnings 0
+  ExtUtils-Helpers-0.028
+    pathname: L/LE/LEONT/ExtUtils-Helpers-0.028.tar.gz
+    provides:
+      ExtUtils::Helpers 0.028
+      ExtUtils::Helpers::Unix 0.028
+      ExtUtils::Helpers::VMS 0.028
+      ExtUtils::Helpers::Windows 0.028
+    requirements:
+      Carp 0
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Copy 0
+      File::Spec::Functions 0
+      Text::ParseWords 3.24
+      strict 0
+      warnings 0
+  ExtUtils-InstallPaths-0.014
+    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.014.tar.gz
+    provides:
+      ExtUtils::InstallPaths 0.014
+    requirements:
+      Carp 0
+      ExtUtils::Config 0.009
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      perl 5.008
+      strict 0
+      warnings 0
+  Feature-Compat-Defer-0.02
+    pathname: P/PE/PEVANS/Feature-Compat-Defer-0.02.tar.gz
+    provides:
+      Feature::Compat::Defer 0.02
+    requirements:
+      Module::Build 0.4004
+      perl 5.014
+  Feature-Compat-Try-0.05
+    pathname: P/PE/PEVANS/Feature-Compat-Try-0.05.tar.gz
+    provides:
+      Feature::Compat::Try 0.05
+    requirements:
+      Module::Build 0.4004
+      perl 5.014
+  File-ShareDir-1.118
+    pathname: R/RE/REHSACK/File-ShareDir-1.118.tar.gz
+    provides:
+      File::ShareDir 1.118
+    requirements:
+      Carp 0
+      Class::Inspector 1.12
+      ExtUtils::MakeMaker 0
+      File::ShareDir::Install 0.13
+      File::Spec 0.80
+      perl 5.008001
+      warnings 0
+  File-ShareDir-Install-0.14
+    pathname: E/ET/ETHER/File-ShareDir-Install-0.14.tar.gz
+    provides:
+      File::ShareDir::Install 0.14
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      IO::Dir 0
+      perl 5.006
+      strict 0
+      warnings 0
+  Future-0.51
+    pathname: P/PE/PEVANS/Future-0.51.tar.gz
+    provides:
+      Future 0.51
+      Future::Exception 0.51
+      Future::Mutex 0.51
+      Future::PP 0.51
+      Future::Utils 0.51
+      Test::Future 0.51
+      Test::Future::Deferred 0.51
+    requirements:
+      Carp 1.25
+      List::Util 1.29
+      Module::Build 0.4004
+      Test::Builder::Module 0
+      Time::HiRes 0
+      perl 5.014
+  Future-AsyncAwait-0.69
+    pathname: P/PE/PEVANS/Future-AsyncAwait-0.69.tar.gz
+    provides:
+      Future::AsyncAwait 0.69
+      Future::AsyncAwait::Awaitable 0.69
+      Future::AsyncAwait::ExtensionBuilder 0.69
+      Test::Future::AsyncAwait::Awaitable 0.69
+    requirements:
+      ExtUtils::CBuilder 0
+      File::ShareDir 1.00
+      Future 0.50
+      Module::Build 0.4004
+      XS::Parse::Keyword 0.13
+      XS::Parse::Keyword::Builder 0.13
+      XS::Parse::Sublike 0.24
+      XS::Parse::Sublike::Builder 0.24
+      perl 5.016
+  IO-Async-0.803
+    pathname: P/PE/PEVANS/IO-Async-0.803.tar.gz
+    provides:
+      Future::IO::Impl::IOAsync 0.803
+      IO::Async 0.803
+      IO::Async::Channel 0.803
+      IO::Async::Debug 0.803
+      IO::Async::File 0.803
+      IO::Async::FileStream 0.803
+      IO::Async::Function 0.803
+      IO::Async::Future 0.803
+      IO::Async::Handle 0.803
+      IO::Async::Internals::ChildManager 0.803
+      IO::Async::Internals::FunctionWorker 0.803
+      IO::Async::Listener 0.803
+      IO::Async::Loop 0.803
+      IO::Async::Loop::Poll 0.803
+      IO::Async::Loop::Select 0.803
+      IO::Async::LoopTests 0.803
+      IO::Async::Metrics 0.803
+      IO::Async::Notifier 0.803
+      IO::Async::OS 0.803
+      IO::Async::OS::MSWin32 0.803
+      IO::Async::OS::cygwin 0.803
+      IO::Async::OS::linux 0.803
+      IO::Async::PID 0.803
+      IO::Async::Process 0.803
+      IO::Async::Protocol 0.803
+      IO::Async::Protocol::LineStream 0.803
+      IO::Async::Protocol::Stream 0.803
+      IO::Async::Resolver 0.803
+      IO::Async::Routine 0.803
+      IO::Async::Signal 0.803
+      IO::Async::Socket 0.803
+      IO::Async::Stream 0.803
+      IO::Async::Test 0.803
+      IO::Async::Timer 0.803
+      IO::Async::Timer::Absolute 0.803
+      IO::Async::Timer::Countdown 0.803
+      IO::Async::Timer::Periodic 0.803
+    requirements:
+      Exporter 5.57
+      File::stat 0
+      Future 0.44
+      Future::Utils 0.18
+      IO::Poll 0
+      List::Util 0
+      Module::Build 0.4004
+      Socket 2.007
+      Storable 0
+      Struct::Dumb 0
+      Time::HiRes 0
+      perl 5.014
+  Log-Any-1.717
+    pathname: P/PR/PREACTION/Log-Any-1.717.tar.gz
+    provides:
+      Log::Any 1.717
+      Log::Any::Adapter 1.717
+      Log::Any::Adapter::Base 1.717
+      Log::Any::Adapter::Capture 1.717
+      Log::Any::Adapter::File 1.717
+      Log::Any::Adapter::Multiplex 1.717
+      Log::Any::Adapter::Null 1.717
+      Log::Any::Adapter::Stderr 1.717
+      Log::Any::Adapter::Stdout 1.717
+      Log::Any::Adapter::Syslog 1.717
+      Log::Any::Adapter::Test 1.717
+      Log::Any::Adapter::Util 1.717
+      Log::Any::Manager 1.717
+      Log::Any::Proxy 1.717
+      Log::Any::Proxy::Null 1.717
+      Log::Any::Proxy::Test 1.717
+      Log::Any::Proxy::WithStackTrace 1.717
+      Log::Any::Test 1.717
+    requirements:
+      ExtUtils::MakeMaker 0
+  MIME-Base32-1.303
+    pathname: R/RE/REHSACK/MIME-Base32-1.303.tar.gz
+    provides:
+      MIME::Base32 1.303
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.008001
+      utf8 0
+  Math-Random-ISAAC-1.004
+    pathname: J/JA/JAWNSY/Math-Random-ISAAC-1.004.tar.gz
+    provides:
+      Math::Random::ISAAC 1.004
+      Math::Random::ISAAC::PP 1.004
+    requirements:
+      ExtUtils::MakeMaker 6.31
+      Test::More 0.62
+      Test::NoWarnings 0.084
+  Metrics-Any-0.10
+    pathname: P/PE/PEVANS/Metrics-Any-0.10.tar.gz
+    provides:
+      Metrics::Any 0.10
+      Metrics::Any::Adapter 0.10
+      Metrics::Any::Adapter::File 0.10
+      Metrics::Any::Adapter::Null 0.10
+      Metrics::Any::Adapter::Stderr 0.10
+      Metrics::Any::Adapter::Tee 0.10
+      Metrics::Any::Adapter::Test 0.10
+      Metrics::Any::AdapterBase::Stored 0.10
+      Metrics::Any::Collector 0.10
+    requirements:
+      List::Util 1.29
+      Module::Build 0.4004
+      perl 5.014
+  Module-Build-0.4234
+    pathname: L/LE/LEONT/Module-Build-0.4234.tar.gz
+    provides:
+      Module::Build 0.4234
+      Module::Build::Base 0.4234
+      Module::Build::Compat 0.4234
+      Module::Build::Config 0.4234
+      Module::Build::Cookbook 0.4234
+      Module::Build::Dumper 0.4234
+      Module::Build::Notes 0.4234
+      Module::Build::PPMMaker 0.4234
+      Module::Build::Platform::Default 0.4234
+      Module::Build::Platform::MacOS 0.4234
+      Module::Build::Platform::Unix 0.4234
+      Module::Build::Platform::VMS 0.4234
+      Module::Build::Platform::VOS 0.4234
+      Module::Build::Platform::Windows 0.4234
+      Module::Build::Platform::aix 0.4234
+      Module::Build::Platform::cygwin 0.4234
+      Module::Build::Platform::darwin 0.4234
+      Module::Build::Platform::os2 0.4234
+      Module::Build::PodParser 0.4234
+    requirements:
+      CPAN::Meta 2.142060
+      Cwd 0
+      Data::Dumper 0
+      ExtUtils::CBuilder 0.27
+      ExtUtils::Install 0
+      ExtUtils::Manifest 0
+      ExtUtils::Mkbootstrap 0
+      ExtUtils::ParseXS 2.21
+      File::Basename 0
+      File::Compare 0
+      File::Copy 0
+      File::Find 0
+      File::Path 0
+      File::Spec 0.82
+      Getopt::Long 0
+      Module::Metadata 1.000002
+      Perl::OSType 1
+      TAP::Harness 3.29
+      Text::Abbrev 0
+      Text::ParseWords 0
+      perl 5.006001
+      version 0.87
+  Module-Build-Tiny-0.051
+    pathname: L/LE/LEONT/Module-Build-Tiny-0.051.tar.gz
+    provides:
+      Module::Build::Tiny 0.051
+    requirements:
+      CPAN::Meta 0
+      DynaLoader 0
+      Exporter 5.57
+      ExtUtils::CBuilder 0
+      ExtUtils::Config 0.003
+      ExtUtils::Helpers 0.020
+      ExtUtils::Install 0
+      ExtUtils::InstallPaths 0.002
+      ExtUtils::ParseXS 0
+      File::Basename 0
+      File::Find 0
+      File::Path 0
+      File::Spec::Functions 0
+      Getopt::Long 2.36
+      JSON::PP 2
+      Pod::Man 0
+      TAP::Harness::Env 0
+      perl 5.006
+      strict 0
+      warnings 0
+  Module-Pluggable-6.2
+    pathname: S/SI/SIMONW/Module-Pluggable-6.2.tar.gz
+    provides:
+      Devel::InnerPackage 0.4
+      Module::Pluggable 6.2
+      Module::Pluggable::Object 5.2
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Find 0
+      File::Spec 3.00
+      File::Spec::Functions 0
+      Scalar::Util 0
+      if 0
+      perl 5.006
+      strict 0
+  Module-Runtime-0.016
+    pathname: Z/ZE/ZEFRAM/Module-Runtime-0.016.tar.gz
+    provides:
+      Module::Runtime 0.016
+    requirements:
+      Module::Build 0
+      Test::More 0.41
+      perl 5.006
+      strict 0
+      warnings 0
+  Mojolicious-9.38
+    pathname: S/SR/SRI/Mojolicious-9.38.tar.gz
+    provides:
+      Mojo undef
+      Mojo::Asset undef
+      Mojo::Asset::File undef
+      Mojo::Asset::Memory undef
+      Mojo::Base undef
+      Mojo::BaseUtil undef
+      Mojo::ByteStream undef
+      Mojo::Cache undef
+      Mojo::Collection undef
+      Mojo::Content undef
+      Mojo::Content::MultiPart undef
+      Mojo::Content::Single undef
+      Mojo::Cookie undef
+      Mojo::Cookie::Request undef
+      Mojo::Cookie::Response undef
+      Mojo::DOM undef
+      Mojo::DOM::CSS undef
+      Mojo::DOM::HTML undef
+      Mojo::Date undef
+      Mojo::DynamicMethods undef
+      Mojo::EventEmitter undef
+      Mojo::Exception undef
+      Mojo::File undef
+      Mojo::Headers undef
+      Mojo::HelloWorld undef
+      Mojo::Home undef
+      Mojo::IOLoop undef
+      Mojo::IOLoop::Client undef
+      Mojo::IOLoop::Server undef
+      Mojo::IOLoop::Stream undef
+      Mojo::IOLoop::Subprocess undef
+      Mojo::IOLoop::TLS undef
+      Mojo::JSON undef
+      Mojo::JSON::Pointer undef
+      Mojo::Loader undef
+      Mojo::Log undef
+      Mojo::Message undef
+      Mojo::Message::Request undef
+      Mojo::Message::Response undef
+      Mojo::Parameters undef
+      Mojo::Path undef
+      Mojo::Promise undef
+      Mojo::Reactor undef
+      Mojo::Reactor::EV undef
+      Mojo::Reactor::Poll undef
+      Mojo::Server undef
+      Mojo::Server::CGI undef
+      Mojo::Server::Daemon undef
+      Mojo::Server::Hypnotoad undef
+      Mojo::Server::Morbo undef
+      Mojo::Server::Morbo::Backend undef
+      Mojo::Server::Morbo::Backend::Poll undef
+      Mojo::Server::PSGI undef
+      Mojo::Server::Prefork undef
+      Mojo::Template undef
+      Mojo::Transaction undef
+      Mojo::Transaction::HTTP undef
+      Mojo::Transaction::WebSocket undef
+      Mojo::URL undef
+      Mojo::Upload undef
+      Mojo::UserAgent undef
+      Mojo::UserAgent::CookieJar undef
+      Mojo::UserAgent::Proxy undef
+      Mojo::UserAgent::Server undef
+      Mojo::UserAgent::Transactor undef
+      Mojo::Util undef
+      Mojo::WebSocket undef
+      Mojolicious 9.38
+      Mojolicious::Command undef
+      Mojolicious::Command::Author::cpanify undef
+      Mojolicious::Command::Author::generate undef
+      Mojolicious::Command::Author::generate::app undef
+      Mojolicious::Command::Author::generate::dockerfile undef
+      Mojolicious::Command::Author::generate::lite_app undef
+      Mojolicious::Command::Author::generate::makefile undef
+      Mojolicious::Command::Author::generate::plugin undef
+      Mojolicious::Command::Author::inflate undef
+      Mojolicious::Command::cgi undef
+      Mojolicious::Command::daemon undef
+      Mojolicious::Command::eval undef
+      Mojolicious::Command::get undef
+      Mojolicious::Command::prefork undef
+      Mojolicious::Command::psgi undef
+      Mojolicious::Command::routes undef
+      Mojolicious::Command::version undef
+      Mojolicious::Commands undef
+      Mojolicious::Controller undef
+      Mojolicious::Lite undef
+      Mojolicious::Plugin undef
+      Mojolicious::Plugin::Config undef
+      Mojolicious::Plugin::DefaultHelpers undef
+      Mojolicious::Plugin::EPLRenderer undef
+      Mojolicious::Plugin::EPRenderer undef
+      Mojolicious::Plugin::HeaderCondition undef
+      Mojolicious::Plugin::JSONConfig undef
+      Mojolicious::Plugin::Mount undef
+      Mojolicious::Plugin::NotYAMLConfig undef
+      Mojolicious::Plugin::TagHelpers undef
+      Mojolicious::Plugins undef
+      Mojolicious::Renderer undef
+      Mojolicious::Routes undef
+      Mojolicious::Routes::Match undef
+      Mojolicious::Routes::Pattern undef
+      Mojolicious::Routes::Route undef
+      Mojolicious::Sessions undef
+      Mojolicious::Static undef
+      Mojolicious::Types undef
+      Mojolicious::Validator undef
+      Mojolicious::Validator::Validation undef
+      Test::Mojo undef
+      ojo undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      IO::Socket::IP 0.37
+      Sub::Util 1.41
+      perl 5.016
+  Mojolicious-Plugin-OpenTelemetry-0.003
+    pathname: J/JJ/JJATRIA/Mojolicious-Plugin-OpenTelemetry-0.003.tar.gz
+    provides:
+      Mojolicious::Plugin::OpenTelemetry 0.003
+    requirements:
+      Feature::Compat::Try 0
+      Module::Build::Tiny 0.034
+      Mojolicious 0
+      OpenTelemetry 0.019
+      Syntax::Keyword::Dynamically 0
+      perl 5.013010
+  Mutex-1.011
+    pathname: M/MA/MARIOROY/Mutex-1.011.tar.gz
+    provides:
+      Mutex 1.011
+      Mutex::Channel 1.011
+      Mutex::Flock 1.011
+      Mutex::Util 1.011
+    requirements:
+      Carp 0
+      Errno 0
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      IO::Handle 0
+      Socket 0
+      base 0
+      perl 5.008001
+      strict 0
+      warnings 0
+  Object-Pad-0.814
+    pathname: P/PE/PEVANS/Object-Pad-0.814.tar.gz
+    provides:
+      Object::Pad 0.814
+      Object::Pad::ExtensionBuilder 0.814
+      Object::Pad::MOP::Class 0.814
+      Object::Pad::MOP::Field 0.814
+      Object::Pad::MOP::FieldAttr 0.814
+      Object::Pad::MOP::Method 0.814
+      Object::Pad::MetaFunctions 0.814
+    requirements:
+      ExtUtils::CBuilder 0
+      File::ShareDir 1.00
+      Module::Build 0.4004
+      XS::Parse::Keyword 0.46
+      XS::Parse::Keyword::Builder 0.46
+      XS::Parse::Sublike 0.25
+      XS::Parse::Sublike::Builder 0.25
+      perl 5.018
+  OpenTelemetry-0.025
+    pathname: J/JJ/JJATRIA/OpenTelemetry-0.025.tar.gz
+    provides:
+      Log::Any::Adapter::OpenTelemetry 0.025
+      OpenTelemetry 0.025
+      OpenTelemetry::AttributeMap 0.025
+      OpenTelemetry::Attributes 0.025
+      OpenTelemetry::Baggage 0.025
+      OpenTelemetry::Baggage::Builder 0.025
+      OpenTelemetry::Baggage::Entry 0.025
+      OpenTelemetry::Constants 0.025
+      OpenTelemetry::Context 0.025
+      OpenTelemetry::Context::Key 0.025
+      OpenTelemetry::Exporter 0.025
+      OpenTelemetry::Integration 0.025
+      OpenTelemetry::Integration::DBI 0.025
+      OpenTelemetry::Integration::HTTP::Tiny 0.025
+      OpenTelemetry::Integration::LWP::UserAgent 0.025
+      OpenTelemetry::Logs::LogRecord::Processor 0.025
+      OpenTelemetry::Logs::Logger 0.025
+      OpenTelemetry::Logs::LoggerProvider 0.025
+      OpenTelemetry::Processor 0.025
+      OpenTelemetry::Propagator 0.025
+      OpenTelemetry::Propagator::Baggage 0.025
+      OpenTelemetry::Propagator::Composite 0.025
+      OpenTelemetry::Propagator::None 0.025
+      OpenTelemetry::Propagator::TextMap 0.025
+      OpenTelemetry::Propagator::TraceContext 0.025
+      OpenTelemetry::Propagator::TraceContext::TraceFlags 0.025
+      OpenTelemetry::Propagator::TraceContext::TraceParent 0.025
+      OpenTelemetry::Propagator::TraceContext::TraceState 0.025
+      OpenTelemetry::Trace 0.025
+      OpenTelemetry::Trace::Event 0.025
+      OpenTelemetry::Trace::Link 0.025
+      OpenTelemetry::Trace::Span 0.025
+      OpenTelemetry::Trace::Span::Processor 0.025
+      OpenTelemetry::Trace::Span::Status 0.025
+      OpenTelemetry::Trace::SpanContext 0.025
+      OpenTelemetry::Trace::Tracer 0.025
+      OpenTelemetry::Trace::TracerProvider 0.025
+      OpenTelemetry::X 0.025
+      OpenTelemetry::X::Invalid 0.025
+      OpenTelemetry::X::Parsing 0.025
+      OpenTelemetry::X::Unsupported 0.025
+    requirements:
+      Bytes::Random::Secure 0
+      Class::Method::Modifiers 0
+      Exporter::Tiny 0.044
+      Feature::Compat::Defer 0
+      Feature::Compat::Try 0.05
+      Future 0.26
+      Future::AsyncAwait 0
+      List::Util 1.45
+      Log::Any 0
+      Module::Build::Tiny 0.034
+      Module::Pluggable 0
+      Mutex 0
+      Object::Pad 0.74
+      Ref::Util 0
+      Sentinel 0
+      Syntax::Keyword::Dynamically 0
+      URI 0
+      URL::Encode 0
+      UUID::URandom 0
+      X::Tiny 0
+      perl v5.32.0
+  OpenTelemetry-SDK-0.024
+    pathname: J/JJ/JJATRIA/OpenTelemetry-SDK-0.024.tar.gz
+    provides:
+      OpenTelemetry::SDK 0.024
+      OpenTelemetry::SDK::Exporter::Console 0.024
+      OpenTelemetry::SDK::InstrumentationScope 0.024
+      OpenTelemetry::SDK::Resource 0.024
+      OpenTelemetry::SDK::Trace::Sampler 0.024
+      OpenTelemetry::SDK::Trace::Sampler::AlwaysOff 0.024
+      OpenTelemetry::SDK::Trace::Sampler::AlwaysOn 0.024
+      OpenTelemetry::SDK::Trace::Sampler::ParentBased 0.024
+      OpenTelemetry::SDK::Trace::Sampler::Result 0.024
+      OpenTelemetry::SDK::Trace::Sampler::TraceIDRatioBased 0.024
+      OpenTelemetry::SDK::Trace::Span 0.024
+      OpenTelemetry::SDK::Trace::Span::Processor::Batch 0.024
+      OpenTelemetry::SDK::Trace::Span::Processor::Simple 0.024
+      OpenTelemetry::SDK::Trace::Span::Readable 0.024
+      OpenTelemetry::SDK::Trace::SpanLimits 0.024
+      OpenTelemetry::SDK::Trace::Tracer 0.024
+      OpenTelemetry::SDK::Trace::TracerProvider 0.024
+    requirements:
+      Feature::Compat::Try 0
+      Future::AsyncAwait 0.38
+      IO::Async::Loop 0
+      Metrics::Any 0
+      Module::Build::Tiny 0.034
+      Mutex 0
+      Object::Pad 0.74
+      OpenTelemetry 0.010
+      bigfloat 0.65
+      perl v5.32.0
+  Ref-Util-0.204
+    pathname: A/AR/ARC/Ref-Util-0.204.tar.gz
+    provides:
+      Ref::Util 0.204
+      Ref::Util::PP 0.204
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      Ref::Util::XS 0
+      Text::ParseWords 0
+      perl 5.006
+  Ref-Util-XS-0.117
+    pathname: X/XS/XSAWYERX/Ref-Util-XS-0.117.tar.gz
+    provides:
+      Ref::Util::XS 0.117
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      XSLoader 0
+      perl 5.006
+  Sentinel-0.07
+    pathname: P/PE/PEVANS/Sentinel-0.07.tar.gz
+    provides:
+      Sentinel 0.07
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4004
+      perl 5.014
+  Struct-Dumb-0.14
+    pathname: P/PE/PEVANS/Struct-Dumb-0.14.tar.gz
+    provides:
+      Struct::Dumb 0.14
+    requirements:
+      Module::Build 0.4004
+  Syntax-Keyword-Dynamically-0.14
+    pathname: P/PE/PEVANS/Syntax-Keyword-Dynamically-0.14.tar.gz
+    provides:
+      Syntax::Keyword::Dynamically 0.14
+    requirements:
+      ExtUtils::CBuilder 0
+      Future::AsyncAwait::ExtensionBuilder 0.60
+      Module::Build 0.4004
+      XS::Parse::Keyword 0.13
+      XS::Parse::Keyword::Builder 0.13
+      perl 5.014
+  Test-NoWarnings-1.06
+    pathname: H/HA/HAARG/Test-NoWarnings-1.06.tar.gz
+    provides:
+      Test::NoWarnings 1.06
+      Test::NoWarnings::Warning 1.06
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::Builder 0.86
+      perl 5.006
+  URI-5.31
+    pathname: O/OA/OALDERS/URI-5.31.tar.gz
+    provides:
+      URI 5.31
+      URI::Escape 5.31
+      URI::Heuristic 5.31
+      URI::IRI 5.31
+      URI::QueryParam 5.31
+      URI::Split 5.31
+      URI::URL 5.31
+      URI::WithBase 5.31
+      URI::data 5.31
+      URI::file 5.31
+      URI::file::Base 5.31
+      URI::file::FAT 5.31
+      URI::file::Mac 5.31
+      URI::file::OS2 5.31
+      URI::file::QNX 5.31
+      URI::file::Unix 5.31
+      URI::file::Win32 5.31
+      URI::ftp 5.31
+      URI::ftpes 5.31
+      URI::ftps 5.31
+      URI::geo 5.31
+      URI::gopher 5.31
+      URI::http 5.31
+      URI::https 5.31
+      URI::icap 5.31
+      URI::icaps 5.31
+      URI::irc 5.31
+      URI::ircs 5.31
+      URI::ldap 5.31
+      URI::ldapi 5.31
+      URI::ldaps 5.31
+      URI::mailto 5.31
+      URI::mms 5.31
+      URI::news 5.31
+      URI::nntp 5.31
+      URI::nntps 5.31
+      URI::otpauth 5.31
+      URI::pop 5.31
+      URI::rlogin 5.31
+      URI::rsync 5.31
+      URI::rtsp 5.31
+      URI::rtspu 5.31
+      URI::scp 5.31
+      URI::sftp 5.31
+      URI::sip 5.31
+      URI::sips 5.31
+      URI::snews 5.31
+      URI::ssh 5.31
+      URI::telnet 5.31
+      URI::tn3270 5.31
+      URI::urn 5.31
+      URI::urn::isbn 5.31
+      URI::urn::oid 5.31
+    requirements:
+      Carp 0
+      Cwd 0
+      Data::Dumper 0
+      Encode 0
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      MIME::Base32 0
+      MIME::Base64 2
+      Net::Domain 0
+      Scalar::Util 0
+      constant 0
+      integer 0
+      overload 0
+      parent 0
+      perl 5.008001
+      strict 0
+      utf8 0
+      warnings 0
+  URL-Encode-0.03
+    pathname: C/CH/CHANSEN/URL-Encode-0.03.tar.gz
+    provides:
+      URL::Encode 0.03
+      URL::Encode::PP 0.03
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.59
+      Test::More 0.88
+      XSLoader 0
+      perl 5.008001
+  UUID-URandom-0.001
+    pathname: D/DA/DAGOLDEN/UUID-URandom-0.001.tar.gz
+    provides:
+      UUID::URandom 0.001
+    requirements:
+      Crypt::URandom 0.36
+      Exporter 5.57
+      ExtUtils::MakeMaker 6.17
+      perl 5.008
+      strict 0
+      warnings 0
+  X-Tiny-0.22
+    pathname: F/FE/FELIPE/X-Tiny-0.22.tar.gz
+    provides:
+      X::Tiny 0.22
+      X::Tiny::Base undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Module::Runtime 0
+      overload 0
+      perl 5.010000
+  XS-Parse-Keyword-0.46
+    pathname: P/PE/PEVANS/XS-Parse-Keyword-0.46.tar.gz
+    provides:
+      XS::Parse::Infix 0.46
+      XS::Parse::Infix::Builder 0.46
+      XS::Parse::Keyword 0.46
+      XS::Parse::Keyword::Builder 0.46
+    requirements:
+      ExtUtils::CBuilder 0
+      ExtUtils::CChecker 0.11
+      ExtUtils::ParseXS 3.16
+      File::ShareDir 1.00
+      Module::Build 0.4004
+      perl 5.014
+  XS-Parse-Sublike-0.30
+    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.30.tar.gz
+    provides:
+      Sublike::Extended 0.30
+      XS::Parse::Sublike 0.30
+      XS::Parse::Sublike::Builder 0.30
+    requirements:
+      ExtUtils::CBuilder 0
+      File::ShareDir 1.00
+      Module::Build 0.4004
+      perl 5.016
