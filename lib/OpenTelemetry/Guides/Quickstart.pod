@@ -15,7 +15,7 @@ to the console.
 =head1 EXAMPLE APPLICATION
 
 The following example uses a basic L<Mojolicious> application. If you are not
-using Mojolicious, that's OK — you can use OpenTelemetry Perl with other web
+using Mojolicious, that's OK. You can use OpenTelemetry Perl with other web
 frameworks as well, such as Dancer2 and Plack. For a complete list of
 libraries for supported frameworks, see the
 L<registry|https://opentelemetry.io/ecosystem/registry/?component=instrumentation&language=perl>.
