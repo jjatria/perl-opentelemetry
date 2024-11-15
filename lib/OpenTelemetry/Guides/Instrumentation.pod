@@ -73,7 +73,7 @@ to it.
 =head2 Creating new spans
 
 To create a L<span|https://opentelemetry.io/docs/concepts/signals/traces#spans>,
-you’ll need a L<configured Tracer|/Acquiring a Tracer>.
+you'll need a L<configured Tracer|/Acquiring a Tracer>.
 
 Typically when you create a new span, you'll want it to be the active/current
 span. To do that, use `in_span`:
@@ -88,7 +88,7 @@ span. To do that, use `in_span`:
 
 =head2 Creating nested spans
 
-If you have a distinct sub-operation you’d like to track as a part of another
+If you have a distinct sub-operation you'd like to track as a part of another
 one, you can create nested [spans](/docs/concepts/signals/traces#spans) to
 represent the relationship:
 
