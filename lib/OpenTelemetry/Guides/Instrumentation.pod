@@ -1,0 +1,414 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Guides::Instrumentation - Instrumentation for Perl OpenTelemetry
+
+=head1 DESCRIPTION
+
+This page provides some detail around the generation of telemetry data in your
+code using OpenTelemetry. Telemetry data can primarily be L<traces|/TRACES>,
+L<metrics|/METRICS>, or L<logs|/LOGS>, and they are each detailed in the
+sections below.
+
+If you are interested in instrumenting code on CPAN, there may already be
+instrumentation libraries supporting them, which means you don't need to
+instrument them yourself. For more details on that, please see
+L<OpenTelemetry::Guides::Libraries>.
+
+=head1 SETUP
+
+First, ensure you have the API package installed:
+
+    cpanm OpenTelemetry
+
+=head1 TRACES
+
+=head2 Acquiring a Tracer
+
+To begin L<tracing|https://opentelemetry.io/docs/concepts/signals/traces>, you
+will need to ensure you have an initialised L<Tracer|OpenTelemetry::Trace::Tracer>
+that comes from a L<TracerProvider|OpenTelemetry::Trace::TracerProvider>.
+
+The easiest and most common way to do this is to use the globally-registered
+TracerProvider.
+
+    use OpenTelemetry;
+
+    # You can use this wherever you need to generate traces. Although you
+    # can, there's no need to pass this tracer around: the tracer is cached
+    # internally, so getting one is cheap
+    my $tracer = OpenTelemetry->tracer_provider->tracer($name);
+
+There is also a shortcut that can be exported for convenience:
+
+    use OpenTelemetry 'otel_tracer_provider';
+
+    my $tracer = otel_tracer_provider->tracer($name);
+
+Once you have a L<Tracer|OpenTelemetry::Trace::Tracer> acquired, you can
+manually trace code.
+
+=head2 Get the current span
+
+It's very common to add information to the current
+L<span|https://opentelemetry.io/docs/concepts/signals/traces#spans> somewhere
+within your program. To do so, you can get the current span and add
+L<attributes|https://opentelemetry.io/docs/concepts/signals/traces#attributes>
+to it.
+
+    use OpenTelemetry 'otel_span_from_context';
+
+    sub track_extended_warranty ($warranty) {
+        # Get the current span
+        my $current_span = otel_span_from_context;
+
+        # And add useful stuff to it!
+        $current_span->set_attribute(
+            'com.extended_warranty.id'        => $warranty->id,
+            'com.extended_warranty.timestamp' => $warranty->timestamp,
+        );
+    }
+
+=head2 Creating new spans
+
+To create a L<span|https://opentelemetry.io/docs/concepts/signals/traces#spans>,
+you’ll need a L<configured Tracer|/Acquiring a Tracer>.
+
+Typically when you create a new span, you'll want it to be the active/current
+span. To do that, use `in_span`:
+
+    use OpenTelemetry 'otel_tracer_provider';
+
+    sub do_work {
+        otel_tracer_provider->tracer->in_span( do_work => sub ($span, @) {
+           # do some work that the 'do_work' span tracks!
+        }
+    }
+
+=head2 Creating nested spans
+
+If you have a distinct sub-operation you’d like to track as a part of another
+one, you can create nested [spans](/docs/concepts/signals/traces#spans) to
+represent the relationship:
+
+    use OpenTelemetry 'otel_tracer_provider';
+
+    sub parent_work {
+        otel_tracer_provider->tracer->in_span( parent => sub ($span, @) {
+            # do some work that the 'parent' span tracks!
+
+            child_work();
+
+            # do some more work afterwards
+        }
+    }
+
+    sub child_work {
+        otel_tracer_provider->tracer->in_span( child => sub ($span, @) {
+            # do some work that the 'child' span tracks!
+        }
+    }
+
+In the preceding example, two spans are created - named C<parent> and C<child>
+- with C<child> referencing C<parent> as its parent span. If you view a trace
+with these spans in a trace visualisation tool, C<child> will be nested under
+C<parent>.
+
+=head2 Add attributes to a span
+
+L<Attributes|https://opentelemetry.io/docs/concepts/signals/traces#attributes>
+let you attach key/value pairs to a
+L<span]|https://opentelemetry.io/docs/concepts/signals/traces#spans> so it
+carries more information about the current operation that it's tracking.
+
+You can use L<set_attribute|OpenTelemetry::Trace::Span/set_attribute> to add
+attributes to a span:
+
+    use OpenTelementry 'otel_span_from_context';
+
+    my $current_span = otel_span_from_context;
+
+    # You can add a single attribute
+    $current_span->set_attribute( animals => [qw( elephant tiger )] );
+
+    # Or multiple at the same time
+    $current_span->set_attribute(
+        'my.cool.attribute' => 'a value',
+        'my.first.name'     => 'Oscar'
+    );
+
+You can also add attributes to a span as L<it's being created|/Creating new spans>:
+
+    use OpenTelemetry 'otel_tracer_provider';
+
+    otel_tracer_provider->tracer->in_span(
+        foo => (
+            attributes => {
+                'hello'       => 'world',
+                'some.number' => 1024,
+            }
+        ) => sub {
+            # do stuff with the span
+        }
+    );
+
+Note that sampling decisions happen at the moment of span creation, which
+means any attributes that are added to the span after this (using
+C<set_attribute>) will not be available to the sampler. Because of this, it
+is generally preferable to add attributes during creation.
+
+=head2 Add Span Events
+
+A L<span event|https://opentelemetry.io/docs/concepts/signals/traces#span-events>
+is a human-readable message on a span that represents "something happening"
+during it's lifetime. For example, imagine a function that requires exclusive
+access to a resource that is under a lock. An event could be created at two
+points - once, when we try to gain access to the resource, and another when we
+acquire the lock.
+
+    use Mutex;
+    use OpenTelementry 'otel_span_from_context';
+
+    my $span  = otel_span_from_context;
+    my $mutex = Mutex->new;
+    ...
+
+    $span->add_event( name => 'Acquiring lock' );
+
+    $mutex->enter( sub {
+        $span->add_event( name => 'Got lock, doing work' );
+        ...
+        $span->add_event( name => 'Releasing lock' );
+    });
+
+A useful characteristic of events is that their timestamps are displayed as
+offsets from the beginning of the span, allowing you to easily see how much
+time elapsed between them.
+
+Events can also have attributes of their own:
+
+    use OpenTelemetry;
+
+    ...
+
+    $span->add_event(
+        name => 'Cancelled wait due to external signal',
+        attributes => {
+            pid    => $$,
+            signal => 'SIGHUP',
+        },
+    );
+
+=head2 Add Span Links
+
+A L<span|https://opentelemetry.io/docs/concepts/signals/traces#spans> can be
+created with zero or more
+L<span links|https://opentelemetry.io/docs/concepts/signals/traces#span-links>
+that causally link it to another span. A link needs a
+L<span context|https://opentelemetry.io/docs/concepts/signals/traces#span-context>
+to be created.
+
+    use OpenTelemetry qw( otel_span_from_context otel_tracer_provider );
+
+    my $span_to_link_to = otel_span_from_context;
+
+    my $link = OpenTelemetry::Trace::Link.new(span_to_link_from.context)
+
+    otel_tracer_provider->tracer->in_span(
+        new_span => (
+            links => [
+                {
+                    context    => $span_to_link_to->context,
+                    attributes => { ... }, # links can also have attributes
+                },
+            ],
+        ) => sub {
+            # do something that 'new_span' tracks
+
+            # The link in 'new_span' causally associated it with the span it's
+            # linked from, but it is not necessarily a child span.
+        },
+    );
+
+Span Links are often used to link together different traces that are related in
+some way, such as a long-running task that calls into sub-tasks asynchronously.
+
+=head2 Set span status
+
+A L<Status|https://opentelemetry.io/docs/concepts/signals/traces/#span-status>
+can be set on a L<Span|https://opentelemetry.io/docs/concepts/signals/traces/#spans>,
+typically used to specify that a Span has not completed successfully
+- C<Error>. By default, all spans are C<Unset>, which means a span completed
+without error. The C<Ok> status is reserved for when you need to explicitly
+mark a span as successful rather than stick with the default of C<Unset>
+(i.e., "without error").
+
+The status can be set at any time before the span is finished.
+
+    use OpenTelemetry -all;
+
+    my $current_span = otel_span_from_context;
+
+    try {
+        1/0; # something that obviously fails
+    }
+    catch ($e) {
+        $current_span->set_status(
+            SPAN_STATUS_ERROR, 'error message here!'
+        );
+    }
+
+=head2 Record exceptions in spans
+
+It can be a good idea to record exceptions when they happen. It's recommended to
+do this in conjunction with L<setting span status|/Set span status>.
+
+    use OpenTelemetry -all;
+
+    my $current_span = otel_span_from_context;
+
+    try {
+        1/0; # something that obviously fails
+    }
+    catch ($e) {
+        $current_span->set_status(
+            SPAN_STATUS_ERROR, 'error message here!'
+        );
+
+        $current_span->record_exception($e);
+    }
+
+Recording an exception creates a
+L<Span Event|https://opentelemetry.io/docs/concepts/signals/traces#span-events>
+on the current span and tries to attach a stack trace as one of its attributes.
+
+Exceptions can also be recorded with additional attributes:
+
+    $current_span->record_exception(
+        $exception,
+        attributes => {
+            'some.attribute' => 12,
+        }
+    );
+
+=head2 Context Propagation
+
+L<Distributed Tracing|https://opentelemetry.io/docs/concepts/glossary/#distributed-tracing>
+tracks the progression of a single request, called a
+L<Trace|https://opentelemetry.io/docs/concepts/glossary/#trace>, as it is
+handled by
+L<Services|https://opentelemetry.io/docs/concepts/glossary/#service>
+that make up an
+L<Application|https://opentelemetry.io/docs/concepts/glossary/#application>.
+A Distributed Trace transverses process, network and security boundaries.
+
+This requires I<context propagation>, a mechanism where identifiers for a
+trace are sent to remote processes.
+
+The Perl OpenTelemetry SDK will take care of context propagation as long as
+your service is leveraging auto-instrumented libraries.
+
+In order to propagate trace context over the wire, a propagator must be
+registered with the OpenTelemetry SDK. The
+L<W3C TraceContext|https://www.w3.org/TR/trace-context/> and
+L<Baggage|https://www.w3.org/TR/baggage/>
+propagators are configured by default. Operators may override this value by
+setting the C<OTEL_PROPAGATORS> environment variable to a comma separated list
+of propagators. See L<OpenTelemetry::SDK/OTEL_PROPAGATORS> for details about
+supported values.
+
+Note that at the moment the only implemented propagators are
+L<OpenTelemetry::Propagator::Baggage> and
+L<OpenTelemetry::Propagator::TraceContext>.
+
+=head1 METRICS
+
+The metrics API & SDK are currently under development.
+
+=head1 LOGS
+
+Log support in OpenTelemetry follows a slightly different paradigm than that
+for Metrics and Traces. Specifically, instead of relying on an entirely new
+OpenTelemetry API, the focus is to integrate with the existing logging
+frameworks and solutions. This approach is described in more detail in the
+L<OpenTelemetry Logs specification|https://opentelemetry.io/docs/specs/otel/logs>.
+
+The API described below is therefore not intended to be used directly by users
+wishing to emit log records, but by adapter libraries that integrate it into
+existing loggers. For details on those libraries, see L</Integrations with
+existing loggers>.
+
+=head2 Acquiring a Logger
+
+Like with traces, in order to emit log records you need to first get a
+L<Logger|OpenTelemetry::Logs::Logger>, and for that you need to use a
+L<LoggerProvider|OpenTelemetry::Logs::LoggerProvider>:
+
+    use OpenTelemetry;
+
+    # You can use this wherever you need to emit log records. Although you
+    # can, there's no need to pass this logger around: the logger is cached
+    # internally, so getting one is cheap
+    my $logger = OpenTelemetry->logger_provider->logger($name);
+
+There is also a shortcut that can be exported for convenience:
+
+    use OpenTelemetry 'otel_logger_provider';
+
+    my $logger = otel_logger_provider->logger($name);
+
+With it, you can manually emit records.
+
+=head2 Emitting a record
+
+The L<Logger|OpenTelemetry::Logs::Logger> can emit log records:
+
+    use OpenTelemetry 'otel_logger_provider';
+    use OpenTelemetry::Constants -log;
+
+    my $logger = otel_logger_provider->logger($name);
+
+    $logger->emit_record(
+        body               => 'Reticulating splines',
+        attributes         => { pid => $$ },
+        severity_number    => 0  + LOG_LEVEL_WARNING,
+        severity_text      => '' . LOG_LEVEL_WARNING,
+        timestamp          => time,
+    );
+
+=head2 Integrations with existing loggers
+
+=head3 Log::Any
+
+If your application is already using L<Log::Any>, you can use
+L<Log::Any::Adapter::OpenTelemetry> to send logs to an OpenTelemetry-capable
+receiver. You can use it as you would any other adapter:
+
+    use Log::Any '$log';
+    use Log::Any::Adapter 'OpenTelemetry';
+
+    $log->warn('All work and no play makes Jack a dull boy');
+
+=head1 WHAT NEXT?
+
+This document described the process of I<generating> telemetry data. Now that
+you have the data, you'll also want to configure an appropriate exporter to
+send that data to one or more telemetry backends. For that, see
+L<OpenTelemetry::Guides::Exporters>.
+
+Or you may be interested in enabling instrumentation libraries for code that
+is on CPAN. You'll find more details about that in
+L<OpenTelemetry::Guides::Libraries>.
+
+=head1 COPYRIGHT AND LICENSE
+
+This document is copyright (c) 2024 by José Joaquín Atria.
+
+It is based on the original OpenTelemetry documentation for Ruby which is
+(c) OpenTelemetry Authors and available at
+L<https://opentelemetry.io/docs/languages/ruby>. It has been modified to
+fit the Perl implementation.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.
