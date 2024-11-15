@@ -2,9 +2,11 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
-    * Added OpenTelemetry::Guides::Quickstart and its related
-      examples. More practical documentation will also occupy
-      that namespace.
+    * Added some practical documentation in the OpenTelemetry::Guides
+      namespace, based on the language documentation by the OpenTelemtry
+      authors. Examples used in those documents has also been added to
+      the examples directory in this distribution. In the future, this
+      namespace will expand to include more guides.
 
 0.025     2024-10-20 13:50:19+01:00 Europe/London
 
