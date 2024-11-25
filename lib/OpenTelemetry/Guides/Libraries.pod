@@ -1,0 +1,91 @@
+=encoding UTF-8
+
+=head1 NAME
+
+OpenTelemetry::Guides::Libraries - Using OpenTelemetry instrumentation libraries
+
+=head1 DESCRIPTION
+
+This page provides some detail around instrumentation libraries, and how to
+use them. These are distributions that modify modules from other CPAN
+distributions so they generate telemetry data.
+
+If you are interested in instrumenting your application code so it generates
+telemetry data, see instead L<OpenTelemetry::Guides::Instrumentation>. For
+details on how to send that data to other backends for processing, refer to
+L<OpenTelemetry::Guides::Exporters>.
+
+=head1 INSTRUMENTATION LIBRARIES
+
+When you develop an app, you might use third-party libraries and frameworks
+to accelerate your work. If you then instrument your app using OpenTelemetry,
+you might want to avoid spending additional time to manually add traces, logs,
+and metrics to the third-party libraries and frameworks you use.
+
+Many libraries and frameworks already support OpenTelemetry or are supported
+through OpenTelemetry instrumentation, so that they can generate telemetry
+you can export to an observability back end.
+
+If you are instrumenting an app or service that uses third-party libraries or
+frameworks, follow these instructions to learn how to use natively
+instrumented libraries and instrumentation libraries for your dependencies.
+
+=head2 Use instrumentation libraries
+
+If you are using a library does not generate its own OpenTelemetry data, you
+can use
+L<instrumentation libraries|https://opentelemetry.io/docs/specs/otel/glossary/#instrumentation-library>
+to make it generate telemetry. For example, if you are using L<HTTP::Tiny> and
+enable L<OpenTelemetry::Integration::HTTP::Tiny>, any uses of that library
+either from code you write or code you've imported, will automatically
+generate telemetry data for any HTTP request.
+
+The easiest way to manage integration libraries is with the
+L<OpenTelemetry::Integration> module, which allows you to load, configure, and
+unload any integrations you have available in your system.
+
+The simplest way to use it is to enable an integrations by name:
+
+    use OpenTelemetry::Integration qw( HTTP::Tiny DBI );
+
+Alternatively, you can use it to load all of the available integrations for
+any library you have already loaded:
+
+    use OpenTelemetry::Integration -all;
+
+=head2 Configuring specific instrumentation libraries
+
+When you load an instrumentation by name using L<OpenTelemetry::Integration>,
+you can pass an optional hash reference with options for that instrumentation
+(refer to that instrumentation's documentation to see what options they
+support, if any):
+
+    use OpenTelemetry::Integration (
+        HTTP::Tiny => {
+            request_headers  => ['x-spline-reticulation'],
+            response_headers => ['x-reticulated'],
+        },
+        'DBI',
+    );
+
+=head1 WHAT NEXT?
+
+This document described how to generate telemetry data for code you imported
+into your application. If you want to instrument your own code, you should look
+at L<OpenTelemetry::Guides::Instrumentation>.
+
+Once you have the data, you'll also want to configure an appropriate exporter to
+send that data to one or more telemetry backends. For that, see
+L<OpenTelemetry::Guides::Exporters>.
+
+=head1 COPYRIGHT AND LICENSE
+
+This document is copyright (c) 2024 by José Joaquín Atria.
+
+It is based on the original OpenTelemetry documentation for Ruby which is
+(c) OpenTelemetry Authors and available at
+L<https://opentelemetry.io/docs/languages/ruby>. It has been modified to
+fit the Perl implementation.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.
