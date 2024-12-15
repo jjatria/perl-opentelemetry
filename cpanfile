@@ -8,6 +8,7 @@ requires 'Future::AsyncAwait';
 requires 'List::Util', '1.45'; # For uniq
 requires 'Log::Any';
 requires 'Module::Pluggable';
+requires 'Module::Runtime';
 requires 'Mutex';
 requires 'Object::Pad', '0.74'; # For //= field initialisers
 requires 'Ref::Util';
@@ -19,7 +20,7 @@ requires 'UUID::URandom';
 requires 'X::Tiny';
 
 on test => sub {
-    requires 'Class::Inspector'; # For OpenTelemetry::Integration test
+    requires 'Class::Inspector'; # For OpenTelemetry::Instrumentation test
     requires 'Metrics::Any';
     requires 'Test2::V0';
 };

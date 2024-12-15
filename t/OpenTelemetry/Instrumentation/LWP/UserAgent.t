@@ -1,9 +1,17 @@
 #!/usr/bin/env perl
 
-use Test2::V0 -target => 'OpenTelemetry::Integration::HTTP::Tiny';
+use Test2::Require::Module 'LWP::UserAgent';
+use Test2::Require::Module 'HTTP::Response';
+use Test2::Require::Module 'HTTP::Headers';
+use Test2::Require::Module 'HTTP::Request::Common';
+
+use Test2::V0 -target => 'OpenTelemetry::Instrumentation::LWP::UserAgent';
 use experimental 'signatures';
 
-use HTTP::Tiny;
+use HTTP::Headers;
+use HTTP::Request::Common;
+use HTTP::Response;
+use LWP::UserAgent;
 use OpenTelemetry::Baggage;
 use OpenTelemetry::Constants -span;
 use OpenTelemetry::Context;
@@ -34,6 +42,11 @@ my $otel = mock OpenTelemetry => override => [
                             end => sub ( $self ) {
                                 $self->{otel}{ended} = 1;
                             },
+                            record_exception => sub ( $self, $exception ) {
+                                push @{ $self->{otel}{events} //= [] }, {
+                                    exception => $exception,
+                                };
+                            },
                         ];
                     },
                 ];
@@ -42,7 +55,7 @@ my $otel = mock OpenTelemetry => override => [
     },
 ];
 
-is [ CLASS->dependencies ], ['HTTP::Tiny'], 'Reports dependencies';
+is [ CLASS->dependencies ], ['LWP::UserAgent'], 'Reports dependencies';
 
 subtest 'No headers' => sub {
     CLASS->uninstall;
@@ -54,26 +67,27 @@ subtest 'No headers' => sub {
         = OpenTelemetry::Propagator::Baggage->new,
 
     my $request;
-    my $http = mock 'HTTP::Tiny' => override => [
-        request => sub ( $self, $method, $url, $options = undef ) {
-            $request = $options // {};
-            {
-                success => 'TEST',
-                status  => 123,
-                headers => {
+    my $http = mock 'LWP::UserAgent' => override => [
+        simple_request => sub ( $self, $req, @ ) {
+            $request = $req;
+            HTTP::Response->new(
+                204,
+                'This is a test',
+                HTTP::Headers->new(
                     'content-length' => 5,
-                },
-            };
+                ),
+            );
         },
     ];
 
-    ok +OpenTelemetry::Integration::HTTP::Tiny->install,
-        'Installed modifier';
+    ok +CLASS->install, 'Installed modifier';
 
-    my $ua = HTTP::Tiny->new;
+    my $ua =LWP::UserAgent->new;
 
-    like $ua->post('http://user:password@fa.ke', { content => '0123456789' } ),
-        { success => 'TEST' },
+    is $ua->request( POST 'http://user:password@fa.ke', Content => '0123456789' ),
+        object {
+            call message => 'This is a test';
+        },
         'Can request';
 
     is $span->{otel}, {
@@ -83,7 +97,7 @@ subtest 'No headers' => sub {
         attributes => {
             'http.request.body.size'    => 10,
             'http.request.method'       => 'POST',
-            'http.response.status_code' => 123,
+            'http.response.status_code' => 204,
             'http.response.body.size'   => 5,
             'network.protocol.name'     => 'http',
             'network.protocol.version'  => '1.1',
@@ -95,70 +109,22 @@ subtest 'No headers' => sub {
         },
     }, 'Captured basic data';
 
-    is $request, {
-        content => '0123456789',
-        headers => { baggage => 'foo=123;META' },
-    }, 'Injected propagation data';
-};
-
-subtest 'Request size' => sub {
-    CLASS->uninstall;
-
-    my $http = mock 'HTTP::Tiny' => override => [
-        request => sub ( $self, $method, $url, $options = undef ) {
-            {
-                success => 'TEST',
-                status  => 123,
-            };
-        },
-    ];
-
-    ok +OpenTelemetry::Integration::HTTP::Tiny->install,
-        'Installed modifier';
-
-    my $ua = HTTP::Tiny->new;
-
-    subtest 'No content' => sub {
-        like $ua->get('http://fa.ke'),
-            { success => 'TEST' },
-            'Can request';
-
-        like $span->{otel}, { attributes => { 'http.request.body.size' => DNE } },
-            'Did not capture content size';
-    };
-
-    subtest 'Content is callback' => sub {
-        like $ua->get('http://fa.ke', { content => sub { '0123456789' } } ),
-            { success => 'TEST' },
-            'Can request';
-
-        like $span->{otel}, { attributes => { 'http.request.body.size' => DNE } },
-            'Did not capture content size';
-    };
-
-    subtest 'Content is false' => sub {
-        like $ua->get('http://fa.ke', { content => 0 } ),
-            { success => 'TEST' },
-            'Can request';
-
-        like $span->{otel}, { attributes => { 'http.request.body.size' => 1 } },
-            'Captured content size';
-    };
+    is $request->header('baggage'), 'foo=123;META',
+        'Injected propagation data';
 };
 
 subtest 'HTTP error' => sub {
     CLASS->uninstall;
 
-    my $http = mock 'HTTP::Tiny' => override => [
-        request => sub { { success => '', status => 404 } },
+    my $http = mock 'LWP::UserAgent' => override => [
+        simple_request => sub { HTTP::Response->new( 404, 'TEST' ) },
     ];
 
-    ok +OpenTelemetry::Integration::HTTP::Tiny->install,
-        'Installed modifier';
+    ok +CLASS->install, 'Installed modifier';
 
-    my $ua = HTTP::Tiny->new;
+    my $ua = LWP::UserAgent->new;
 
-    like $ua->get('http://fa.ke/404'), { success => F },
+    like $ua->get('http://fa.ke/404'), object { call message => 'TEST' },
         'Can request';
 
     is $span->{otel}, {
@@ -186,29 +152,27 @@ subtest 'HTTP error' => sub {
 subtest 'Internal error' => sub {
     CLASS->uninstall;
 
-    my $http = mock 'HTTP::Tiny' => override => [
-        request => sub { { success => '', status => 599, content => 'boom' } },
+    my $http = mock 'LWP::UserAgent' => override => [
+        simple_request => sub { die 'boom' },
     ];
 
-    ok +OpenTelemetry::Integration::HTTP::Tiny->install,
-        'Installed modifier';
+    ok +CLASS->install, 'Installed modifier';
 
-    my $ua = HTTP::Tiny->new;
+    my $ua = LWP::UserAgent->new;
 
-    like $ua->get('http://fa.ke/599'), { success => F },
-        'Can request';
+    like dies { $ua->get('http://fa.ke/599') }, qr/^boom/,
+        'Exception is not caught';
 
     is $span->{otel}, {
         status     => {
             code        => SPAN_STATUS_ERROR,
-            description => 'boom',
+            description => match qr/^boom/,
         },
         ended      => T,
         kind       => SPAN_KIND_CLIENT,
         name       => 'GET',
         attributes => {
             'http.request.method'       => 'GET',
-            'http.response.status_code' => 599,
             'network.protocol.name'     => 'http',
             'network.protocol.version'  => '1.1',
             'network.transport'         => 'tcp',
@@ -217,53 +181,49 @@ subtest 'Internal error' => sub {
             'url.full'                  => 'http://fa.ke/599',
             'user_agent.original'       => $ua->agent,
         },
+        events => [
+            { exception => match qr/^boom/ },
+        ],
     }, 'Captured basic data';
 };
 
 subtest 'Requested headers' => sub {
     CLASS->uninstall;
 
-    my $http = mock 'HTTP::Tiny' => override => [
-        request => sub {
-            {
-                success => 'TEST',
-                status  => 123,
-                headers => {
+    my $http = mock 'LWP::UserAgent' => override => [
+        simple_request => sub {
+            HTTP::Response->new(
+                204,
+                'TEST',
+                HTTP::Headers->new(
                     Response_1 => 1,
                     ReSponse_2 => [ 2, 'two' ],
                     response_3 => 3,
-                },
-                redirects => [
-                    {},
-                    {},
-                    {},
-                ]
-            }
+                ),
+            );
         },
     ];
 
-    ok +OpenTelemetry::Integration::HTTP::Tiny->install(
-        request_headers  => [qw( default_1 default-2 request-2 request_3 )],
+    ok +CLASS->install(
+        request_headers  => [qw( default-1 default-2 request_2 request_3 )],
         response_headers => [qw( response_1 response_[0-9] )],
     ) => 'Installed modifier';
 
-    my $ua = HTTP::Tiny->new(
-        default_headers => {
+    my $ua = LWP::UserAgent->new(
+        default_headers => HTTP::Headers->new(
             'Default-1' => [ 1, 'one' ],
             'DeFault-2' => 2,
             'DEFAULT-3' => 3,
-        },
+        ),
     );
 
     like $ua->get(
-        'http://fa.ke/path?query=1#fragment' => {
-            headers => {
-                Request_1 => 1,
-                ReQuest_2 => 2,
-                request_3 => [ 3, 'three' ],
-            },
-        },
-    ) => { success => 'TEST' } => 'Can request';
+        'http://fa.ke/path?query=1#fragment' => (
+            Request_1 => 1,
+            ReQuest_2 => 2,
+            request_3 => [ 3, 'three' ],
+        ),
+    ) => object { call message => 'TEST' } => 'Can request';
 
     is $span->{otel}, {
         ended      => T,
@@ -275,9 +235,8 @@ subtest 'Requested headers' => sub {
             'http.request.header.request_2'   => [ 2 ],
             'http.request.header.request_3'   => [ 3, 'three' ],
             'http.request.method'             => 'GET',
-            'http.resend_count'               => 3,
             'http.response.header.response_1' => [ 1 ],
-            'http.response.status_code'       => 123,
+            'http.response.status_code'       => 204,
             'network.protocol.name'           => 'http',
             'network.protocol.version'        => '1.1',
             'network.transport'               => 'tcp',

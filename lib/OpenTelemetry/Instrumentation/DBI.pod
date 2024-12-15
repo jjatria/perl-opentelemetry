@@ -2,17 +2,17 @@
 
 =head1 NAME
 
-OpenTelemetry::Integration::DBI - OpenTelemetry integration for DBI
+OpenTelemetry::Instrumentation::DBI - OpenTelemetry instrumentation for DBI
 
 =head1 SYNOPSIS
 
-    use OpenTelemetry::Integration 'DBI';
+    use OpenTelemetry::Instrumentation 'DBI';
     my $dbh = DBI->connect(...);
     my $result = $dbh->selectall_hashref($statement);
 
 =head1 DESCRIPTION
 
-See L<OpenTelemetry::Integration> for more details.
+See L<OpenTelemetry::Instrumentation> for more details.
 
 Since this is a core module, it's included in the L<OpenTelemetry> core
 distribution as well.

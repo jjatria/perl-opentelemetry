@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-OpenTelemetry::Integration::LWP::UserAgent - OpenTelemetry integration for LWP::UserAgent
+OpenTelemetry::Instrumentation::LWP::UserAgent - OpenTelemetry instrumentation for LWP::UserAgent
 
 =head1 SYNOPSIS
 
-    use OpenTelemetry::Integration 'LWP::UserAgent';
+    use OpenTelemetry::Instrumentation 'LWP::UserAgent';
 
-    # Or pass options to the integration
-    use OpenTelemetry::Integration 'LWP::UserAgent' => {
+    # Or pass options to the instrumentation
+    use OpenTelemetry::Instrumentation 'LWP::UserAgent' => {
         request_headers  => [ ... ],
         response_headers => [ ... ],
     };
@@ -19,10 +19,10 @@ OpenTelemetry::Integration::LWP::UserAgent - OpenTelemetry integration for LWP::
 =head1 DESCRIPTION
 
 This module can be used to instrument code using L<LWP::UserAgent> to generate
-trace data using the L<OpenTelemetry> API. See L<OpenTelemetry::Integration>
+trace data using the L<OpenTelemetry> API. See L<OpenTelemetry::Instrumentation>
 for more details.
 
-This is one of the core integrations shipped with the base L<OpenTelemetry>
+This is one of the core instrumentations shipped with the base L<OpenTelemetry>
 distribution.
 
 The instrumentation provided by this module wraps around
@@ -127,7 +127,7 @@ Set to the value returned by L<LWP::UserAgent/agent>.
 
 =head2 request_headers
 
-This integration can be configured to store specific request headers with
+This instrumentation can be configured to store specific request headers with
 every generated span. In order to do so, set this key to an array reference
 with the name of the request headers you want as strings.
 
@@ -141,7 +141,7 @@ L<the semantic convention documentation|https://github.com/open-telemetry/semant
 
 =head2 response_headers
 
-This integration can be configured to store specific response headers with
+This instrumentation can be configured to store specific response headers with
 every generated span. In order to do so, set this key to an array reference
 with the name of the response headers you want as strings.
 
@@ -165,9 +165,9 @@ L<the semantic convention documentation|https://github.com/open-telemetry/semant
 
 =item L<OpenTelemetry>
 
-=item L<OpenTelemetry::Integration>
+=item L<OpenTelemetry::Instrumentation>
 
-=item L<OpenTelemetry::Integration::HTTP::Tiny>
+=item L<OpenTelemetry::Instrumentation::HTTP::Tiny>
 
 =item L<URI>
 

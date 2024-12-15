@@ -69,7 +69,7 @@ place during the C<BEGIN> phase, which happens before your application
 starts up.
 
 Modify your application to load the SDK and enable the Mojolicious
-integration plugin:
+instrumentation plugin:
 
     #!/usr/bin/env perl
     use Mojolicious::Lite -signatures;

@@ -27,7 +27,7 @@ This module contains functions that are useful throughout the OpenTelemetry
 codebase, and help provide a consistent way to handle certain processes.
 
 They will most likely only be of interest to authors of OpenTelemetry
-libraries and integrations.
+libraries and instrumentation.
 
 =head1 FUNCTIONS
 

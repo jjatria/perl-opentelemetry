@@ -1,5 +1,5 @@
-package OpenTelemetry::Integration::HTTP::Tiny;
-# ABSTRACT: OpenTelemetry integration for HTTP::Tiny
+package OpenTelemetry::Instrumentation::HTTP::Tiny;
+# ABSTRACT: OpenTelemetry instrumentation for HTTP::Tiny
 
 our $VERSION = '0.026';
 
@@ -18,7 +18,7 @@ use OpenTelemetry;
 use Ref::Util qw( is_arrayref is_coderef );
 use Syntax::Keyword::Dynamically;
 
-use parent 'OpenTelemetry::Integration';
+use parent 'OpenTelemetry::Instrumentation';
 
 sub dependencies { 'HTTP::Tiny' }
 

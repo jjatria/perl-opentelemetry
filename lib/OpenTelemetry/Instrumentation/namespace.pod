@@ -2,13 +2,13 @@
 
 =head1 NAME
 
-OpenTelemetry::Integration::namespace - OpenTelemetry integration for a namespace
+OpenTelemetry::Instrumentation::namespace - OpenTelemetry instrumentation for a namespace
 
 =head1 SYNOPSIS
 
-    # This integration is EXPERIMENTAL
+    # This instrumentation is EXPERIMENTAL
 
-    use OpenTelemetry::Integration 'namespace' => {
+    use OpenTelemetry::Instrumentation 'namespace' => {
         include => {
             paths => [(
                 lib/Local
@@ -28,7 +28,7 @@ OpenTelemetry::Integration::namespace - OpenTelemetry integration for a namespac
 
 =head1 DESCRIPTION
 
-See L<OpenTelemetry::Integration> for more details.
+See L<OpenTelemetry::Instrumentation> for more details.
 
 Since this is a core module, it's included in the L<OpenTelemetry> core
 distribution as well.
@@ -69,7 +69,7 @@ except the code loaded from C<lib/Local/Secret>, relevant for monitoring.
 Perl allows multiple packages to be defined inside the same file, so that
 importing one file makes all of those packages available, without the
 subpackages ever being explicitly loaded. Under normal circumstances, this
-makes these packages invisible to the approach in this integration.
+makes these packages invisible to the approach in this instrumentation.
 
 This key makes it possible to specify packages that should be wrapped for
 monitoring whenever we detect another packages being loaded.

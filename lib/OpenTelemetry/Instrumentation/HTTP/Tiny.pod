@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-OpenTelemetry::Integration::HTTP::Tiny - OpenTelemetry integration for HTTP::Tiny
+OpenTelemetry::Instrumentation::HTTP::Tiny - OpenTelemetry instrumentation for HTTP::Tiny
 
 =head1 SYNOPSIS
 
-    use OpenTelemetry::Integration 'HTTP::Tiny';
+    use OpenTelemetry::Instrumentation 'HTTP::Tiny';
 
-    # Or pass options to the integration
-    use OpenTelemetry::Integration 'HTTP::Tiny' => {
+    # Or pass options to the instrumentation
+    use OpenTelemetry::Instrumentation 'HTTP::Tiny' => {
         request_headers  => [ ... ],
         response_headers => [ ... ],
     };
@@ -19,10 +19,10 @@ OpenTelemetry::Integration::HTTP::Tiny - OpenTelemetry integration for HTTP::Tin
 =head1 DESCRIPTION
 
 This module can be used to instrument code using L<HTTP::Tiny> to generate
-trace data using the L<OpenTelemetry> API. See L<OpenTelemetry::Integration>
+trace data using the L<OpenTelemetry> API. See L<OpenTelemetry::Instrumentation>
 for more details.
 
-This is one of the core integrations shipped with the base L<OpenTelemetry>
+This is one of the core instrumentations shipped with the base L<OpenTelemetry>
 distribution.
 
 The instrumentation provided by this module wraps around L<HTTP::Tiny/request>
@@ -124,7 +124,7 @@ Set to the value returned by L<HTTP::Tiny/agent>.
 
 =head2 request_headers
 
-This integration can be configured to store specific request headers with
+This instrumentation can be configured to store specific request headers with
 every generated span (see L</http.request.header>). In order to do so, set
 this key to an array reference with the name of the request headers you want
 as strings.
@@ -135,7 +135,7 @@ be matched literally.
 
 =head2 response_headers
 
-This integration can be configured to store specific response headers with
+This instrumentation can be configured to store specific response headers with
 every generated span (see L</http.response.header>). In order to do so, set
 this key to an array reference with the name of the response headers you want
 as strings.
@@ -152,9 +152,9 @@ be matched literally.
 
 =item L<OpenTelemetry>
 
-=item L<OpenTelemetry::Integration>
+=item L<OpenTelemetry::Instrumentation>
 
-=item L<OpenTelemetry::Integration::LWP::UserAgent>
+=item L<OpenTelemetry::Instrumentation::LWP::UserAgent>
 
 =item L<URI>
 

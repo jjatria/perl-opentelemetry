@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 use Test2::Require::Module 'DBI';
-use Test2::V0 -target => 'OpenTelemetry::Integration::DBI';
+use Test2::V0 -target => 'OpenTelemetry::Instrumentation::DBI';
 use experimental 'signatures';
 
 use OpenTelemetry;
@@ -54,8 +54,8 @@ subtest Mem => sub {
 
     my $db = DBI->connect('dbi:Mem:(RaiseError=1):port=1234;');
 
-    is +OpenTelemetry::Integration::DBI->install, T, 'Installed modifier';
-    is +OpenTelemetry::Integration::DBI->install, F, 'Installed modifier once';
+    is +CLASS->install, T, 'Installed modifier';
+    is +CLASS->install, F, 'Installed modifier once';
 
     like warnings { $db->do('SELECT id FROM foo') } => [], 'Captured warnings';
 

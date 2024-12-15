@@ -36,31 +36,31 @@ If you are using a library does not generate its own OpenTelemetry data, you
 can use
 L<instrumentation libraries|https://opentelemetry.io/docs/specs/otel/glossary/#instrumentation-library>
 to make it generate telemetry. For example, if you are using L<HTTP::Tiny> and
-enable L<OpenTelemetry::Integration::HTTP::Tiny>, any uses of that library
+enable L<OpenTelemetry::Instrumentation::HTTP::Tiny>, any uses of that library
 either from code you write or code you've imported, will automatically
 generate telemetry data for any HTTP request.
 
-The easiest way to manage integration libraries is with the
-L<OpenTelemetry::Integration> module, which allows you to load, configure, and
-unload any integrations you have available in your system.
+The easiest way to manage instrumentation libraries is with the
+L<OpenTelemetry::Instrumentation> module, which allows you to load, configure,
+and unload any instrumentation you have available in your system.
 
-The simplest way to use it is to enable an integrations by name:
+The simplest way to use it is to enable an instrumentation by name:
 
-    use OpenTelemetry::Integration qw( HTTP::Tiny DBI );
+    use OpenTelemetry::Instrumentation qw( HTTP::Tiny DBI );
 
-Alternatively, you can use it to load all of the available integrations for
+Alternatively, you can use it to load all of the available instrumentations for
 any library you have already loaded:
 
-    use OpenTelemetry::Integration -all;
+    use OpenTelemetry::Instrumentation -all;
 
 =head2 Configuring specific instrumentation libraries
 
-When you load an instrumentation by name using L<OpenTelemetry::Integration>,
+When you load an instrumentation by name using L<OpenTelemetry::Instrumentation>,
 you can pass an optional hash reference with options for that instrumentation
 (refer to that instrumentation's documentation to see what options they
 support, if any):
 
-    use OpenTelemetry::Integration (
+    use OpenTelemetry::Instrumentation (
         HTTP::Tiny => {
             request_headers  => ['x-spline-reticulation'],
             response_headers => ['x-reticulated'],
