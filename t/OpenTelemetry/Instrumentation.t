@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Test2::V0;
+use Test2::V0 -target => 'OpenTelemetry::Instrumentation';
 use Test2::Tools::OpenTelemetry;
 
 use Class::Inspector;
@@ -9,35 +9,33 @@ use Class::Inspector;
 skip_all 'Module HTTP::Tiny is not installed'
     unless Class::Inspector->installed('HTTP::Tiny');
 
-require OpenTelemetry::Integration;
-
 subtest 'No arguments to import' => sub {
-    no_messages { OpenTelemetry::Integration->import };
-    OpenTelemetry::Integration->unimport;
+    no_messages { CLASS->import };
+    CLASS->unimport;
 };
 
 subtest 'Falsy arguments to import' => sub {
-    no_messages { OpenTelemetry::Integration->import( '', undef ) };
-    OpenTelemetry::Integration->unimport;
+    no_messages { CLASS->import( '', undef ) };
+    CLASS->unimport;
 };
 
 subtest 'Load all plugins' => sub {
-    is messages { OpenTelemetry::Integration->import(':all') } => bag {
+    is messages { CLASS->import(':all') } => bag {
         item [
             trace => 'OpenTelemetry',
-           'Loading OpenTelemetry::Integration::HTTP::Tiny',
+           "Loading ${CLASS}::HTTP::Tiny",
         ];
         item [
             trace => 'OpenTelemetry',
-           'OpenTelemetry::Integration::HTTP::Tiny did not install itself',
+           "${CLASS}::HTTP::Tiny did not install itself",
         ];
         item [
             trace => 'OpenTelemetry',
-           'Loading OpenTelemetry::Integration::DBI',
+           "Loading ${CLASS}::DBI",
         ];
         item [
             trace => 'OpenTelemetry',
-           'OpenTelemetry::Integration::DBI did not install itself',
+           "${CLASS}::DBI did not install itself",
         ];
         etc;
     }, 'Did not install anything because dependencies were not loaded';
@@ -48,40 +46,40 @@ subtest 'Load all plugins' => sub {
     is + Class::Inspector->loaded('DBI'), F,
         'Did not load DBI automatically';
 
-    OpenTelemetry::Integration->unimport;
+    CLASS->unimport;
 };
 
 subtest 'Load a good plugin by name' => sub {
     is messages {
-        OpenTelemetry::Integration->import('HTTP::Tiny');
+        CLASS->import('HTTP::Tiny');
     } => [
         [
             trace => 'OpenTelemetry',
-            'Loading OpenTelemetry::Integration::HTTP::Tiny',
+            "Loading ${CLASS}::HTTP::Tiny",
         ],
     ];
 
     is + Class::Inspector->loaded('HTTP::Tiny'), T,
         'Loaded dependency automatically';
 
-    OpenTelemetry::Integration->unimport;
+    CLASS->unimport;
 };
 
 subtest 'Load a missing plugin' => sub {
     is messages {
-        OpenTelemetry::Integration->import('Fake::Does::Not::Exist');
+        CLASS->import('Fake::Does::Not::Exist');
     } => [
         [
             trace => 'OpenTelemetry',
-            'Loading OpenTelemetry::Integration::Fake::Does::Not::Exist',
+            "Loading ${CLASS}::Fake::Does::Not::Exist",
         ],
         [
             warning => 'OpenTelemetry',
-            match qr/^Unable to load OpenTelemetry::Integration::Fake::Does::Not::Exist: Can't locate/,
+            match qr/^Unable to load ${CLASS}::Fake::Does::Not::Exist: Can't locate/,
         ],
     ];
 
-    OpenTelemetry::Integration->unimport;
+    CLASS->unimport;
 };
 
 done_testing;

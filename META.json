@@ -123,20 +123,24 @@
          "file" : "lib/OpenTelemetry/Exporter.pm",
          "version" : "0.025"
       },
+      "OpenTelemetry::Instrumentation" : {
+         "file" : "lib/OpenTelemetry/Instrumentation.pm",
+         "version" : "0.025"
+      },
+      "OpenTelemetry::Instrumentation::DBI" : {
+         "file" : "lib/OpenTelemetry/Instrumentation/DBI.pm",
+         "version" : "0.025"
+      },
+      "OpenTelemetry::Instrumentation::HTTP::Tiny" : {
+         "file" : "lib/OpenTelemetry/Instrumentation/HTTP/Tiny.pm",
+         "version" : "0.025"
+      },
+      "OpenTelemetry::Instrumentation::LWP::UserAgent" : {
+         "file" : "lib/OpenTelemetry/Instrumentation/LWP/UserAgent.pm",
+         "version" : "0.025"
+      },
       "OpenTelemetry::Integration" : {
          "file" : "lib/OpenTelemetry/Integration.pm",
-         "version" : "0.025"
-      },
-      "OpenTelemetry::Integration::DBI" : {
-         "file" : "lib/OpenTelemetry/Integration/DBI.pm",
-         "version" : "0.025"
-      },
-      "OpenTelemetry::Integration::HTTP::Tiny" : {
-         "file" : "lib/OpenTelemetry/Integration/HTTP/Tiny.pm",
-         "version" : "0.025"
-      },
-      "OpenTelemetry::Integration::LWP::UserAgent" : {
-         "file" : "lib/OpenTelemetry/Integration/LWP/UserAgent.pm",
          "version" : "0.025"
       },
       "OpenTelemetry::Logs::LogRecord::Processor" : {

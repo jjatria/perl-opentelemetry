@@ -1,6 +1,6 @@
 package
-    OpenTelemetry::Integration::namespace;
-# ABSTRACT: OpenTelemetry integration for a namespace
+    OpenTelemetry::Instrumentation::namespace;
+# ABSTRACT: OpenTelemetry instrumentation for a namespace
 
 our $VERSION = '0.026';
 
@@ -19,7 +19,7 @@ use Ref::Util 'is_arrayref';
 use Module::Load;
 use Devel::Peek;
 
-use parent 'OpenTelemetry::Integration';
+use parent 'OpenTelemetry::Instrumentation';
 
 use constant {
     IS_TRACE => 0,

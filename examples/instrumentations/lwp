@@ -5,10 +5,10 @@ use warnings;
 use feature 'say';
 
 # This example shows the minimum mount of code needed to generate
-# telemetry data through an integration, in this case using
+# telemetry data through an instrumentation, in this case using
 # LWP::UserAgent.
 
-# While loading the integration is all that is needed to instrument
+# While loading the instrumentation is all that is needed to instrument
 # the client code, in order to see it work we need two more things:
 #
 # 1. Some configured set of propagators, so that we have something
@@ -31,9 +31,9 @@ use OpenTelemetry qw( otel_tracer_provider );
 # headers since we are not going to add any baggage to the context.
 use OpenTelemetry::SDK;
 
-# We load the the integration for LWP::UserAgent, which will automatically
-# import that module for us. This automatic loading only happens if we
-# request the integration by name.
+# We load the the instrumentation for LWP::UserAgent, which will
+# automatically import that module for us. This automatic loading only
+# happens if we request the instrumentation by name.
 use OpenTelemetry::Integration 'LWP::UserAgent';
 
 # By default we will send a request to an echo server, so we can examine

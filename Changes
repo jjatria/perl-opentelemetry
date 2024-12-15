@@ -7,6 +7,10 @@ Revision history for OpenTelemetry
       authors. Examples used in those documents has also been added to
       the examples directory in this distribution. In the future, this
       namespace will expand to include more guides.
+    * Renamed OpenTelemetry::Integration namespace to
+      OpenTelemetry::Instrumentation to be consistent with the names in
+      the specification. The legacy namespace will continue to be
+      supported for now, but new implementations should not use it.
 
 0.025     2024-10-20 13:50:19+01:00 Europe/London
 

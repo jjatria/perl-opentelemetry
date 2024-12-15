@@ -1,5 +1,5 @@
-package OpenTelemetry::Integration::LWP::UserAgent;
-# ABSTRACT: OpenTelemetry integration for LWP::UserAgent
+package OpenTelemetry::Instrumentation::LWP::UserAgent;
+# ABSTRACT: OpenTelemetry instrumentation for LWP::UserAgent
 
 our $VERSION = '0.026';
 
@@ -17,7 +17,7 @@ use OpenTelemetry::Context;
 use OpenTelemetry::Trace;
 use OpenTelemetry;
 
-use parent 'OpenTelemetry::Integration';
+use parent 'OpenTelemetry::Instrumentation';
 
 sub dependencies { 'LWP::UserAgent' }
 

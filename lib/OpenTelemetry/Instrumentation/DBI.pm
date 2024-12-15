@@ -1,5 +1,5 @@
-package OpenTelemetry::Integration::DBI;
-# ABSTRACT: OpenTelemetry integration for DBI
+package OpenTelemetry::Instrumentation::DBI;
+# ABSTRACT: OpenTelemetry instrumentation for DBI
 
 our $VERSION = '0.026';
 
@@ -17,7 +17,7 @@ use OpenTelemetry::Trace;
 use OpenTelemetry;
 use Syntax::Keyword::Dynamically;
 
-use parent 'OpenTelemetry::Integration';
+use parent 'OpenTelemetry::Instrumentation';
 
 sub dependencies { 'DBI' }
 
