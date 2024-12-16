@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Trace::TracerProvider;
 
-our $VERSION = '0.026';
+our $VERSION = '0.027';
 
 class OpenTelemetry::Trace::TracerProvider {
     use OpenTelemetry::Trace::Tracer;

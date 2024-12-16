@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Propagator::Baggage;
 
-our $VERSION = '0.026';
+our $VERSION = '0.027';
 
 class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
     use OpenTelemetry;

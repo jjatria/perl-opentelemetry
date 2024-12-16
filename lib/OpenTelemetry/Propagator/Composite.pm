@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Propagator::Composite;
 
-our $VERSION = '0.026';
+our $VERSION = '0.027';
 
 use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
