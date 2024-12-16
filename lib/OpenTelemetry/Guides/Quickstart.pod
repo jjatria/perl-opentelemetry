@@ -154,7 +154,7 @@ provides a few more features that will allow you gain even deeper insights!
 
 =item *
 
-L<OpenTelemetry::Guides::Exporters|Exporters> allow you to export your
+L<Exporters|OpenTelemetry::Guides::Exporters> allow you to export your
 data to a preferred backend.
 
 =item *
@@ -173,8 +173,8 @@ happening" during its lifetime.
 
 =item *
 
-L<OpenTelemetry::Guides::Instrumentation> will give provide you the ability
-to enrich your traces with domain specific data.
+L<Instrumentations|OpenTelemetry::Guides::Instrumentation> will give you the
+ability to enrich your traces with domain specific data.
 
 =item *
 

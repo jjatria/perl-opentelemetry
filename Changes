@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Fixed some minor nits in the documentation
+
 0.026     2024-12-16 09:02:42+00:00 Europe/London
 
     * Added some practical documentation in the OpenTelemetry::Guides
