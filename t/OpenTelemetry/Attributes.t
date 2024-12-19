@@ -17,7 +17,7 @@ class Local::Test::Writable :does(OpenTelemetry::Attributes) {
     }
 }
 
-is Local::Test->new, object {
+is +Local::Test->new, object {
     call attributes         => {};
     call dropped_attributes => 0;
 }, 'Role provides basic methods';
@@ -31,7 +31,7 @@ $a->attributes->{fake} = 1234;
 
 is $a->attributes->{fake}, U, 'Attributes are immutable';
 
-is Local::Test->new(
+is +Local::Test->new(
     attribute_length_limit => 4,
     attributes => {
         short => 123,
@@ -184,7 +184,7 @@ subtest 'Validation' => sub {
 
     subtest 'Invalid key' => sub {
         is messages {
-            is Local::Test->new( attributes => { '' => 123 } ), object {
+            is +Local::Test->new( attributes => { '' => 123 } ), object {
                 call attributes => { null => 123 };
             }, 'Defaulted empty key';
         } => [
