@@ -3,7 +3,7 @@ package OpenTelemetry;
 
 use strict;
 use warnings;
-use experimental qw( isa signatures );
+use experimental qw( signatures );
 
 our $VERSION = '0.027';
 
@@ -17,6 +17,11 @@ use OpenTelemetry::X;
 use Scalar::Util 'refaddr';
 use Ref::Util 'is_coderef';
 use Sentinel;
+
+use isa qw(
+    OpenTelemetry::Logs::LoggerProvider
+    OpenTelemetry::Trace::TracerProvider
+);
 
 use Log::Any;
 
@@ -45,7 +50,7 @@ sub _generate_otel_logger { \&logger }
     my $set = sub ( $new ) {
         die OpenTelemetry::X->create(
             Invalid => 'Global tracer provider must be a subclass of OpenTelemetry::Trace::TracerProvider, got instead ' . ( ref $new || 'a plain scalar' ),
-        ) unless $new isa OpenTelemetry::Trace::TracerProvider;
+        ) unless isa_OpenTelemetry_Trace_TracerProvider $new;
 
         $lock->enter( sub { $instance = $new });
     };
@@ -77,7 +82,7 @@ sub _generate_otel_logger { \&logger }
     my $set = sub ( $new ) {
         die OpenTelemetry::X->create(
             Invalid => 'Global logger provider must be a subclass of OpenTelemetry::Logs::LoggerProvider, got instead ' . ( ref $new || 'a plain scalar' ),
-        ) unless $new isa OpenTelemetry::Logs::LoggerProvider;
+        ) unless isa_OpenTelemetry_Logs_LoggerProvider $new;
 
         $lock->enter( sub { $instance = $new });
     };

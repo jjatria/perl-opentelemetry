@@ -13,7 +13,7 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
     use OpenTelemetry::Propagator::TextMap;
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
 
-    use experimental 'isa';
+    use isa 'OpenTelemetry::X';
 
     my $KEY              = 'baggage';
     my $MAX_ENTRIES      = 180;
@@ -68,7 +68,7 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
             $setter->( $carrier, $KEY, $encoded ) if $encoded;
         }
         catch($e) {
-            if ( $e isa OpenTelemetry::X ) { $logger->warn($e->get_message) }
+            if ( isa_OpenTelemetry_X $e ) { $logger->warn($e->get_message) }
             else {
                 OpenTelemetry->handle_error(
                     exception => $e,
@@ -102,7 +102,7 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
             $builder->build($context);
         }
         catch($e) {
-            if ( $e isa OpenTelemetry::X ) { $logger->warn($e->get_message) }
+            if ( isa_OpenTelemetry_X $e ) { $logger->warn($e->get_message) }
             else {
                 OpenTelemetry->handle_error(
                     exception => $e,

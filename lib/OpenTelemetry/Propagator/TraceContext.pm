@@ -6,7 +6,7 @@ package OpenTelemetry::Propagator::TraceContext;
 our $VERSION = '0.027';
 
 class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
-    use experimental 'isa';
+    use isa 'OpenTelemetry::X';
 
     use Feature::Compat::Try;
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
@@ -46,7 +46,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
             $setter->( $carrier, $TRACE_STATE_KEY,  $span_context->trace_state->to_string );
         }
         catch($e) {
-            if ( $e isa OpenTelemetry::X ) { $logger->warn($e->get_message) }
+            if ( isa_OpenTelemetry_X $e ) { $logger->warn($e->get_message) }
             else {
                 OpenTelemetry->handle_error(
                     exception => $e,
@@ -89,7 +89,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
             return OpenTelemetry::Trace->context_with_span( $span, $context );
         }
         catch ($e) {
-            if ( $e isa OpenTelemetry::X ) { $logger->warn($e->get_message) }
+            if ( isa_OpenTelemetry_X $e ) { $logger->warn($e->get_message) }
             else {
                 OpenTelemetry->handle_error(
                     exception => $e,

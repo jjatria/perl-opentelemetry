@@ -25,7 +25,8 @@ sub key ( $, $name ) {
 
 class OpenTelemetry::Context {
     use OpenTelemetry::X;
-    use experimental 'isa';
+
+    use isa 'OpenTelemetry::Context::Key';
 
     field $data :param = {};
 
@@ -34,7 +35,7 @@ class OpenTelemetry::Context {
     method get ( $key ) {
         die OpenTelemetry::X->create(
             Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
-        ) unless $key isa OpenTelemetry::Context::Key;
+        ) unless isa_OpenTelemetry_Context_Key $key;
 
         $data->{ $key->string };
     }
@@ -42,7 +43,7 @@ class OpenTelemetry::Context {
     method set ( $key, $value ) {
         die OpenTelemetry::X->create(
             Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
-        ) unless $key isa OpenTelemetry::Context::Key;
+        ) unless isa_OpenTelemetry_Context_Key $key;
 
         OpenTelemetry::Context->new( %$data, $key->string, $value )
     }
@@ -50,7 +51,7 @@ class OpenTelemetry::Context {
     method delete ( $key ) {
         die OpenTelemetry::X->create(
             Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
-        ) unless $key isa OpenTelemetry::Context::Key;
+        ) unless isa_OpenTelemetry_Context_Key $key;
 
         my %copy = %$data;
         delete $copy{$key->string};
@@ -61,8 +62,9 @@ class OpenTelemetry::Context {
 
 # Context management
 {
-    use experimental 'isa';
     use Sentinel;
+
+    use isa 'OpenTelemetry::Context';
 
     my $current = OpenTelemetry::Context->new;
     sub current :lvalue {
@@ -71,7 +73,7 @@ class OpenTelemetry::Context {
             set => sub {
                 die OpenTelemetry::X->create(
                     Invalid => 'Current context must be an instance of OpenTelemetry::Context, received instead ' . ref $_[0],
-                ) unless $_[0] isa OpenTelemetry::Context;
+                ) unless isa_OpenTelemetry_Context $_[0];
 
                 $current = $_[0];
             },

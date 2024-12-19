@@ -6,15 +6,15 @@ package OpenTelemetry::Trace::Link;
 our $VERSION = '0.027';
 
 class OpenTelemetry::Trace::Link :does(OpenTelemetry::Attributes) {
-    use experimental 'isa';
-
     use OpenTelemetry::X;
+
+    use isa 'OpenTelemetry::Trace::SpanContext';
 
     field $context :param :reader;
 
     ADJUST {
         die OpenTelemetry::X->create(
             Invalid => "Required parameter 'context' must be a span context"
-        ) unless $context isa OpenTelemetry::Trace::SpanContext;
+        ) unless isa_OpenTelemetry_Trace_SpanContext $context;
     }
 }
