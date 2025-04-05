@@ -24,13 +24,23 @@ sub key ( $, $name ) {
 }
 
 class OpenTelemetry::Context {
+    use Carp 'carp';
     use OpenTelemetry::X;
 
     use isa 'OpenTelemetry::Context::Key';
 
-    field $data :param = {};
+    field $data;
 
-    sub BUILDARGS ( $class, %args ) { ( data => { %args } ) }
+    sub BUILDARGS ( $class, %args ) {
+        carp 'The OpenTelemetry::Context constructor no longer takes arguments'
+            if %args;
+        return;
+    }
+
+    method $init ( %data ) {
+        $data = \%data;
+        $self;
+    }
 
     method get ( $key ) {
         die OpenTelemetry::X->create(
@@ -45,7 +55,7 @@ class OpenTelemetry::Context {
             Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
         ) unless isa_OpenTelemetry_Context_Key $key;
 
-        OpenTelemetry::Context->new( %$data, $key->string, $value )
+        OpenTelemetry::Context->new->$init( %$data, $key->string, $value )
     }
 
     method delete ( $key ) {
@@ -56,7 +66,7 @@ class OpenTelemetry::Context {
         my %copy = %$data;
         delete $copy{$key->string};
 
-        OpenTelemetry::Context->new(%copy);
+        OpenTelemetry::Context->new->$init(%copy);
     }
 }
 

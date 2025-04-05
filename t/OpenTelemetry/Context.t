@@ -10,6 +10,10 @@ my ($ctx, $key, $new);
 $ctx = CLASS->new;
 $key = $ctx->key('foo');
 
+like warning { CLASS->new( foo => 123 ) },
+    qr/constructor no longer takes arguments/,
+    'Constructor no longer takes arguments and warns about it';
+
 is $ctx, object { prop isa => 'OpenTelemetry::Context' }, 'Constructed a context';
 is $key, object { prop isa => 'OpenTelemetry::Context::Key' }, 'Constructed a key';
 

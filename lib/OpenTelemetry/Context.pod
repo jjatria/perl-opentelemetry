@@ -47,11 +47,12 @@ objects.
 
 =head2 new
 
-    $context = OpenTelemetry::Context->new(%data)
+    $context = OpenTelemetry::Context->new
 
-Create a new context object. This method takes an optional set of key / value
-pairs, which will be injected into the newly constructed context before
-returning it.
+Create a new context object.
+
+As of version 0.028 this method takes no arguments. To set values on the
+context, use the L</set> method described below.
 
 =head2 get
 
