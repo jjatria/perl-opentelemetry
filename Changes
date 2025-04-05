@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.028     2025-04-05 13:42:43+01:00 Europe/London
 
     * Removed arguments from OpenTelemetry::Context constructors, since
       these could bypass the key validation.
