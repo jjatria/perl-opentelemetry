@@ -1,6 +1,6 @@
 Revision history for OpenTelemetry
 
-{{$NEXT}}
+0.029     2025-04-05 18:00:22+01:00 Europe/London
 
     * Fix an issue introduced in 0.028 that would cause Perl 5.30
       to interpret some function calls as indirect method calls and
