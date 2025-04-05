@@ -1,0 +1,59 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use feature 'say';
+
+# This example shows the minimum amount of code needed to generate
+# telemetry data through an instrumentation, in this case using
+# HTTP::Tiny
+
+# While loading the instrumentation is all that is needed to instrument
+# the client code, in order to see it work we need two more things:
+#
+# 1. Some configured set of propagators, so that we have something
+#    we can propagate data with; and
+#
+# 2. A valid trace span in the current context, so that we have
+#    something to propagate.
+
+# The easiest way to create and install a valid trace span in the
+# current context is with the trace provider's 'in_span' helper
+# method. For that we need a way to access the tracer provider.
+# We can use OpenTelemetry->tracer_provider, or use this
+# convenience function that we can import.
+use OpenTelemetry qw( otel_tracer_provider );
+
+# The easiest way to set up a set of propagators, on the other hand,
+# is by loading the SDK, which will read the configuration from the
+# environment. By default, this will set up a TraceContext and a
+# Baggage propagator, but we won't see the baggage in the request
+# headers since we are not going to add any baggage to the context.
+use OpenTelemetry::SDK;
+
+# We load the the instrumentation for HTTP::Tiny, which will
+# automatically import that module for us. This automatic loading only
+# happens if we request the instrumentation by name.
+use OpenTelemetry::Integration 'HTTP::Tiny';
+
+# By default we will send a request to an echo server, so we can examine
+# the headers we send. You can override this by passing a URL as an
+# argument when executing this script.
+my $url = shift // 'https://httpbin.org/anything';
+
+# In most realistic scenarios, telemetry data is processed asynchronously
+# via a batch processor or something similar. With a short-lived program
+# like this, we should make sure to wait until the processor flushes its
+# internal queue before we exit.
+END { otel_tracer_provider->force_flush->get }
+
+# We get a tracer from the tracer provider and use its `in_span` helper
+# to execute some code in a context with a valid span. The code reference
+# we pass will take the created span and the context that contains it
+# as arguments, but we don't need them in this case.
+otel_tracer_provider->tracer->in_span(
+    'some-span' => sub {
+        my $res = HTTP::Tiny->new->get($url);
+        say $res->{content};
+    },
+);
