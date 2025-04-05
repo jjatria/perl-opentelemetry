@@ -5,10 +5,11 @@ use Test2::V0 -target => 'OpenTelemetry::Context';
 use OpenTelemetry;
 use Syntax::Keyword::Dynamically;
 
-my ($ctx, $key, $new);
+my ($ctx, $key, $otr, $new);
 
 $ctx = CLASS->new;
 $key = $ctx->key('foo');
+$otr = $ctx->key('bar');
 
 like warning { CLASS->new( foo => 123 ) },
     qr/constructor no longer takes arguments/,
@@ -22,16 +23,26 @@ isnt $key->string, $ctx->key('foo')->string,
 
 is $ctx->get($key), U, 'Key starts undefined';
 
-is $new = $ctx->set( $key => 123 ),
+is $new = $ctx->set( $key => 12 ),
     object { prop isa => 'OpenTelemetry::Context' },
     'Setting a key returns new context';
 
-is $new->get($key), 123, 'Can read set value';
+is $new->get($key), 12, 'Can read set value';
 is $ctx->get($key), U, 'Original context is unaffected';
 
-is $new->delete($key),
-    object { call [ get => $key ] => U },
-    'Can delete a value from the context';
+is $new = $ctx->set( $key => 234, $key => 123, $otr => 'abc' ),
+    object { prop isa => 'OpenTelemetry::Context' },
+    'Setting multiple keys returns new context';
+
+is $new->get($key), 123, 'Later assignments override earlier ones';
+is $new->get($otr), 'abc', 'All set values are set';
+
+is $new->delete( $otr, $key ),
+    object {
+        call [ get => $key ] => U;
+        call [ get => $otr ] => U;
+    },
+    'Can delete values from the context';
 
 is $new->get($key), 123, 'Original context is unaffected';
 
@@ -39,11 +50,11 @@ like dies { $ctx->get('foo') },
     qr/^Keys in a context object must be instances of OpenTelemetry::Context::Key/,
     'Validate key on get';
 
-like dies { $ctx->set( foo => 123 ) },
+like dies { $ctx->set( $key => 123, foo => 123, $otr => 'abc' ) },
     qr/^Keys in a context object must be instances of OpenTelemetry::Context::Key/,
     'Validate key on set';
 
-like dies { $ctx->delete('foo') },
+like dies { $ctx->delete( $key, 'foo', $otr ) },
     qr/^Keys in a context object must be instances of OpenTelemetry::Context::Key/,
     'Validate key on delete';
 

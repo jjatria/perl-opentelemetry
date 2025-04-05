@@ -66,18 +66,24 @@ method will return an undefined value.
 =head2 set
 
     $new_context = $context->set( $key => $value )
+    $new_context = $context->set( @pairs )
 
-Takes a key object (see the L</key> class method) and a value and returns a
-new context object with all the values of the calling context, as well as the
-provided value stored under the provided key.
+Takes one or more key / value pairs to set in the context. All keys must be
+key objects (see the L</key> class method). The method returns a new context
+object with all the values of the calling context, as well as any provided
+values stored under the corresponding provided keys.
+
+As is normal in Perl, when passing multiple pairs later ones will take
+precedence.
 
 =head2 delete
 
     $new_context = $context->delete($key)
+    $new_context = $context->delete(@keys)
 
-Takes a key object (see the L</key> class method) and returns a new context
-object with all the values of the calling context, except the value stored
-under the provided key.
+Takes one or more key objects (see the L</key> class method) and returns a
+new context object with all the values of the calling context, except those
+stored under the provided keys.
 
 =head1 CLASS METHODS
 

@@ -24,7 +24,8 @@ sub key ( $, $name ) {
 }
 
 class OpenTelemetry::Context {
-    use Carp 'carp';
+    use Carp qw( carp croak );
+    use List::Util qw( pairs all );
     use OpenTelemetry::X;
 
     use isa 'OpenTelemetry::Context::Key';
@@ -50,21 +51,31 @@ class OpenTelemetry::Context {
         $data->{ $key->string };
     }
 
-    method set ( $key, $value ) {
-        die OpenTelemetry::X->create(
-            Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
-        ) unless isa_OpenTelemetry_Context_Key $key;
+    method set ( @pairs ) {
+        my %pairs;
+        for ( pairs @pairs ) {
+            croak OpenTelemetry::X->create(
+                Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
+            ) unless isa_OpenTelemetry_Context_Key $_->[0];
 
-        OpenTelemetry::Context->new->$init( %$data, $key->string, $value )
+            $pairs{ $_->[0]->string } = $_->[1];
+        }
+
+        OpenTelemetry::Context->new->$init( %$data, %pairs );
     }
 
-    method delete ( $key ) {
-        die OpenTelemetry::X->create(
-            Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
-        ) unless isa_OpenTelemetry_Context_Key $key;
+    method delete ( @keys ) {
+        my @strings;
+        for (@keys) {
+            croak OpenTelemetry::X->create(
+                Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
+            ) unless isa_OpenTelemetry_Context_Key $_;
+
+            push @strings, $_->string;
+        }
 
         my %copy = %$data;
-        delete $copy{$key->string};
+        delete @copy{@strings};
 
         OpenTelemetry::Context->new->$init(%copy);
     }

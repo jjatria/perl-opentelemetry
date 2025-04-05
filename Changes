@@ -4,6 +4,8 @@ Revision history for OpenTelemetry
 
     * Removed arguments from OpenTelemetry::Context constructors, since
       these could bypass the key validation.
+    * The 'set' method for OpenTelemetry::Context now accepts multiple
+      pairs, and for consistency the 'delete' method accepts multiple keys.
 
 0.027     2024-12-20 17:31:04+00:00 Europe/London
 

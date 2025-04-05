@@ -50,7 +50,11 @@ sub set ( $, $name, $value, $meta = undef, $context = undef ) {
     $context //= OpenTelemetry::Context->current;
 
     my %new = %{ from_context $context };
-    $new{$name} = OpenTelemetry::Baggage::Entry->new( value => $value, meta => $meta );
+    $new{$name} = OpenTelemetry::Baggage::Entry->new(
+        value => $value,
+        meta  => $meta,
+    );
+
     $context->set( $BAGGAGE_KEY => \%new );
 }
 
