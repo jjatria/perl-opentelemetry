@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use feature 'say';
 
-# This example shows the minimum mount of code needed to generate
+# This example shows the minimum amount of code needed to generate
 # telemetry data through an instrumentation, in this case using
 # LWP::UserAgent.
 
@@ -19,7 +19,7 @@ use feature 'say';
 
 # The easiest way to create and install a valid trace span in the
 # current context is with the trace provider's 'in_span' helper
-# method. For taht we need a way to access the tracer provider.
+# method. For that we need a way to access the tracer provider.
 # We can use OpenTelemetry->tracer_provider, or use this
 # convenience function that we can import.
 use OpenTelemetry qw( otel_tracer_provider );
