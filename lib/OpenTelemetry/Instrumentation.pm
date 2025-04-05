@@ -1,7 +1,7 @@
 package OpenTelemetry::Instrumentation;
 # ABSTRACT: Top-level interface for OpenTelemetry instrumentations
 
-our $VERSION = '0.028';
+our $VERSION = '0.029';
 
 use strict;
 use warnings;

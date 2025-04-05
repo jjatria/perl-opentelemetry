@@ -1,6 +1,6 @@
 package OpenTelemetry::Constants;
 
-our $VERSION = '0.028';
+our $VERSION = '0.029';
 
 use Scalar::Util ();
 
