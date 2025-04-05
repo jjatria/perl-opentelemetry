@@ -41,6 +41,12 @@ use OpenTelemetry::Integration 'LWP::UserAgent';
 # argument when executing this script.
 my $url = shift // 'https://httpbin.org/anything';
 
+# In most realistic scenarios, telemetry data is processed asynchronously
+# via a batch processor or something similar. With a short-lived program
+# like this, we should make sure to wait until the processor flushes its
+# internal queue before we exit.
+END { otel_tracer_provider->force_flush->get }
+
 # We get a tracer from the tracer provider and use its `in_span` helper
 # to execute some code in a context with a valid span. The code reference
 # we pass will take the created span and the context that contains it
