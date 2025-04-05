@@ -44,7 +44,7 @@ class OpenTelemetry::Context {
     }
 
     method get ( $key ) {
-        die OpenTelemetry::X->create(
+        croak +OpenTelemetry::X->create(
             Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
         ) unless isa_OpenTelemetry_Context_Key $key;
 
@@ -54,7 +54,7 @@ class OpenTelemetry::Context {
     method set ( @pairs ) {
         my %pairs;
         for ( pairs @pairs ) {
-            croak OpenTelemetry::X->create(
+            croak +OpenTelemetry::X->create(
                 Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
             ) unless isa_OpenTelemetry_Context_Key $_->[0];
 
@@ -67,7 +67,7 @@ class OpenTelemetry::Context {
     method delete ( @keys ) {
         my @strings;
         for (@keys) {
-            croak OpenTelemetry::X->create(
+            croak +OpenTelemetry::X->create(
                 Invalid => 'Keys in a context object must be instances of OpenTelemetry::Context::Key',
             ) unless isa_OpenTelemetry_Context_Key $_;
 
@@ -92,7 +92,7 @@ class OpenTelemetry::Context {
         sentinel(
             get => sub { $current },
             set => sub {
-                die OpenTelemetry::X->create(
+                croak +OpenTelemetry::X->create(
                     Invalid => 'Current context must be an instance of OpenTelemetry::Context, received instead ' . ref $_[0],
                 ) unless isa_OpenTelemetry_Context $_[0];
 
