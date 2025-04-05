@@ -5,7 +5,7 @@ package OpenTelemetry::Trace::Span;
 
 use OpenTelemetry::Trace::SpanContext;
 
-our $VERSION = '0.029';
+our $VERSION = '0.030';
 
 class OpenTelemetry::Trace::Span {
     field $context :param :reader //= OpenTelemetry::Trace::SpanContext->new;

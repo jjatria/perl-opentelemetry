@@ -3,7 +3,7 @@ use Object::Pad ':experimental(init_expr)';
 
 package OpenTelemetry::Trace::Span::Status;
 
-our $VERSION = '0.029';
+our $VERSION = '0.030';
 
 use Log::Any;
 my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );

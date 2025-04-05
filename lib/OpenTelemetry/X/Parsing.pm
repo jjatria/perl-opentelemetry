@@ -1,6 +1,6 @@
 package OpenTelemetry::X::Parsing;
 
-our $VERSION = '0.029';
+our $VERSION = '0.030';
 
 use parent 'OpenTelemetry::X';
 
