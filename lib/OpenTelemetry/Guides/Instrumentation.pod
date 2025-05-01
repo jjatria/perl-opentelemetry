@@ -89,7 +89,8 @@ span. To do that, use `in_span`:
 =head2 Creating nested spans
 
 If you have a distinct sub-operation you'd like to track as a part of another
-one, you can create nested [spans](/docs/concepts/signals/traces#spans) to
+one, you can create nested
+L<spans|https://opentelemetry.io/docs/concepts/signals/traces#spans> to
 represent the relationship:
 
     use OpenTelemetry 'otel_tracer_provider';
@@ -212,8 +213,6 @@ to be created.
     use OpenTelemetry qw( otel_span_from_context otel_tracer_provider );
 
     my $span_to_link_to = otel_span_from_context;
-
-    my $link = OpenTelemetry::Trace::Link.new(span_to_link_from.context)
 
     otel_tracer_provider->tracer->in_span(
         new_span => (
@@ -365,7 +364,7 @@ With it, you can manually emit records.
 The L<Logger|OpenTelemetry::Logs::Logger> can emit log records:
 
     use OpenTelemetry 'otel_logger_provider';
-    use OpenTelemetry::Constants -log;
+    use OpenTelemetry::Constants '-log';
 
     my $logger = otel_logger_provider->logger($name);
 
