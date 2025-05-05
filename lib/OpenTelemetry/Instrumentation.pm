@@ -15,9 +15,9 @@ use Module::Pluggable search_path => [qw(
     OpenTelemetry::Integration
 )];
 use Ref::Util 'is_hashref';
+use OpenTelemetry::Common ();
 
-use Log::Any;
-my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
+my $logger = OpenTelemetry::Common::internal_logger;
 
 # To be overriden by instrumentations
 sub dependencies { }
@@ -97,7 +97,8 @@ sub import ( $class, @args ) {
                 $logger->tracef("$package did not install itself");
             }
 
-        } catch ($e) {
+        }
+        catch ($e) {
             # Just a warning, if we're loading everything then
             # we shouldn't cause chaos just because something
             # doesn't happen to be available.

@@ -12,6 +12,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
 
     use OpenTelemetry;
+    use OpenTelemetry::Common ();
     use OpenTelemetry::Propagator::TextMap;
     use OpenTelemetry::Propagator::TraceContext::TraceParent;
     use OpenTelemetry::Propagator::TraceContext::TraceState;
@@ -21,8 +22,7 @@ class OpenTelemetry::Propagator::TraceContext :does(OpenTelemetry::Propagator) {
     my $TRACE_PARENT_KEY = 'traceparent';
     my $TRACE_STATE_KEY  = 'tracestate';
 
-    use Log::Any;
-    my $logger = Log::Any->get_logger( category =>'OpenTelemetry' );
+    my $logger = OpenTelemetry::Common::internal_logger;
 
     method inject (
         $carrier,

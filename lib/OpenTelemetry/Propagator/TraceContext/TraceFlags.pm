@@ -5,10 +5,10 @@ package OpenTelemetry::Propagator::TraceContext::TraceFlags;
 
 our $VERSION = '0.030';
 
-use Log::Any;
-my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
-
 class OpenTelemetry::Propagator::TraceContext::TraceFlags {
+    use OpenTelemetry::Common ();
+    my $logger = OpenTelemetry::Common::internal_logger;
+
     field $flags :param :reader = 0;
 
     sub BUILDARGS ( $class, $flags = undef ) {

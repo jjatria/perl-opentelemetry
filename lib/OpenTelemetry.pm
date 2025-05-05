@@ -39,7 +39,7 @@ use Exporter::Shiny qw(
     otel_untraced_context
 );
 
-my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
+my $logger = OpenTelemetry::Common::internal_logger;
 sub logger { $logger }
 sub _generate_otel_logger { \&logger }
 

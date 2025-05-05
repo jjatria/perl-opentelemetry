@@ -4,6 +4,14 @@ Revision history for OpenTelemetry
 
     * Fixed some minor formatting errors in
       OpenTelemetry::Guides::Instrumentation.
+    * The logger used internally now defaults to carping to STDERR at a
+      warning level. The log level can be adjusted by setting the
+      OTEL_PERL_INTERNAL_LOG_LEVEL environment variable to a suitable
+      value. This internal logger is weaker than a regular
+      Log::Any::Adapter and can be modified either by setting a
+      Log::Any::Adapter or the LOG_ANY_DEFAULT_ADAPTER environment
+      variable appropriately. Note that OTEL_PERL_INTERNAL_LOG_LEVEL will
+      be ignored if an adapter is manually set.
 
 0.029     2025-04-05 18:00:22+01:00 Europe/London
 

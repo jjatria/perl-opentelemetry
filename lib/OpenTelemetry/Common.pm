@@ -1,4 +1,26 @@
 package
+    OpenTelemetry::Internal::Logger;
+
+use Carp::Clan '^(?:OpenTelemetry\b|Log::Any::Proxy$)';
+use parent 'Log::Any::Adapter::Stderr';
+
+foreach my $method ( Log::Any::Adapter::Util::logging_methods() ) {
+    no strict 'refs';
+    my $method_level = Log::Any::Adapter::Util::numeric_level($method);
+    *{$method} = sub {
+        my ( $self, $text ) = @_;
+        return if $method_level > $self->{log_level};
+
+        # NOTE: We are using Carp::Clan so we carp from non-OTel
+        # classes, but Carp::Clan for some reason likes to prepend
+        # sub names, which we don't want
+        local $SIG{__WARN__} = sub { warn shift =~ s/^.*?: //r };
+
+        carp "$text";
+    };
+}
+
+package
     OpenTelemetry::Common;
 
 # ABSTRACT: Utility package with shared functions for OpenTelemetry
@@ -23,10 +45,22 @@ our @EXPORT_OK = qw(
     generate_trace_id
     maybe_timeout
     timeout_timestamp
+    internal_logger
 );
 
 use Log::Any;
-my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
+my $logger = Log::Any->get_logger(
+    category => 'OpenTelemetry',
+    $ENV{LOG_ANY_DEFAULT_ADAPTER} ? () : (
+        default_adapter => [
+            '+OpenTelemetry::Internal::Logger',
+            log_level => $ENV{OTEL_PERL_INTERNAL_LOG_LEVEL} // 'warn',
+        ],
+    ),
+);
+
+# Undocumented because this is really only for internal use
+sub internal_logger { $logger }
 
 sub timeout_timestamp :prototype() {
     clock_gettime CLOCK_MONOTONIC;

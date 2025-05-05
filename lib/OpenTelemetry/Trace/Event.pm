@@ -5,11 +5,11 @@ package OpenTelemetry::Trace::Event;
 
 our $VERSION = '0.030';
 
-use Log::Any;
-my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
-
 class OpenTelemetry::Trace::Event :does(OpenTelemetry::Attributes) {
     use Time::HiRes;
+    use OpenTelemetry::Common ();
+
+    my $logger = OpenTelemetry::Common::internal_logger;
 
     field $name      :param :reader   = undef;
     field $timestamp :param :reader //= Time::HiRes::time;

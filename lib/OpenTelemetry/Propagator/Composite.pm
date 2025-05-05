@@ -5,13 +5,13 @@ package OpenTelemetry::Propagator::Composite;
 
 our $VERSION = '0.030';
 
-use Log::Any;
-my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
-
 class OpenTelemetry::Propagator::Composite :does(OpenTelemetry::Propagator) {
     use List::Util qw( uniq first );
     use OpenTelemetry::Propagator::TextMap;
     use OpenTelemetry::X;
+    use OpenTelemetry::Common ();
+
+    my $logger = OpenTelemetry::Common::internal_logger;
 
     field @injectors;
     field @extractors;

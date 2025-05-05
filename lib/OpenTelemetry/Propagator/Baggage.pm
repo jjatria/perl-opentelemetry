@@ -9,6 +9,7 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
     use OpenTelemetry;
     use Feature::Compat::Try;
     use OpenTelemetry::Baggage;
+    use OpenTelemetry::Common ();
     use OpenTelemetry::Context;
     use OpenTelemetry::Propagator::TextMap;
     use URL::Encode qw( url_decode_utf8 url_encode_utf8 );
@@ -20,8 +21,7 @@ class OpenTelemetry::Propagator::Baggage :does(OpenTelemetry::Propagator) {
     my $MAX_ENTRY_LENGTH = 4096;
     my $MAX_TOTAL_LENGTH = 8192;
 
-    use Log::Any;
-    my $logger = Log::Any->get_logger( category => 'OpenTelemetry' );
+    my $logger = OpenTelemetry::Common::internal_logger;
 
     method $encode (%baggage) {
         my $encoded = '';
