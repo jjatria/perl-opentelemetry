@@ -2,6 +2,9 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Fixed some minor formatting errors in
+      OpenTelemetry::Guides::Instrumentation.
+
 0.029     2025-04-05 18:00:22+01:00 Europe/London
 
     * Fix an issue introduced in 0.028 that would cause Perl 5.30

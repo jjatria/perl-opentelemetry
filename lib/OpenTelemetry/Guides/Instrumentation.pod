@@ -120,7 +120,7 @@ C<parent>.
 
 L<Attributes|https://opentelemetry.io/docs/concepts/signals/traces#attributes>
 let you attach key/value pairs to a
-L<span]|https://opentelemetry.io/docs/concepts/signals/traces#spans> so it
+L<span|https://opentelemetry.io/docs/concepts/signals/traces#spans> so it
 carries more information about the current operation that it's tracking.
 
 You can use L<set_attribute|OpenTelemetry::Trace::Span/set_attribute> to add
