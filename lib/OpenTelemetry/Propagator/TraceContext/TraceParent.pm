@@ -3,7 +3,7 @@ use Object::Pad ':experimental(init_expr)';
 
 package OpenTelemetry::Propagator::TraceContext::TraceParent;
 
-our $VERSION = '0.030';
+our $VERSION = '0.031';
 
 class OpenTelemetry::Propagator::TraceContext::TraceParent {
     use OpenTelemetry::X;

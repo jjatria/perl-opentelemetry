@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Logs::Logger;
 
-our $VERSION = '0.030';
+our $VERSION = '0.031';
 
 # TODO: Should this implement an interface like that of Mojo::Log
 # or Log::Any? It would mean that writing adapters like
