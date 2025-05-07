@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+0.030     2025-05-07 23:28:24 BST
+
     * Fixed some minor formatting errors in
       OpenTelemetry::Guides::Instrumentation.
     * The logger used internally now defaults to carping to STDERR at a

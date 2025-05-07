@@ -42,6 +42,7 @@
       "runtime" : {
          "requires" : {
             "Bytes::Random::Secure" : "0",
+            "Carp::Clan" : "0",
             "Class::Method::Modifiers" : "0",
             "Exporter::Tiny" : "0.044",
             "Feature::Compat::Defer" : "0",
@@ -83,155 +84,171 @@
    "provides" : {
       "Log::Any::Adapter::OpenTelemetry" : {
          "file" : "lib/Log/Any/Adapter/OpenTelemetry.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry" : {
          "file" : "lib/OpenTelemetry.pm",
-         "version" : "0.029"
+         "version" : "0.030"
+      },
+      "OpenTelemetry::AttributeMap" : {
+         "file" : "lib/OpenTelemetry/Attributes.pm",
+         "version" : "0.030"
       },
       "OpenTelemetry::Attributes" : {
          "file" : "lib/OpenTelemetry/Attributes.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Baggage" : {
          "file" : "lib/OpenTelemetry/Baggage.pm",
-         "version" : "0.029"
+         "version" : "0.030"
+      },
+      "OpenTelemetry::Baggage::Builder" : {
+         "file" : "lib/OpenTelemetry/Baggage.pm",
+         "version" : "0.030"
+      },
+      "OpenTelemetry::Baggage::Entry" : {
+         "file" : "lib/OpenTelemetry/Baggage.pm",
+         "version" : "0.030"
       },
       "OpenTelemetry::Constants" : {
          "file" : "lib/OpenTelemetry/Constants.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Context" : {
          "file" : "lib/OpenTelemetry/Context.pm",
-         "version" : "0.029"
+         "version" : "0.030"
+      },
+      "OpenTelemetry::Context::Key" : {
+         "file" : "lib/OpenTelemetry/Context.pm",
+         "version" : "0.030"
       },
       "OpenTelemetry::Exporter" : {
          "file" : "lib/OpenTelemetry/Exporter.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Instrumentation" : {
          "file" : "lib/OpenTelemetry/Instrumentation.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Instrumentation::DBI" : {
          "file" : "lib/OpenTelemetry/Instrumentation/DBI.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Instrumentation::HTTP::Tiny" : {
          "file" : "lib/OpenTelemetry/Instrumentation/HTTP/Tiny.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Instrumentation::LWP::UserAgent" : {
          "file" : "lib/OpenTelemetry/Instrumentation/LWP/UserAgent.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Integration" : {
          "file" : "lib/OpenTelemetry/Integration.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Logs::LogRecord::Processor" : {
          "file" : "lib/OpenTelemetry/Logs/LogRecord/Processor.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Logs::Logger" : {
          "file" : "lib/OpenTelemetry/Logs/Logger.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Logs::LoggerProvider" : {
          "file" : "lib/OpenTelemetry/Logs/LoggerProvider.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Processor" : {
          "file" : "lib/OpenTelemetry/Processor.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator" : {
          "file" : "lib/OpenTelemetry/Propagator.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::Baggage" : {
          "file" : "lib/OpenTelemetry/Propagator/Baggage.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::Composite" : {
          "file" : "lib/OpenTelemetry/Propagator/Composite.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::None" : {
          "file" : "lib/OpenTelemetry/Propagator/None.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::TextMap" : {
          "file" : "lib/OpenTelemetry/Propagator/TextMap.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::TraceContext" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::TraceContext::TraceFlags" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext/TraceFlags.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::TraceContext::TraceParent" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext/TraceParent.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Propagator::TraceContext::TraceState" : {
          "file" : "lib/OpenTelemetry/Propagator/TraceContext/TraceState.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace" : {
          "file" : "lib/OpenTelemetry/Trace.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::Event" : {
          "file" : "lib/OpenTelemetry/Trace/Event.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::Link" : {
          "file" : "lib/OpenTelemetry/Trace/Link.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::Span" : {
          "file" : "lib/OpenTelemetry/Trace/Span.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::Span::Processor" : {
          "file" : "lib/OpenTelemetry/Trace/Span/Processor.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::Span::Status" : {
          "file" : "lib/OpenTelemetry/Trace/Span/Status.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::SpanContext" : {
          "file" : "lib/OpenTelemetry/Trace/SpanContext.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::Tracer" : {
          "file" : "lib/OpenTelemetry/Trace/Tracer.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::Trace::TracerProvider" : {
          "file" : "lib/OpenTelemetry/Trace/TracerProvider.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::X" : {
          "file" : "lib/OpenTelemetry/X.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::X::Invalid" : {
          "file" : "lib/OpenTelemetry/X/Invalid.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::X::Parsing" : {
          "file" : "lib/OpenTelemetry/X/Parsing.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       },
       "OpenTelemetry::X::Unsupported" : {
          "file" : "lib/OpenTelemetry/X/Unsupported.pm",
-         "version" : "0.029"
+         "version" : "0.030"
       }
    },
    "release_status" : "stable",
@@ -245,466 +262,13 @@
          "web" : "https://github.com/jjatria/perl-opentelemetry"
       }
    },
-   "version" : "0.029",
-   "x_Dist_Zilla" : {
-      "perl" : {
-         "version" : "5.030003"
-      },
-      "plugins" : [
-         {
-            "class" : "Dist::Zilla::Plugin::NextRelease",
-            "name" : "NextRelease",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::GatherDir",
-            "config" : {
-               "Dist::Zilla::Plugin::GatherDir" : {
-                  "exclude_filename" : [
-                     "Build.PL",
-                     "LICENSE",
-                     "META.json",
-                     "cpanfile",
-                     "dist.ini"
-                  ],
-                  "exclude_match" : [],
-                  "include_dotfiles" : 0,
-                  "prefix" : "",
-                  "prune_directory" : [],
-                  "root" : "."
-               },
-               "Dist::Zilla::Plugin::Git::GatherDir" : {
-                  "include_untracked" : 0
-               }
-            },
-            "name" : "@Starter::Git/Git::GatherDir",
-            "version" : "2.051"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::MetaYAML",
-            "name" : "@Starter::Git/MetaYAML",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::MetaJSON",
-            "name" : "@Starter::Git/MetaJSON",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::License",
-            "name" : "@Starter::Git/License",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::PodSyntaxTests",
-            "name" : "@Starter::Git/PodSyntaxTests",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Test::ReportPrereqs",
-            "name" : "@Starter::Git/Test::ReportPrereqs",
-            "version" : "0.029"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Test::Compile",
-            "config" : {
-               "Dist::Zilla::Plugin::Test::Compile" : {
-                  "bail_out_on_fail" : 0,
-                  "fail_on_warning" : "author",
-                  "fake_home" : 0,
-                  "filename" : "xt/author/00-compile.t",
-                  "module_finder" : [
-                     ":InstallModules"
-                  ],
-                  "needs_display" : 0,
-                  "phase" : "develop",
-                  "script_finder" : [
-                     ":PerlExecFiles"
-                  ],
-                  "skips" : [],
-                  "switch" : []
-               }
-            },
-            "name" : "@Starter::Git/Test::Compile",
-            "version" : "2.058"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::ModuleBuildTiny",
-            "config" : {
-               "Dist::Zilla::Role::TestRunner" : {
-                  "default_jobs" : 1
-               }
-            },
-            "name" : "@Starter::Git/ModuleBuildTiny",
-            "version" : "0.017"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Manifest",
-            "name" : "@Starter::Git/Manifest",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::PruneCruft",
-            "name" : "@Starter::Git/PruneCruft",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::ManifestSkip",
-            "name" : "@Starter::Git/ManifestSkip",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::RunExtraTests",
-            "config" : {
-               "Dist::Zilla::Role::TestRunner" : {
-                  "default_jobs" : 1
-               }
-            },
-            "name" : "@Starter::Git/RunExtraTests",
-            "version" : "0.029"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Check",
-            "config" : {
-               "Dist::Zilla::Plugin::Git::Check" : {
-                  "untracked_files" : "die"
-               },
-               "Dist::Zilla::Role::Git::DirtyFiles" : {
-                  "allow_dirty" : [
-                     "Changes",
-                     "dist.ini"
-                  ],
-                  "allow_dirty_match" : [],
-                  "changelog" : "Changes"
-               },
-               "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.34.1",
-                  "repo_root" : "."
-               }
-            },
-            "name" : "@Starter::Git/Git::Check",
-            "version" : "2.051"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::RewriteVersion",
-            "config" : {
-               "Dist::Zilla::Plugin::RewriteVersion" : {
-                  "add_tarball_name" : 0,
-                  "finders" : [
-                     ":ExecFiles",
-                     ":InstallModules"
-                  ],
-                  "global" : 1,
-                  "skip_version_provider" : 0
-               }
-            },
-            "name" : "@Starter::Git/RewriteVersion",
-            "version" : "0.018"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::NextRelease",
-            "name" : "@Starter::Git/NextRelease",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::CopyFilesFromRelease",
-            "config" : {
-               "Dist::Zilla::Plugin::CopyFilesFromRelease" : {
-                  "filename" : [
-                     "Build.PL",
-                     "LICENSE",
-                     "META.json"
-                  ],
-                  "match" : []
-               }
-            },
-            "name" : "@Starter::Git/CopyFilesFromRelease",
-            "version" : "0.007"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Regenerate::AfterReleasers",
-            "config" : {
-               "Dist::Zilla::Plugin::Regenerate::AfterReleasers" : {
-                  "plugins" : [
-                     "@Starter::Git/CopyFilesFromRelease"
-                  ]
-               },
-               "Dist::Zilla::Role::Regenerator" : {
-                  "$Dist::Zilla::Role::Regenerator::VERSION" : "0.001002"
-               }
-            },
-            "name" : "@Starter::Git/Regenerate::AfterReleasers",
-            "version" : "0.001002"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Commit",
-            "config" : {
-               "Dist::Zilla::Plugin::Git::Commit" : {
-                  "add_files_in" : [
-                     "/"
-                  ],
-                  "commit_msg" : "Release v%V%t",
-                  "signoff" : 0
-               },
-               "Dist::Zilla::Role::Git::DirtyFiles" : {
-                  "allow_dirty" : [
-                     "Build.PL",
-                     "Changes",
-                     "LICENSE",
-                     "META.json",
-                     "dist.ini"
-                  ],
-                  "allow_dirty_match" : [],
-                  "changelog" : "Changes"
-               },
-               "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.34.1",
-                  "repo_root" : "."
-               },
-               "Dist::Zilla::Role::Git::StringFormatter" : {
-                  "time_zone" : "local"
-               }
-            },
-            "name" : "@Starter::Git/Release_Commit",
-            "version" : "2.051"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Tag",
-            "config" : {
-               "Dist::Zilla::Plugin::Git::Tag" : {
-                  "branch" : null,
-                  "changelog" : "Changes",
-                  "signed" : 0,
-                  "tag" : "0.029",
-                  "tag_format" : "%v",
-                  "tag_message" : ""
-               },
-               "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.34.1",
-                  "repo_root" : "."
-               },
-               "Dist::Zilla::Role::Git::StringFormatter" : {
-                  "time_zone" : "local"
-               }
-            },
-            "name" : "@Starter::Git/Git::Tag",
-            "version" : "2.051"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::BumpVersionAfterRelease",
-            "config" : {
-               "Dist::Zilla::Plugin::BumpVersionAfterRelease" : {
-                  "finders" : [
-                     ":ExecFiles",
-                     ":InstallModules"
-                  ],
-                  "global" : 0,
-                  "munge_makefile_pl" : 1
-               }
-            },
-            "name" : "@Starter::Git/BumpVersionAfterRelease",
-            "version" : "0.018"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Commit",
-            "config" : {
-               "Dist::Zilla::Plugin::Git::Commit" : {
-                  "add_files_in" : [],
-                  "commit_msg" : "Bump version",
-                  "signoff" : 0
-               },
-               "Dist::Zilla::Role::Git::DirtyFiles" : {
-                  "allow_dirty" : [
-                     "Changes",
-                     "dist.ini"
-                  ],
-                  "allow_dirty_match" : [
-                     "(?^:^)"
-                  ],
-                  "changelog" : "Changes"
-               },
-               "Dist::Zilla::Role::Git::Repo" : {
-                  "git_version" : "2.34.1",
-                  "repo_root" : "."
-               },
-               "Dist::Zilla::Role::Git::StringFormatter" : {
-                  "time_zone" : "local"
-               }
-            },
-            "name" : "@Starter::Git/Version_Bump_Commit",
-            "version" : "2.051"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::TestRelease",
-            "name" : "@Starter::Git/TestRelease",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::ConfirmRelease",
-            "name" : "@Starter::Git/ConfirmRelease",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::UploadToCPAN",
-            "name" : "@Starter::Git/UploadToCPAN",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::MetaConfig",
-            "name" : "@Starter::Git/MetaConfig",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::MetaNoIndex",
-            "name" : "@Starter::Git/MetaNoIndex",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::MetaProvides::Package",
-            "config" : {
-               "Dist::Zilla::Plugin::MetaProvides::Package" : {
-                  "finder_objects" : [
-                     {
-                        "class" : "Dist::Zilla::Plugin::FinderCode",
-                        "name" : "@Starter::Git/MetaProvides::Package/AUTOVIV/:InstallModulesPM",
-                        "version" : "6.032"
-                     }
-                  ],
-                  "include_underscores" : 0
-               },
-               "Dist::Zilla::Role::MetaProvider::Provider" : {
-                  "$Dist::Zilla::Role::MetaProvider::Provider::VERSION" : "2.002004",
-                  "inherit_missing" : 1,
-                  "inherit_version" : 1,
-                  "meta_noindex" : 1
-               },
-               "Dist::Zilla::Role::ModuleMetadata" : {
-                  "Module::Metadata" : "1.000036",
-                  "version" : "0.006"
-               }
-            },
-            "name" : "@Starter::Git/MetaProvides::Package",
-            "version" : "2.004003"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::ShareDir",
-            "name" : "@Starter::Git/ShareDir",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::ExecDir",
-            "name" : "@Starter::Git/ExecDir",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::MinimumPerl",
-            "name" : "MinimumPerl",
-            "version" : "1.006"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Prereqs::FromCPANfile",
-            "name" : "Prereqs::FromCPANfile",
-            "version" : "0.08"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Repository",
-            "name" : "Repository",
-            "version" : "0.24"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Bugtracker",
-            "name" : "Bugtracker",
-            "version" : "1.111080"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Contributors",
-            "config" : {
-               "Dist::Zilla::Plugin::Git::Contributors" : {
-                  "git_version" : "2.34.1",
-                  "include_authors" : 0,
-                  "include_releaser" : 1,
-                  "order_by" : "name",
-                  "paths" : []
-               }
-            },
-            "name" : "Git::Contributors",
-            "version" : "0.038"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Meta::Contributors",
-            "name" : "Meta::Contributors",
-            "version" : "0.003"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":InstallModules",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":IncModules",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":TestFiles",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":ExtraTestFiles",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":ExecFiles",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":PerlExecFiles",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":ShareFiles",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":MainModule",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":AllFiles",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : ":NoFiles",
-            "version" : "6.032"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::FinderCode",
-            "name" : "@Starter::Git/MetaProvides::Package/AUTOVIV/:InstallModulesPM",
-            "version" : "6.032"
-         }
-      ],
-      "zilla" : {
-         "class" : "Dist::Zilla::Dist::Builder",
-         "config" : {
-            "is_trial" : 0
-         },
-         "version" : "6.032"
-      }
-   },
+   "version" : "0.030",
    "x_contributors" : [
       "Jos\u00e9 Joaqu\u00edn Atria <j.atria@cv-library.co.uk>",
       "Tom Molesworth <TEAM@cpan.org>"
    ],
-   "x_generated_by_perl" : "v5.30.3",
-   "x_serialization_backend" : "Cpanel::JSON::XS version 4.39",
+   "x_generated_by_perl" : "v5.40.0",
+   "x_serialization_backend" : "Cpanel::JSON::XS version 4.38",
    "x_spdx_expression" : "Artistic-1.0-Perl OR GPL-1.0-or-later"
 }
 
