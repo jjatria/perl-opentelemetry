@@ -11,6 +11,8 @@ use OpenTelemetry::Propagator::Baggage;
 use OpenTelemetry;
 use Syntax::Keyword::Dynamically;
 
+my $http = mock 'HTTP::Tiny';
+
 my $span;
 my $otel = mock OpenTelemetry => override => [
     tracer_provider => sub {
@@ -46,6 +48,7 @@ is [ CLASS->dependencies ], ['HTTP::Tiny'], 'Reports dependencies';
 
 subtest 'No headers' => sub {
     CLASS->uninstall;
+    $http->reset_all;
 
     dynamically OpenTelemetry::Context->current
         = OpenTelemetry::Baggage->set( foo => 123, 'META' );
@@ -54,7 +57,7 @@ subtest 'No headers' => sub {
         = OpenTelemetry::Propagator::Baggage->new,
 
     my $request;
-    my $http = mock 'HTTP::Tiny' => override => [
+    $http->override(
         request => sub ( $self, $method, $url, $options = undef ) {
             $request = $options // {};
             {
@@ -65,7 +68,7 @@ subtest 'No headers' => sub {
                 },
             };
         },
-    ];
+    );
 
     ok +CLASS->install, 'Installed modifier';
 
@@ -102,15 +105,15 @@ subtest 'No headers' => sub {
 
 subtest 'Request size' => sub {
     CLASS->uninstall;
-
-    my $http = mock 'HTTP::Tiny' => override => [
+    $http->reset_all;
+    $http->override(
         request => sub ( $self, $method, $url, $options = undef ) {
             {
                 success => 'TEST',
                 status  => 123,
             };
         },
-    ];
+    );
 
     ok +CLASS->install, 'Installed modifier';
 
@@ -146,10 +149,10 @@ subtest 'Request size' => sub {
 
 subtest 'HTTP error' => sub {
     CLASS->uninstall;
-
-    my $http = mock 'HTTP::Tiny' => override => [
+    $http->reset_all;
+    $http->override(
         request => sub { { success => '', status => 404 } },
-    ];
+    );
 
     ok +CLASS->install, 'Installed modifier';
 
@@ -182,10 +185,10 @@ subtest 'HTTP error' => sub {
 
 subtest 'Internal error' => sub {
     CLASS->uninstall;
-
-    my $http = mock 'HTTP::Tiny' => override => [
+    $http->reset_all;
+    $http->override(
         request => sub { { success => '', status => 599, content => 'boom' } },
-    ];
+    );
 
     ok +CLASS->install, 'Installed modifier';
 
@@ -211,6 +214,37 @@ subtest 'Internal error' => sub {
             'server.address'            => 'fa.ke',
             'server.port'               => 80,
             'url.full'                  => 'http://fa.ke/599',
+            'user_agent.original'       => $ua->agent,
+        },
+    }, 'Captured basic data';
+};
+
+subtest 'Faulty URL' => sub {
+    CLASS->uninstall;
+    $http->reset_all;
+
+    ok +CLASS->install, 'Installed modifier';
+
+    my $ua = HTTP::Tiny->new;
+    like $ua->get('/fake'), { success => F },
+        'Can request';
+
+    is $span->{otel}, {
+        status     => {
+            code        => SPAN_STATUS_ERROR,
+            description => 'Cannot parse URL: \'/fake\'',
+        },
+        ended      => T,
+        kind       => SPAN_KIND_CLIENT,
+        name       => 'GET',
+        attributes => {
+            'http.request.method'       => 'GET',
+            'http.response.status_code' => 599,
+            'http.response.body.size'   => 26,
+            'network.protocol.name'     => 'http',
+            'network.protocol.version'  => '1.1',
+            'network.transport'         => 'tcp',
+            'url.full'                  => '/fake',
             'user_agent.original'       => $ua->agent,
         },
     }, 'Captured basic data';
