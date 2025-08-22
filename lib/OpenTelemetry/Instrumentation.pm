@@ -14,7 +14,7 @@ use Module::Pluggable search_path => [qw(
     OpenTelemetry::Instrumentation
     OpenTelemetry::Integration
 )];
-use Ref::Util 'is_hashref';
+use Ref::Util qw( is_hashref is_arrayref );
 use OpenTelemetry::Common ();
 
 my $logger = OpenTelemetry::Common::internal_logger;
@@ -46,7 +46,8 @@ sub import ( $class, @args ) {
 
     my %configuration;
     while ( my $key = shift @args ) {
-        my $options = is_hashref $args[0] ? shift @args : {};
+        my $options = is_hashref($args[0]) || is_arrayref($args[0])
+            ? shift @args : {};
 
         # Legacy namespace support. If we are loading an integration
         # by name which does not exist in INC in the new namespace,
@@ -88,7 +89,8 @@ sub import ( $class, @args ) {
                 Module::Runtime::require_module($_) for $package->dependencies;
             }
 
-            my $ok = $package->install( %{ $configuration{ $package } } );
+            my $config = $configuration{ $package };
+            my $ok = $package->install( is_hashref $config ? %$config : @$config );
 
             if ($ok) {
                 push @installed, $package;

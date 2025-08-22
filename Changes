@@ -2,6 +2,10 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * OpenTelemetry::Instrumentation now supports options as array
+      references, for instrumentations that require options to be in
+      a specific order
+
 0.031     2025-08-22 22:30:09 BST
 
     * Make HTTP::Tiny instrumentation more robust against malformed

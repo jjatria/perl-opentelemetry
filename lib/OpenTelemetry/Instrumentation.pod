@@ -10,7 +10,10 @@ OpenTelemetry::Instrumentation - Top-level interface for OpenTelemetry instrumen
     use OpenTelemetry::Instrumentation qw( HTTP::Tiny DBI );
 
     # Some instrumentations can take additional options
-    use OpenTelemetry::Instrumentation 'HTTP::Tiny' => \%options;
+    use OpenTelemetry::Instrumentation (
+        'HTTP::Tiny' => \%options,
+        'DBI'        => \@ordered_options,
+    );
 
     # Load every available instrumentation
     use OpenTelemetry::Instrumentation -all;
@@ -57,6 +60,29 @@ large install, C<:all> might load unexpected instrumentations. This behaviour
 allows you instead to add this line after your module imports, and any
 functionality that is actively being used in the code (for which an
 instrumentation module is available) would gain tracing.
+
+=head2 Configuration
+
+Some instrumentation libraries can take configuration parameters. These can
+be passed during import following the relevant instrumentation name, either as
+a hash reference if their order does not matter, or as an array reference if
+their order is important. Regardless, these wil be passed to the C<install>
+method of the instrumentation, as a list.
+
+In the following example
+
+    use OpenTelemetry::Instrumentation (
+        'No::Options',
+        'Unordered::Options' => \%options,
+        'Ordered::Options'   => \@options,
+    );
+
+the instrumentation for No::Options would be loaded without parameters,
+and that for Unordered::Options and Ordered::Options would be called with
+unordered and ordered options accordingly.
+
+Please refer to the documentation for each instrumentation library for
+details on what these options are and how to use them.
 
 =head2 Legacy namespace
 
