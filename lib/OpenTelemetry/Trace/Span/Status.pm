@@ -3,7 +3,7 @@ use Object::Pad ':experimental(init_expr)';
 
 package OpenTelemetry::Trace::Span::Status;
 
-our $VERSION = '0.031';
+our $VERSION = '0.032';
 
 class OpenTelemetry::Trace::Span::Status {
     use OpenTelemetry::Common ();

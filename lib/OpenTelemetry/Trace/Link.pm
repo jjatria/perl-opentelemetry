@@ -3,7 +3,7 @@ use Object::Pad ':experimental(init_expr)';
 
 package OpenTelemetry::Trace::Link;
 
-our $VERSION = '0.031';
+our $VERSION = '0.032';
 
 class OpenTelemetry::Trace::Link :does(OpenTelemetry::Attributes) {
     use OpenTelemetry::X;

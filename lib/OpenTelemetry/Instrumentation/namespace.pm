@@ -2,7 +2,7 @@ package
     OpenTelemetry::Instrumentation::namespace;
 # ABSTRACT: OpenTelemetry instrumentation for a namespace
 
-our $VERSION = '0.031';
+our $VERSION = '0.032';
 
 use strict;
 use warnings;
