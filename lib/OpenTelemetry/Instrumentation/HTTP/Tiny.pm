@@ -1,7 +1,7 @@
 package OpenTelemetry::Instrumentation::HTTP::Tiny;
 # ABSTRACT: OpenTelemetry instrumentation for HTTP::Tiny
 
-our $VERSION = '0.031';
+our $VERSION = '0.032';
 
 use strict;
 use warnings;
@@ -17,6 +17,7 @@ use OpenTelemetry::Trace;
 use OpenTelemetry;
 use Ref::Util qw( is_arrayref is_coderef );
 use Syntax::Keyword::Dynamically;
+use isa 'URI::http';
 
 use parent 'OpenTelemetry::Instrumentation';
 
@@ -64,7 +65,14 @@ sub install ( $class, %config ) {
 
         my $uri = URI->new("$url");
 
-        $uri->userinfo('REDACTED:REDACTED') if $uri->userinfo;
+        my %url_data;
+        if ( isa_URI_http $uri ) {
+            $uri->userinfo('REDACTED:REDACTED') if $uri->userinfo;
+            %url_data = (
+                'server.address' => $uri->host,
+                'server.port'    => $uri->port,
+            );
+        }
 
         my $span = OpenTelemetry->tracer_provider->tracer(
             name    => __PACKAGE__,
@@ -73,13 +81,12 @@ sub install ( $class, %config ) {
             name       => $method,
             kind       => SPAN_KIND_CLIENT,
             attributes => {
+                %url_data,
                 # As per https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md
                 'http.request.method'      => $method,
                 'network.protocol.name'    => 'http',
                 'network.protocol.version' => '1.1',
                 'network.transport'        => 'tcp',
-                'server.address'           => $uri->host,
-                'server.port'              => $uri->port,
                 'url.full'                 => "$uri", # redacted
                 'user_agent.original'      => $self->agent,
 

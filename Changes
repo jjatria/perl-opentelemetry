@@ -2,6 +2,11 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+0.031     2025-08-22 22:30:09 BST
+
+    * Make HTTP::Tiny instrumentation more robust against malformed
+      URLs: the code no longer assumes the URLs can be parsed correctly.
+
 0.030     2025-05-07 23:28:24 BST
 
     * Fixed some minor formatting errors in
