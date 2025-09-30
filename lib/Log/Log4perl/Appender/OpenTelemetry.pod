@@ -1,0 +1,30 @@
+=encoding UTF-8
+
+=head1 NAME
+
+Log::Log4perl::Appender::OpenTelemetry - Send Log::Log4perl logs to OpenTelemetry
+
+=head1 SYNOPSIS
+
+    log4perl.rootLogger              = DEBUG,  Otel
+    log4perl.appender.Otel           = Log::Log4perl::Appender::OpenTelemetry
+    log4perl.appender.Otel.layout    = Log::Log4perl::Layout::PatternLayout
+    log4perl.appender.Otel.layout.ConversionPattern = [%C] %m %n
+
+=head1 DESCRIPTION
+
+This L<Log::Log4perl> appender configures your logger to generate L<OpenTelemetry>
+log data using the configured L<OpenTelemetry::Logs::LoggerProvider>.
+
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to L<Tom Judge|https://github.com/tj-cisco> for their
+support in the development of this library.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025 by José Joaquín Atria.
+
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.
