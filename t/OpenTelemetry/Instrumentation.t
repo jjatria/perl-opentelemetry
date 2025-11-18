@@ -3,6 +3,7 @@
 use Test2::V0 -target => 'OpenTelemetry::Instrumentation';
 use Test2::Tools::OpenTelemetry;
 
+use lib 't/lib';
 use Class::Inspector;
 
 # Not using Test2::Require::Module because it loads the module when checking
@@ -70,16 +71,26 @@ subtest 'Load a missing plugin' => sub {
         CLASS->import('Fake::Does::Not::Exist');
     } => [
         [
-            trace => 'OpenTelemetry',
-            "Loading ${CLASS}::Fake::Does::Not::Exist",
-        ],
-        [
             warning => 'OpenTelemetry',
-            match qr/^Unable to load ${CLASS}::Fake::Does::Not::Exist: Can't locate/,
+            match qr/^Unable to load OpenTelemetry instrumentation for Fake::Does::Not::Exist: Can't locate/,
         ],
     ];
 
     CLASS->unimport;
+};
+
+subtest 'For package' => sub {
+    is CLASS->for_package('HTTP::Tiny'), 'OpenTelemetry::Instrumentation::HTTP::Tiny',
+        'Returns the package name of an available instrumentation library';
+
+    is CLASS->for_package('Fake::Package'), U,
+        'Returns undefined if there is no instrumentaiton';
+
+    is CLASS->for_package(undef), U,
+        'Garbage in, garbage out';
+
+    is CLASS->for_package('Local::Only::Legacy'), 'OpenTelemetry::Integration::Local::Only::Legacy',
+        'Falls back to legacy namespace if new is not available';
 };
 
 done_testing;

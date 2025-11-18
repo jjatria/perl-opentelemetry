@@ -148,6 +148,21 @@ this instrumentation. This method will be called in list context when loading
 dependencies automatically (ie. not when using the C<all> flag) to load
 the dependencies before calling L</install>.
 
+=head1 UTILITY METHODS
+
+These methods are not intended to be overriden by specific instrumentations,
+but are made available to allow for some degree of introspection.
+
+=head2 for_package
+
+    $class = OpenTelemetry::Instrumentation->for_package($package);
+
+Takes a package name and checks the installed instrumentations for one that
+applies to this package. If one if found, it will return the package name
+of that instrumentation library. Otherwise, it will return undefined.
+
+Available from 0.032.
+
 =head1 COPYRIGHT
 
 This software is copyright (c) 2023 by José Joaquín Atria.

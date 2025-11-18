@@ -5,6 +5,9 @@ Revision history for OpenTelemetry
     * OpenTelemetry::Instrumentation now supports options as array
       references, for instrumentations that require options to be in
       a specific order
+    * Added OpenTelemetry::Instrumentation::for_package to allow
+      callers to check what instrumentation would be used for a given
+      package, if any.
 
 0.031     2025-08-22 22:30:09 BST
 
