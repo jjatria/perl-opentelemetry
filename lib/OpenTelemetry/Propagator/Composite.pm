@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Propagator::Composite;
 
-our $VERSION = '0.032';
+our $VERSION = '0.033';
 
 class OpenTelemetry::Propagator::Composite :does(OpenTelemetry::Propagator) {
     use List::Util qw( uniq first );
