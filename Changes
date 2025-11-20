@@ -8,6 +8,9 @@ Revision history for OpenTelemetry
     * Added OpenTelemetry::Instrumentation::for_package to allow
       callers to check what instrumentation would be used for a given
       package, if any.
+    * Remove experimental OpenTelemetry::Instrumentation::namespace
+      from this distribution, so it can be released as an independent
+      one.
 
 0.031     2025-08-22 22:30:09 BST
 
