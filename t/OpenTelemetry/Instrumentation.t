@@ -3,8 +3,12 @@
 use Test2::V0 -target => 'OpenTelemetry::Instrumentation';
 use Test2::Tools::OpenTelemetry;
 
-use lib 't/lib';
 use Class::Inspector;
+
+my @plugins = CLASS->plugins;
+my $mock = mock $CLASS => override => [ plugins => sub {
+    return @plugins, 'OpenTelemetry::Integration::Local::Only::Legacy';
+} ];
 
 # Not using Test2::Require::Module because it loads the module when checking
 skip_all 'Module HTTP::Tiny is not installed'
