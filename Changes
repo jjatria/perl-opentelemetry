@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+0.033     2025-11-21 23:36:19 GMT
+
     * Modified instrumentation tests so they pass under coverage.
 
 0.032     2025-11-20 22:38:20 GMT
