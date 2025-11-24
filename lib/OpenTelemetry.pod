@@ -27,7 +27,7 @@ OpenTelemetry - A Perl implementation of the OpenTelemetry standard
 
 The OpenTelemetry distribution is the Perl implementation of
 L<OpenTelemetry|https://opentelemetry.io>. This module provides an entrypoint
-and exposes exposes an interface to get and set components that need to be
+and exposes an interface to get and set components that need to be
 globally available.
 
 The OpenTelemetry standard keeps a strict separation between an API layer
