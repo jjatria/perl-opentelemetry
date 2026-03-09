@@ -30,7 +30,7 @@ class OpenTelemetry::Propagator::TraceContext::TraceFlags {
             $flags = 0;
         }
 
-        ( flags => $flags );
+        ( flags => $flags + 0 );
     }
 
     method to_string () { sprintf '%02x', $flags }

@@ -23,6 +23,13 @@ no_messages {
         call flags   => 0;
         call sampled => F;
     }, 'Ignores undef';
+
+    # flags must be numeric, not stringified by the regex validation
+    use JSON::PP;
+    is encode_json({ f => CLASS->new(0)->flags }), '{"f":0}',
+        'flags serializes as integer in JSON';
+    is encode_json({ f => CLASS->new->flags }), '{"f":0}',
+        'default flags serializes as integer in JSON';
 };
 
 is messages {
