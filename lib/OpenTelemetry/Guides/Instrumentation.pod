@@ -83,7 +83,7 @@ span. To do that, use `in_span`:
     sub do_work {
         otel_tracer_provider->tracer->in_span( do_work => sub ($span, @) {
            # do some work that the 'do_work' span tracks!
-        }
+        });
     }
 
 =head2 Creating nested spans
