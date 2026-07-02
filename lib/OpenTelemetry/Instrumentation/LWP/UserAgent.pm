@@ -66,6 +66,8 @@ sub install ( $class, %config ) {
 
         $uri->userinfo('REDACTED:REDACTED') if $uri->userinfo;
 
+        my $agent = $self->agent;
+
         my $span = OpenTelemetry->tracer_provider->tracer(
             name    => __PACKAGE__,
             version => $VERSION,
@@ -81,7 +83,6 @@ sub install ( $class, %config ) {
                 'server.address'           => $uri->host,
                 'server.port'              => $uri->port,
                 'url.full'                 => "$uri", # redacted
-                'user_agent.original'      => $self->agent,
 
                 get_headers(
                     $self->default_headers,
@@ -95,6 +96,7 @@ sub install ( $class, %config ) {
                     'http.request.header'
                 ),
 
+                $agent ? ( 'user_agent.original' => $agent ) : (),
                 $length ? ( 'http.request.body.size' => $length ) : (),
             },
         );
