@@ -1,7 +1,7 @@
 package OpenTelemetry::Integration;
 # ABSTRACT: Support for legacy OpenTelemetry instrumentations
 
-our $VERSION = '0.034';
+our $VERSION = '0.035';
 
 use parent 'OpenTelemetry::Instrumentation';
 

@@ -3,7 +3,7 @@ use Object::Pad ':experimental(init_expr)';
 
 package OpenTelemetry::Propagator::TraceContext::TraceFlags;
 
-our $VERSION = '0.034';
+our $VERSION = '0.035';
 
 class OpenTelemetry::Propagator::TraceContext::TraceFlags {
     use OpenTelemetry::Common ();
