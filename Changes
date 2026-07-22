@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+0.034     2026-07-22 12:54:56 BST
+
     * Fixed an issue in OpenTelemetry::Trace::Tracer::in_span where
       manually specifying a parent context was ignored and the current
       context was used instead in error.
