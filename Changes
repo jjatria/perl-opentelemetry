@@ -2,6 +2,10 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * The HTTP::Tiny and LWP::UserAgent instrumentations now only
+      set the 'user_agent.original' attribute if an agent is available,
+      which should silence some possible warnings.
+
 0.034     2026-07-22 12:54:56 BST
 
     * Fixed an issue in OpenTelemetry::Trace::Tracer::in_span where
