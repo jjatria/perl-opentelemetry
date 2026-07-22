@@ -34,10 +34,7 @@ class OpenTelemetry::Trace::Tracer {
             Invalid => 'Missing required span name to Tracer->in_span',
         );
 
-        my $span = $self->create_span(
-            %args,
-            parent => OpenTelemetry::Context->current
-        );
+        my $span = $self->create_span(%args);
 
         my $context = OpenTelemetry::Trace->context_with_span($span);
 
