@@ -1,6 +1,6 @@
 package OpenTelemetry::X::Unsupported;
 
-our $VERSION = '0.035';
+our $VERSION = '0.036';
 
 use parent 'OpenTelemetry::X';
 
