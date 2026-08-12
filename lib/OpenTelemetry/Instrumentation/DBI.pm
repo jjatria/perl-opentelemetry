@@ -21,6 +21,18 @@ use parent 'OpenTelemetry::Instrumentation';
 
 sub dependencies { 'DBI' }
 
+# from https://opentelemetry.io/docs/specs/semconv/registry/attributes/db/#db-system-name
+our %otel_db_system_name_for_dbd = (
+    Pg          => 'postgresql',
+    PgAsync     => 'postgresql',
+    mysql       => 'mysql',
+    Oracle      => 'oracle.db',
+    SQLite      => 'sqlite',
+    MariaDB     => 'mariadb',
+    Cassandra   => 'cassandra',
+    Sybase      => 'microsoft.sql_server',
+);
+
 my ( $CONNECT, $EXECUTE, $DO, $loaded );
 sub uninstall ( $class ) {
     return unless $loaded;
@@ -43,16 +55,16 @@ sub install ( $class, %options ) {
         my $name = $dbh->{Name};
 
         my $info = $meta{$name} //= do {
-            my %meta = (
-                'db.system' => lc $dbh->{Driver}{Name},
-            );
+            my %meta;
 
+            $meta{'db.system.name'} = $otel_db_system_name_for_dbd{$dbh->{Driver}{Name}}
+                if exists $otel_db_system_name_for_dbd{$dbh->{Driver}{Name}};
             $meta{'db.user'}        = $dbh->{Username} if $dbh->{Username};
             $meta{'server.address'} = $1               if $name =~ /host=([^;]+)/;
             $meta{'server.port'}    = $1               if $name =~ /port=([0-9]+)/;
 
             # Driver-specific metadata available before call
-            if ( $meta{'db.system'} eq 'mysql' ) {
+            if ( $meta{'db.system.name'} eq 'mysql' ) {
                 $meta{'network.transport'} = 'IP.TCP';
             }
 
@@ -117,8 +129,9 @@ sub install ( $class, %options ) {
         # this might fail and return an empty list which is ok, in that case keep
         # continuing and don't populate the span attributes
         my ($scheme, $driver, $attr_string, $attr_hash, $driver_dsn) = DBI->parse_dsn($dsn);
-        $meta{'db.system'} = $driver
-            if defined $driver;
+        $meta{'db.system.name'} = $otel_db_system_name_for_dbd{$driver}
+            if defined $driver
+            && exists $otel_db_system_name_for_dbd{$driver};
         $meta{'db.connection_string'}   = $driver_dsn
             if defined $driver_dsn;
         $meta{'server.address'}         = $1

@@ -81,7 +81,6 @@ subtest Mem => sub {
         attributes => {
             'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'SELECT id FROM foo',
-            'db.system'      => 'mem',
             'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
@@ -98,7 +97,6 @@ subtest Mem => sub {
         attributes => {
             'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'CREATE TABLE foo (id INT)',
-            'db.system'      => 'mem',
             'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
@@ -119,7 +117,6 @@ subtest Mem => sub {
         attributes => {
             'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'SELECT * FROM foo WHERE id = ?',
-            'db.system'      => 'mem',
             'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
@@ -144,7 +141,6 @@ subtest Mem => sub {
         attributes => {
             'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'SELECT * FROM foo WHERE id = ?',
-            'db.system'      => 'mem',
             'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
