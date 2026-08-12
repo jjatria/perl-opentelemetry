@@ -52,10 +52,21 @@ is [ CLASS->dependencies ], ['DBI'], 'Reports dependencies';
 subtest Mem => sub {
     CLASS->uninstall;
 
-    my $db = DBI->connect('dbi:Mem:(RaiseError=1):port=1234;');
-
     is +CLASS->install, T, 'Installed modifier';
     is +CLASS->install, F, 'Installed modifier once';
+
+    my $db = DBI->connect('dbi:Mem:(RaiseError=1):port=1234;');
+    is $span->{otel}, {
+        ended      => T,
+        kind       => SPAN_KIND_CLIENT,
+        name       => 'connect',
+        attributes => {
+            'db.connection_string' => '(RaiseError=1):port=1234;',
+            'db.user'        => U,
+            'server.address' => U,
+            'server.port'    => 1234,
+        },
+    }, 'Captured connect data';
 
     like warnings { $db->do('SELECT id FROM foo') } => [], 'Captured warnings';
 

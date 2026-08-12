@@ -21,7 +21,7 @@ use parent 'OpenTelemetry::Instrumentation';
 
 sub dependencies { 'DBI' }
 
-my ( $EXECUTE, $DO, $loaded );
+my ( $CONNECT, $EXECUTE, $DO, $loaded );
 sub uninstall ( $class ) {
     return unless $loaded;
     no strict 'refs';
@@ -99,6 +99,55 @@ sub install ( $class, %options ) {
                 $span->set_status( SPAN_STATUS_OK );
             }
 
+            $span->end;
+        }
+    };
+
+    $CONNECT = \&DBI::connect;
+    install_modifier 'DBI' => around => connect => sub {
+        my $orig = shift;
+        my $class = shift;
+        my $dsn = $_[0];
+        my $user = $_[1];
+
+        my %meta = (
+            'db.user'               => $user,
+        );
+
+        # this might fail and return an empty list which is ok, in that case keep
+        # continuing and don't populate the span attributes
+        my ($scheme, $driver, $attr_string, $attr_hash, $driver_dsn) = DBI->parse_dsn($dsn);
+        $meta{'db.system'} = $driver
+            if defined $driver;
+        $meta{'db.connection_string'}   = $driver_dsn
+            if defined $driver_dsn;
+        $meta{'server.address'}         = $1
+            if $dsn =~ /host=([^;]+)/;
+        $meta{'server.port'}            = $1
+            if $dsn =~ /port=([0-9]+)/;
+
+        my $span = OpenTelemetry->tracer_provider->tracer->create_span(
+            name       => 'connect',
+            kind       => SPAN_KIND_CLIENT,
+            attributes => \%meta,
+        );
+
+        dynamically OpenTelemetry::Context->current
+            = OpenTelemetry::Trace->context_with_span($span);
+
+        try {
+            return $class->$orig(@_);
+        }
+        catch ( $error ) {
+            my ($description) = split /\n/, $error =~ s/^\s+|\s+$//gr, 2;
+            $description =~ s/ at \S+ line \d+\.$//a;
+
+            $span->record_exception($error);
+            $span->set_status( SPAN_STATUS_ERROR, $description );
+
+            die $error;
+        }
+        finally {
             $span->end;
         }
     };
