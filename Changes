@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
     * Add 'connect' span to OpenTelemetry::Instrumentation::DBI
+    * Replace deprecated db.system with db.system.name attribute
+      in OpenTelemetry::Instrumentation::DBI
 
 0.035     2026-07-22 14:06:15 BST
 
