@@ -1,6 +1,8 @@
 Revision history for OpenTelemetry
 
 {{$NEXT}}
+
+0.036     2026-08-20 23:02:47 BST
     * Add 'connect' span to OpenTelemetry::Instrumentation::DBI
     * Removed and replaced deprecated DB attributes in spans generated
       by OpenTelemetry::Instrumentation::DBI: the 'db.user' and
