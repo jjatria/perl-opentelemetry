@@ -55,20 +55,100 @@ subtest Mem => sub {
     is +CLASS->install, T, 'Installed modifier';
     is +CLASS->install, F, 'Installed modifier once';
 
-    my $db = DBI->connect('dbi:Mem:(RaiseError=1):port=1234;');
-    is $span->{otel}, {
-        ended      => T,
-        kind       => SPAN_KIND_CLIENT,
-        name       => 'connect',
-        attributes => {
-            'db.connection_string' => '(RaiseError=1):port=1234;',
-            'db.user'        => U,
-            'server.address' => U,
-            'server.port'    => 1234,
-        },
-    }, 'Captured connect data';
+    my $db;
 
-    like warnings { $db->do('SELECT id FROM foo') } => [], 'Captured warnings';
+    subtest Connect => sub {
+        subtest 'Bad DSN' => sub {
+            like dies { DBI->connect('this is not a DSN') },
+                qr/Can't connect to data source .* can't work out what driver to use/,
+                'Cannot work out driver';
+
+            is $span->{otel}, {
+                exceptions => [
+                    {
+                        attributes => {},
+                        exception => match qr/^Can't connect to data source/,
+                    },
+                ],
+                status     => {
+                    code => SPAN_STATUS_ERROR,
+                    description => match qr/^Can't connect to data source/,
+                },
+                ended      => T,
+                kind       => SPAN_KIND_CLIENT,
+                name       => 'connect',
+                attributes => {},
+            }, 'Captured connect data';
+        };
+
+        subtest Dies => sub {
+            like dies { DBI->connect('dbi:FakeyMcFakeFace(RaiseError=1):host=foo;port=1234') },
+                qr|Can't locate DBD/FakeyMcFakeFace|,
+                'Not a real DB';
+
+            is $span->{otel}, {
+                exceptions => [
+                    {
+                        attributes => {},
+                        exception => match qr/install_driver\(FakeyMcFakeFace\) failed/,
+                    },
+                ],
+                status     => {
+                    code => SPAN_STATUS_ERROR,
+                    description => match qr/install_driver\(FakeyMcFakeFace\) failed/,
+                },
+                ended      => T,
+                kind       => SPAN_KIND_CLIENT,
+                name       => 'connect',
+                attributes => {
+                    'server.address' => 'foo',
+                    'server.port'    => 1234,
+                },
+            }, 'Captured connect data';
+        };
+
+        subtest Fails => sub {
+            is warnings{
+                is +DBI->connect('dbi:File:f_dir=/not/a/real/directory/deadbeef'), F,
+                    'Could not connect';
+            }, [
+                match qr/DBI connect.* failed: No such directory/
+            ], 'Failed connection warned';
+
+            is $span->{otel}, {
+                status     => {
+                    code => SPAN_STATUS_ERROR,
+                    description => match qr|No such directory .*/not/a/real/directory/deadbeef|,
+                },
+                ended      => T,
+                kind       => SPAN_KIND_CLIENT,
+                name       => 'connect',
+                attributes => {},
+            }, 'Captured connect data';
+        };
+
+        subtest Succeeds => sub {
+            # NOTE: 'port' is not a valid attribute for DBD::Mem,
+            # and setting it sets $db->err. However, we don't capture it
+            # because it is not an error (= DBI->connect still returns
+            # a handle you can use
+            $db = DBI->connect('dbi:Mem:port=1234', undef, undef, { RaiseError => 1, PrintError => 0 } );
+            is $span->{otel}, {
+                status     => { code => SPAN_STATUS_OK },
+                ended      => T,
+                kind       => SPAN_KIND_CLIENT,
+                name       => 'connect',
+                attributes => {
+                    'server.address' => U,
+                    'server.port'    => 1234,
+                },
+            }, 'Captured connect data';
+        };
+    };
+
+    like dies {
+        $db->do('SELECT id FROM foo');
+    }, qr/No such column 'id'/, 'Raised error';
 
     is $span->{otel}, {
         status => {
@@ -99,11 +179,11 @@ subtest Mem => sub {
         },
     }, 'Captured create data';
 
-    $db->selectall_arrayref('
-        SELECT *
-          FROM foo
-         WHERE id = ?
-    ', {}, 'secret');
+    $db->do('INSERT INTO foo ( id ) VALUES ( 123 )');
+
+    is $db->selectall_arrayref( 'SELECT * FROM foo WHERE id = ?', {}, '123' ),
+        [ [123] ],
+        'Read data';
 
     is $span->{otel}, {
         status     => { code => SPAN_STATUS_OK },
