@@ -3,7 +3,7 @@ use Object::Pad ':experimental(init_expr)';
 
 package OpenTelemetry::Trace::Event;
 
-our $VERSION = '0.036';
+our $VERSION = '0.037';
 
 class OpenTelemetry::Trace::Event :does(OpenTelemetry::Attributes) {
     use Time::HiRes;
