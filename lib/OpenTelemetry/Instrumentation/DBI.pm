@@ -59,7 +59,6 @@ sub install ( $class, %options ) {
 
             $meta{'db.system.name'} = $otel_db_system_name_for_dbd{$dbh->{Driver}{Name}}
                 if exists $otel_db_system_name_for_dbd{$dbh->{Driver}{Name}};
-            $meta{'db.user'}        = $dbh->{Username} if $dbh->{Username};
             $meta{'server.address'} = $1               if $name =~ /host=([^;]+)/;
             $meta{'server.port'}    = $1               if $name =~ /port=([0-9]+)/;
 
@@ -77,8 +76,7 @@ sub install ( $class, %options ) {
             name       => substr($statement, 0, 100) =~ s/\s+$//r,
             kind       => SPAN_KIND_CLIENT,
             attributes => {
-                'db.connection_string' => $name,
-                'db.statement'         => $statement,
+                'db.statement' => $statement,
                 %$info,
             },
         );
@@ -120,11 +118,8 @@ sub install ( $class, %options ) {
         my $orig = shift;
         my $class = shift;
         my $dsn = $_[0];
-        my $user = $_[1];
 
-        my %meta = (
-            'db.user'               => $user,
-        );
+        my %meta;
 
         # this might fail and return an empty list which is ok, in that case keep
         # continuing and don't populate the span attributes

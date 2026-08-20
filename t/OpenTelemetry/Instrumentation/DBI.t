@@ -79,9 +79,7 @@ subtest Mem => sub {
         kind       => SPAN_KIND_CLIENT,
         name       => 'SELECT id FROM foo',
         attributes => {
-            'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'SELECT id FROM foo',
-            'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
         },
@@ -95,9 +93,7 @@ subtest Mem => sub {
         kind       => SPAN_KIND_CLIENT,
         name       => 'CREATE TABLE foo (id INT)',
         attributes => {
-            'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'CREATE TABLE foo (id INT)',
-            'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
         },
@@ -115,9 +111,7 @@ subtest Mem => sub {
         kind       => SPAN_KIND_CLIENT,
         name       => 'SELECT * FROM foo WHERE id = ?',
         attributes => {
-            'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'SELECT * FROM foo WHERE id = ?',
-            'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
         },
@@ -139,9 +133,7 @@ subtest Mem => sub {
         kind       => SPAN_KIND_CLIENT,
         name       => 'SELECT * FROM foo WHERE id = ?',
         attributes => {
-            'db.connection_string' => '(RaiseError=1):port=1234;',
             'db.statement'   => 'SELECT * FROM foo WHERE id = ?',
-            'db.user'        => U,
             'server.address' => U,
             'server.port'    => 1234,
         },
