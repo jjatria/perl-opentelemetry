@@ -31,7 +31,7 @@ use strict;
 use warnings;
 use experimental 'signatures';
 
-use Bytes::Random::Secure ();
+use Crypt::SysRandom ();
 use List::Util qw( any first );
 use OpenTelemetry::Constants qw( INVALID_TRACE_ID INVALID_SPAN_ID );
 use Ref::Util qw( is_arrayref is_hashref );
@@ -90,14 +90,14 @@ sub config ( @keys ) {
 # Trace functions
 sub generate_trace_id {
     while (1) {
-        my $id = Bytes::Random::Secure::random_bytes 16;
+        my $id = Crypt::SysRandom::random_bytes 16;
         return $id unless $id eq INVALID_TRACE_ID;
     }
 }
 
 sub generate_span_id {
     while (1) {
-        my $id = Bytes::Random::Secure::random_bytes 8;
+        my $id = Crypt::SysRandom::random_bytes 8;
         return $id unless $id eq INVALID_SPAN_ID;
     }
 }

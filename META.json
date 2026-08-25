@@ -41,9 +41,9 @@
       },
       "runtime" : {
          "requires" : {
-            "Bytes::Random::Secure" : "0",
             "Carp::Clan" : "0",
             "Class::Method::Modifiers" : "0",
+            "Crypt::SysRandom" : "0",
             "Exporter::Tiny" : "0.044",
             "Feature::Compat::Defer" : "0",
             "Feature::Compat::Try" : "0.05",

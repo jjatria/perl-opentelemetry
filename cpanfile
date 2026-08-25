@@ -1,5 +1,5 @@
 requires 'isa'; # To support perls older than 5.32
-requires 'Bytes::Random::Secure';
+requires 'Crypt::SysRandom';
 requires 'Carp::Clan';
 requires 'Class::Method::Modifiers';
 requires 'Exporter::Tiny', '0.044'; # For -as => CODE support

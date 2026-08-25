@@ -2,6 +2,9 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Dropped dependency of Bytes::Random::Secure in favour of
+      the newer Crypt::SysRandom.
+
 0.036     2026-08-20 23:02:47 BST
     * Add 'connect' span to OpenTelemetry::Instrumentation::DBI
     * Removed and replaced deprecated DB attributes in spans generated
