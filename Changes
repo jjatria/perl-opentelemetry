@@ -2,6 +2,8 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+0.037     2026-08-26 17:31:25 BST
+
     * Dropped dependency of Bytes::Random::Secure in favour of
       the newer Crypt::SysRandom.
 
