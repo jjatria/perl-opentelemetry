@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Exporter;
 
-our $VERSION = '0.037';
+our $VERSION = '0.038';
 
 role OpenTelemetry::Exporter {
     method export;

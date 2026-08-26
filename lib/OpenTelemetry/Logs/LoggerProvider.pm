@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Logs::LoggerProvider;
 
-our $VERSION = '0.037';
+our $VERSION = '0.038';
 
 class OpenTelemetry::Logs::LoggerProvider {
     use OpenTelemetry::Logs::Logger;

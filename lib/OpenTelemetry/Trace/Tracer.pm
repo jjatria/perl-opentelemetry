@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Trace::Tracer;
 
-our $VERSION = '0.037';
+our $VERSION = '0.038';
 
 class OpenTelemetry::Trace::Tracer {
     use Feature::Compat::Try;
