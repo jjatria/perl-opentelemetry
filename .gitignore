@@ -11,3 +11,4 @@ MYMETA.*
 _build_params
 OpenTelemetry-*.tar.gz
 OpenTelemetry-*/
+vendor
