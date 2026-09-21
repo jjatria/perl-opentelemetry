@@ -149,6 +149,51 @@ subtest 'HTTP error' => sub {
     }, 'Captured basic data';
 };
 
+subtest 'Custom is_error' => sub {
+    CLASS->uninstall;
+
+    my $code;
+    my $http = mock 'LWP::UserAgent' => override => [
+        simple_request => sub ( $self, $req, @ ) {
+            my $response = HTTP::Response->new( $code, 'TEST' );
+            $response->request($req);
+            $response;
+        },
+    ];
+
+    my @seen;
+    ok +CLASS->install(
+        is_error => sub ( $response ) {
+            push @seen, $response->request->uri->path;
+            $response->code >= 500;
+        },
+    ), 'Installed modifier';
+
+    my $ua = LWP::UserAgent->new;
+
+    $code = 404;
+    like $ua->get('http://fa.ke/404'), object { call code => 404 },
+        'Can request';
+
+    is $span->{otel}{status}, U, 'Expected error does not set status';
+
+    $code = 503;
+    like $ua->get('http://fa.ke/503'), object { call code => 503 },
+        'Can request';
+
+    is $span->{otel}{status}, {
+        code        => SPAN_STATUS_ERROR,
+        description => 503,
+    }, 'Unexpected error sets status';
+
+    is \@seen, [ '/404', '/503' ], 'Called with the response and its request';
+
+    CLASS->uninstall;
+    like dies { CLASS->install( is_error => 'nope' ) },
+        qr/is_error must be a code reference/,
+        'Rejects a non-code is_error';
+};
+
 subtest 'Internal error' => sub {
     CLASS->uninstall;
 

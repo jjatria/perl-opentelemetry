@@ -56,6 +56,11 @@ sub install ( $class, %config ) {
     my @wanted_response_headers = map qr/^\Q$_\E$/i, map tr/-/_/r,
         @{ delete $config{response_headers} // [] };
 
+    my $is_error = delete $config{is_error}
+        // sub ( $response ) { !$response->is_success };
+
+    die "is_error must be a code reference\n" unless ref $is_error eq 'CODE';
+
     $original = \&LWP::UserAgent::simple_request;
     install_modifier 'LWP::UserAgent' => around => simple_request => sub {
         my ( $code, $self, $request, @rest ) = @_;
@@ -124,7 +129,7 @@ sub install ( $class, %config ) {
                 if defined $length;
 
             $span->set_status( SPAN_STATUS_ERROR, $response->code )
-                unless $response->is_success;
+                if $is_error->($response);
 
             $span->set_attribute(
                 get_headers(

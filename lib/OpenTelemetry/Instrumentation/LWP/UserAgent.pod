@@ -12,6 +12,7 @@ OpenTelemetry::Instrumentation::LWP::UserAgent - OpenTelemetry instrumentation f
     use OpenTelemetry::Instrumentation 'LWP::UserAgent' => {
         request_headers  => [ ... ],
         response_headers => [ ... ],
+        is_error         => sub ( $response ) { ... },
     };
 
     LWP::UserAgent->new->get('https://metacpan.org');
@@ -152,6 +153,31 @@ literally.
 Matching headers will be stored as span attributes under the
 C<http.response.header> namespace, as described in
 L<the semantic convention documentation|https://github.com/open-telemetry/semantic-conventions/blob/main/docs/http/http-spans.md#http-request-and-response-headers>.
+
+=head2 is_error
+
+By default, the span for any response that is not successful (as reported by
+L<< "is_success" in HTTP::Response|HTTP::Response/$r->is_success >>) will have
+its status set to error, with the response code as its description.
+
+Some non-successful responses are an expected answer rather than a failure:
+an API that returns a 404 for a lookup of a resource that doesn't exist, for
+example. Set this key to a code reference to decide which responses should
+mark the span as an error. It will be called with the L<HTTP::Response> object
+(its C<request> method returns the request that was sent), and the span status
+will be set to error if it returns a true value.
+
+    use OpenTelemetry::Instrumentation 'LWP::UserAgent' => {
+        is_error => sub ( $response ) {
+            return 0 if $response->is_success;
+            return 0 if $response->code == 404
+                && $response->request->uri->host eq 'api.example.com';
+            return 1;
+        },
+    };
+
+This does not affect requests that die: those always mark the span as an
+error.
 
 =head2 SEE ALSO
 
