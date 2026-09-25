@@ -2,6 +2,11 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * The LWP::UserAgent instrumentation takes a new 'is_error' option,
+      a code reference that decides whether a response should set the
+      span status to error. The default is unchanged: any response that
+      is not successful.
+
 0.037     2026-08-26 17:31:25 BST
 
     * Dropped dependency of Bytes::Random::Secure in favour of
