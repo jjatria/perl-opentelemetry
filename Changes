@@ -2,6 +2,10 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * Fixed an issue in the tracecontext flags that could cause them
+      to be involuntarily recognied by some serialisers as being
+      strings rather than numbers.
+
 0.038     2026-10-03 21:35:35 BST
 
     * Minor fixes to POD.
