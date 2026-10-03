@@ -38,13 +38,13 @@ TracerProvider.
     # You can use this wherever you need to generate traces. Although you
     # can, there's no need to pass this tracer around: the tracer is cached
     # internally, so getting one is cheap
-    my $tracer = OpenTelemetry->tracer_provider->tracer($name);
+    my $tracer = OpenTelemetry->tracer_provider->tracer( name => $name );
 
 There is also a shortcut that can be exported for convenience:
 
     use OpenTelemetry 'otel_tracer_provider';
 
-    my $tracer = otel_tracer_provider->tracer($name);
+    my $tracer = otel_tracer_provider->tracer( name => $name );
 
 Once you have a L<Tracer|OpenTelemetry::Trace::Tracer> acquired, you can
 manually trace code.
