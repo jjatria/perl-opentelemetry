@@ -13,4 +13,11 @@ is my $tracer = $provider->tracer,
 ref_is $provider->tracer, $tracer,
     'Provided tracer is cached internally';
 
+is my $another = $provider->tracer( name => 'Example' ),
+    object { prop isa => 'OpenTelemetry::Trace::Tracer' },
+    'Can provide named tracer';
+
+ref_is $another, $tracer,
+    'API always returns the same no-op tracer';
+
 done_testing;
