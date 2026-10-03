@@ -6,6 +6,7 @@ Revision history for OpenTelemetry
     * Spans in DBI instrumentation are now ended in a 'defer' block,
       which appears to help prevent some issues for Mojolicious
       applications running under hypnotoad.
+    * Author email has changed, since cpan.org emails are now dead
 
 0.037     2026-08-26 17:31:25 BST
 
