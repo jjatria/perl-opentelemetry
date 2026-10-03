@@ -1,7 +1,7 @@
 package OpenTelemetry::Instrumentation::DBI;
 # ABSTRACT: OpenTelemetry instrumentation for DBI
 
-our $VERSION = '0.039';
+our $VERSION = '0.040';
 
 use strict;
 use warnings;

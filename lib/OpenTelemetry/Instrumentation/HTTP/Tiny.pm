@@ -1,7 +1,7 @@
 package OpenTelemetry::Instrumentation::HTTP::Tiny;
 # ABSTRACT: OpenTelemetry instrumentation for HTTP::Tiny
 
-our $VERSION = '0.039';
+our $VERSION = '0.040';
 
 use strict;
 use warnings;

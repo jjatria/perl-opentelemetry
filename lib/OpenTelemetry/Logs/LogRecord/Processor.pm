@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Logs::LogRecord::Processor;
 
-our $VERSION = '0.039';
+our $VERSION = '0.040';
 
 role OpenTelemetry::Logs::LogRecord::Processor :does(OpenTelemetry::Processor) {
     method on_emit;
