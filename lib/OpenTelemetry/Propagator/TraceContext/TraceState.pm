@@ -3,7 +3,7 @@ use Object::Pad;
 
 package OpenTelemetry::Propagator::TraceContext::TraceState;
 
-our $VERSION = '0.038';
+our $VERSION = '0.039';
 
 class OpenTelemetry::Propagator::TraceContext::TraceState {
     use List::Util;

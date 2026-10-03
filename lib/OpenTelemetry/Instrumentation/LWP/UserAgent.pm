@@ -1,7 +1,7 @@
 package OpenTelemetry::Instrumentation::LWP::UserAgent;
 # ABSTRACT: OpenTelemetry instrumentation for LWP::UserAgent
 
-our $VERSION = '0.038';
+our $VERSION = '0.039';
 
 use strict;
 use warnings;

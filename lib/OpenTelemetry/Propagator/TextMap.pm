@@ -5,7 +5,7 @@ use experimental 'signatures';
 
 package OpenTelemetry::Propagator::TextMap;
 
-our $VERSION = '0.038';
+our $VERSION = '0.039';
 
 sub SETTER {
     sub ( $carrier, $key, $value ) { $carrier->{$key} = $value; return }
