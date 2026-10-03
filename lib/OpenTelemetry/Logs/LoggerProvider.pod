@@ -42,7 +42,7 @@ Creates a new instance of the logger provider.
     $logger = $logger_provider->logger( %args )
 
 Takes a set of named parameters, and returns a logger that can be used to
-emit log records via L<OpenTelemetry:::Logs::Logger/emit_record>. Accepted
+emit log records via L<OpenTelemetry::Logs::Logger/emit_record>. Accepted
 parameters are:
 
 =over
