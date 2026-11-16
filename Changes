@@ -7,12 +7,12 @@ Revision history for OpenTelemetry
       the status will only be automatically set to Error if an exception
       was caught, but will otherwise be left Unset. Applications that
       expect the status to be Ok should set it themselves.
-    * Fixed some documentation inconsistenties.
+    * Fixed some documentation inconsistencies.
 
 0.039     2026-10-03 22:36:25 BST
 
     * Fixed an issue in the tracecontext flags that could cause them
-      to be involuntarily recognied by some serialisers as being
+      to be involuntarily recognised by some serialisers as being
       strings rather than numbers.
 
 0.038     2026-10-03 21:35:35 BST
@@ -105,7 +105,7 @@ Revision history for OpenTelemetry
 0.026     2024-12-16 09:02:42+00:00 Europe/London
 
     * Added some practical documentation in the OpenTelemetry::Guides
-      namespace, based on the language documentation by the OpenTelemtry
+      namespace, based on the language documentation by the OpenTelemetry
       authors. Examples used in those documents has also been added to
       the examples directory in this distribution. In the future, this
       namespace will expand to include more guides.
@@ -215,7 +215,7 @@ Revision history for OpenTelemetry
       for spans
     * OpenTelemetry::X errors print stack traces when stringified
     * Improve the reporting of errors caught in calls to
-      'in_span' in OpenTelementry::Trace
+      'in_span' in OpenTelemetry::Trace
     * Minor documentation fixes throughout
 
 0.013     2023-11-07 20:23:49+00:00 Europe/London
