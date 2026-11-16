@@ -33,7 +33,7 @@ L<Log::Any> log levels are mapped to L<OpenTelemetry> log levels as follows:
 
 When determining whether a log level is enabled or not, the value
 of C<OTEL_LOG_LEVEL> will be read from the environment, or that of
-C<PERL_OTEL_LOG_LEVEL> if the former is not set. If neither is set,
+C<OTEL_PERL_LOG_LEVEL> if the former is not set. If neither is set,
 or if that variable is set to an unknown value, the default value
 will be "info".
 
