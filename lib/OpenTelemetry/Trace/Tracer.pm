@@ -53,10 +53,7 @@ class OpenTelemetry::Trace::Tracer {
             die $e;
         }
         finally {
-            $span->set_status(
-                $error ? ( SPAN_STATUS_ERROR, $error ) : SPAN_STATUS_OK
-            );
-
+            $span->set_status( SPAN_STATUS_ERROR, $error ) if $error;
             $span->end;
         }
     }

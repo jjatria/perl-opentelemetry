@@ -2,6 +2,12 @@ Revision history for OpenTelemetry
 
 {{$NEXT}}
 
+    * The 'in_span' helper in OpenTelemetry::Trace::Tracer no longer
+      automatically sets a span status to Ok. As per the specification,
+      the status will only be automatically set to Error if an exception
+      was caught, but will otherwise be left Unset. Applications that
+      expect the status to be Ok should set it themselves.
+
 0.039     2026-10-03 22:36:25 BST
 
     * Fixed an issue in the tracecontext flags that could cause them

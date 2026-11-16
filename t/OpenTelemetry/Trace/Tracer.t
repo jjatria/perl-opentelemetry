@@ -53,16 +53,11 @@ subtest 'Convenience in_span method' => sub {
     };
 
     is $mocked->call_tracking, [
-        {
-            sub_name => 'set_status',
-            args     => [ D, SPAN_STATUS_OK ],
-            sub_ref  => E,
-        },
         {   sub_name => 'end',
             args     => [ D ],
             sub_ref  => E,
         },
-    ], 'Set status and ended at end of block';
+    ], 'Span ended at end of block with status unset';
 
     is $ret, 'TEST', 'in_span returns what the block returns';
 
