@@ -1,6 +1,6 @@
 package OpenTelemetry::X;
 
-our $VERSION = '0.040';
+our $VERSION = '0.041';
 
 use X::Tiny;
 use parent 'X::Tiny::Base';

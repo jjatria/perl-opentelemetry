@@ -25,7 +25,7 @@ package
 
 # ABSTRACT: Utility package with shared functions for OpenTelemetry
 
-our $VERSION = '0.040';
+our $VERSION = '0.041';
 
 use strict;
 use warnings;
