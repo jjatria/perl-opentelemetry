@@ -6,10 +6,10 @@ OpenTelemetry::Propagator::TraceContext::TraceParent - Represents a TraceParent 
 
 =head1 SYNOPSIS
 
-    use OpenTelemetry;
+    use OpenTelemetry::Trace;
     use OpenTelemetry::Propagator::TraceContext::TraceParent;
 
-    my $span = OpenTelemetry->span_from_context;
+    my $span = OpenTelemetry::Trace->span_from_context;
     my $traceparent = OpenTelemetry::Propagator::TraceContext::TraceParent
         ->from_span_context( $span->context );
 
